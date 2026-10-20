@@ -1,0 +1,12 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nx dev frontend",
+    "build": "nx build frontend",
+    "preview": "vite preview",
+    "test": "nx test frontend",
+    "lint": "nx lint frontend"
+  }
+}

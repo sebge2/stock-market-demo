@@ -1,73 +1,163 @@
 # Stock Market Demo 📈
 
-Une application de démonstration pour tester les technologies modernes en créant un écosystème financier complet.
+Une application de démonstration pour tester les technologies modernes en créant un écosystème financier complet avec **Java backend** et **React frontend**.
 
 ## 🎯 Objectif
 
 Créer un environnement sandbox pour explorer et expérimenter les meilleures pratiques en matière de :
-- Architecture et design patterns
-- Technologies frontend et backend
+- Architecture microservices (Java Spring Boot)
+- Frontend moderne (React + TypeScript)
+- Intégration backend/frontend
 - Gestion des données financières
-- Intégration et orchestration
+- Monorepo avec Nx
 
 ## 🏗️ Architecture
 
-L'application simule un écosystème financier avec trois entités principales :
+### Backend (Java 21 + Spring Boot 3.2)
+Deux services microservices indépendants :
 
-### 1. **Bourse (Stock Exchange)**
-- Gestion des listes de valeurs
-- Cotation des actions
-- Historique des prix et tendances
-- Actualisation en temps réel (simulée)
-
-### 2. **Banque (Bank)**
+#### 1. **Bank Service** 🏦
 - Gestion des comptes clients
 - Soldes et portefeuilles
 - Validation des opérations
 - Historique des transactions
+- **Port :** 8081
+- **Context Path :** `/api/bank`
 
-### 3. **Clients (Customers)**
-- Inscription et authentification
-- Consultation du portefeuille
-- Achat/vente d'actions
-- Suivi des positions et performances
+#### 2. **Stock Exchange Service** 📊
+- Gestion des listes de valeurs
+- Cotation des actions
+- Exécution des ordres
+- Historique des prix
+- **Port :** 8082
+- **Context Path :** `/api/exchange`
 
-## 📊 Flux Principal
+### Frontend (React 18 + TypeScript + Vite)
+Application React moderne qui communique avec les services backend :
+- Dashboard centralisé
+- Gestion de portefeuille
+- Affichage des cotations
+- Historique des transactions
+- **Port :** 3000
+
+## 📊 Architecture Générale
 
 ```
-Client → Banque (Validation) → Bourse (Exécution)
-                    ↓
-            Enregistrement Transaction
-                    ↓
-            Mise à Jour Portefeuille
+┌─────────────────────────────────────────────────────────────┐
+│                     Frontend (React)                        │
+│                      Port 3000                              │
+└──────────────────┬────────────────────────────────────────┘
+                   │
+        ┌──────────┴──────────┐
+        │                     │
+┌───────▼────────┐  ┌─────────▼──────────┐
+│  Bank Service  │  │ Stock Exchange     │
+│  (Port 8081)   │  │ (Port 8082)        │
+│  Spring Boot   │  │ Spring Boot        │
+│  Java 21       │  │ Java 21            │
+└────────────────┘  └────────────────────┘
 ```
 
-## 🚀 Stack Technologique (À définir)
+## 🚀 Stack Technologique
 
-- **Frontend** : [À spécifier]
-- **Backend** : [À spécifier]
-- **Base de Données** : [À spécifier]
-- **Communication** : [À spécifier]
+| Couche | Technologie | Version |
+|--------|-------------|---------|
+| **Frontend** | React | 18.2+ |
+| **Frontend Build** | Vite | 5.0+ |
+| **Frontend Lang** | TypeScript | 5.3+ |
+| **Monorepo** | Nx | 18.0+ |
+| **Backend** | Java | 21 (LTS) |
+| **Framework Backend** | Spring Boot | 3.2.0 |
+| **Build Backend** | Maven | 3.9+ |
+| **DB Demo** | H2 | Embedded |
 
 ## 📋 Fonctionnalités Clés
 
-- [ ] Création de comptes clients
-- [ ] Gestion de portefeuille d'actions
-- [ ] Achat/vente d'actions
-- [ ] Consultation des prix en temps réel
-- [ ] Historique des transactions
-- [ ] Dashboard de performance
-- [ ] Validation des opérations (solde, plafonds, etc.)
+### Phase 1 (Setup) ✅
+- [x] Structure monorepo avec Nx
+- [x] Services Java avec Spring Boot
+- [x] Frontend React de base
+- [ ] Connexion Frontend ↔ Backend
 
-## 🔧 Configuration
+### Phase 2 (Développement)
+- [ ] API Bank (gestion de comptes)
+- [ ] API Stock Exchange (gestion de titres)
+- [ ] UI Dashboard
+- [ ] Authentification
+
+### Phase 3 (Intégration)
+- [ ] Communication Frontend-Backend
+- [ ] WebSocket pour les cotations en temps réel
+- [ ] Cache et optimisations
+- [ ] Tests intégrés
+
+## 📂 Structure du Projet
+
+```
+stock-market-demo/
+├── apps/
+│   └── frontend/                 # React application
+│       ├── src/
+│       ├── index.html
+│       └── project.json
+│
+├── packages/
+│   ├── bank/                     # Bank microservice (Java/Maven)
+│   │   ├── src/
+│   │   └── pom.xml
+│   │
+│   └── stock-exchange/           # Stock Exchange microservice (Java/Maven)
+│       ├── src/
+│       └── pom.xml
+│
+├── nx.json
+├── package.json
+├── tsconfig.base.json
+├── README.md
+├── AGENTS.md
+└── MONOREPO.md
+```
+
+## 🛠️ Installation
+
+### Prérequis
+- **Node.js** 18+ (pour npm et le frontend)
+- **Java 21** (LTS)
+- **Maven 3.9+**
+- **Git**
+
+### Setup
 
 ```bash
-# À définir selon le stack choisi
+# Installer les dépendances frontend/Nx
+npm install
+```
+
+## 🚀 Lancer l'Application
+
+### Frontend
+```bash
+npm run dev:frontend
+# Accès : http://localhost:3000
+```
+
+### Backend Services
+```bash
+# Bank Service
+cd packages/bank
+mvn spring-boot:run
+# API : http://localhost:8081/api/bank
+
+# Stock Exchange Service (autre terminal)
+cd packages/stock-exchange
+mvn spring-boot:run
+# API : http://localhost:8082/api/exchange
 ```
 
 ## 📚 Documentation Supplémentaire
 
-- [AGENTS.md](./AGENTS.md) - Description des agents et acteurs du système
+- [AGENTS.md](./AGENTS.md) - Description des agents et architecture métier
+- [MONOREPO.md](./MONOREPO.md) - Guide complet du monorepo Nx
 
 ## 👤 Auteur
 
@@ -75,4 +165,4 @@ Sébastien Gérard
 
 ## 📄 Licence
 
-Voir [LICENSE](./LICENSE)
+MIT

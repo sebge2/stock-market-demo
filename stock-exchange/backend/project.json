@@ -1,0 +1,44 @@
+{
+  "name": "backend-exchange",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "stock-exchange/backend/src",
+  "projectType": "library",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@nx/maven:build",
+      "options": {
+        "outputPath": "dist/stock-exchange/backend"
+      }
+    },
+    "serve": {
+      "executor": "@nx/workspace:run-commands",
+      "options": {
+        "command": "mvn spring-boot:run",
+        "cwd": "stock-exchange/backend"
+      },
+      "configurations": {
+        "development": {
+          "command": "mvn spring-boot:run",
+          "cwd": "stock-exchange/backend"
+        },
+        "production": {
+          "command": "mvn spring-boot:run -Dspring-boot.run.arguments='--spring.profiles.active=prod'",
+          "cwd": "stock-exchange/backend"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/maven:test",
+      "options": {}
+    },
+    "lint": {
+      "executor": "@nx/maven:lint",
+      "options": {}
+    }
+  },
+  "tags": [
+    "type:backend",
+    "scope:exchange"
+  ]
+}

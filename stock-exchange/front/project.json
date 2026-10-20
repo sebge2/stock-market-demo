@@ -28,7 +28,7 @@
       ],
       "options": {
         "outputPath": "dist/stock-exchange/front",
-        "configFile": "vite.config.exchange.front.ts"
+        "configFile": "stock-exchange/front/vite.config.ts"
       },
       "configurations": {
         "development": {

@@ -124,8 +124,6 @@ stock-market-demo/
 ├── nx.json
 ├── package.json
 ├── tsconfig.base.json
-├── vite.config.bank.front.ts
-├── vite.config.exchange.front.ts
 ├── README.md
 ├── AGENTS.md
 └── MONOREPO.md

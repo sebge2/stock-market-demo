@@ -3,10 +3,9 @@ import react from '@vitejs/plugin-react';
 import { nxViteTsPaths } from '@nx/vite/plugins/nx-tsconfig-paths.plugin';
 
 export default defineConfig({
-  root: './bank/front',
   plugins: [nxViteTsPaths(), react()],
   server: {
-    port: 3000,
+    port: 3001,
     host: 'localhost',
     strictPort: false,
     fs: {
@@ -14,7 +13,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../../dist/bank/front',
+    outDir: '../../dist/stock-exchange/front',
     reportCompressedSize: true,
     commonjsOptions: {
       transformMixedEsModules: true,

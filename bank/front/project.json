@@ -28,7 +28,7 @@
       ],
       "options": {
         "outputPath": "dist/bank/front",
-        "configFile": "vite.config.bank.front.ts"
+        "configFile": "bank/front/vite.config.ts"
       },
       "configurations": {
         "development": {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Bank Service" type="MavenRunConfiguration" factoryName="Maven">
+    <MavenSettings>
+      <option name="myGeneralSettings" />
+      <option name="myRunnerSettings" />
+      <option name="myDOMFormatSettings" />
+      <option name="myExecutionSettings" />
+      <option name="myLocalRepository" />
+      <option name="currentProjectPom" value="$PROJECT_DIR$/packages/bank/pom.xml" />
+      <option name="ignoreDependencyCheck" value="false" />
+    </MavenSettings>
+    <method v="2" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="EXECUTABLE_NAME" value="mvn" />
+    <option name="INTERPRETER_PATH" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/packages/bank" />
+    <option name="PARENT_ENVS" value="true" />
+    <envs />
+    <method v="2">
+      <option name="RunConfigurationTask" enabled="true" runConfigurationName="Bank Service" runConfigurationType="MavenRunConfiguration" DebugAllEnabled="false" />
+    </method>
+    <option name="NAME" value="Bank Service" />
+    <option name="DESCRIPTION" value="Launches Bank Service on port 8081" />
+    <option name="ALLOW_EXTERNAL_PROCESSES" value="false" />
+    <option name="TARGET_NOT_NULL" value="false" />
+    <option name="PASS_PARENT_ENVS" value="true" />
+    <option name="PARAMETERS" value="spring-boot:run" />
+    <envs />
+    <method v="2" />
+  </configuration>
+</component>

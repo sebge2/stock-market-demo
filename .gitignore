@@ -24,7 +24,9 @@ buildNumber.properties
 .mvnrc
 
 # IDE
-.idea/
+.idea/*
+!.idea/runConfigurations/
+!.idea/.gitignore
 .vscode/
 *.swp
 *.swo

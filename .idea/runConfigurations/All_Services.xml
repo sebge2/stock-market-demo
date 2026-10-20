@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="All Services" type="CompoundRunConfigurationType" factoryName="Compound">
+    <toRun name="Frontend" type="js.build_tools.npm" />
+    <toRun name="Bank Service" type="MavenRunConfiguration" />
+    <toRun name="Stock Exchange Service" type="MavenRunConfiguration" />
+    <method v="2" />
+  </configuration>
+</component>

@@ -1,23 +1,23 @@
 {
-  "name": "frontend-bank",
+  "name": "frontend-exchange",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/frontend-bank/src",
+  "sourceRoot": "stock-exchange/front/src",
   "prefix": "app",
   "targets": {
     "serve": {
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend-bank:build",
+        "buildTarget": "frontend-exchange:build",
         "hmr": true,
         "portInUse": "accept"
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend-bank:build:development"
+          "buildTarget": "frontend-exchange:build:development"
         },
         "production": {
-          "buildTarget": "frontend-bank:build:production"
+          "buildTarget": "frontend-exchange:build:production"
         }
       }
     },
@@ -27,8 +27,8 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/apps/frontend-bank",
-        "configFile": "vite.config.bank.ts"
+        "outputPath": "dist/stock-exchange/front",
+        "configFile": "vite.config.exchange.front.ts"
       },
       "configurations": {
         "development": {
@@ -60,10 +60,10 @@
       ],
       "options": {
         "lintFilePatterns": [
-          "apps/frontend-bank/src/**/*.ts",
-          "apps/frontend-bank/src/**/*.tsx",
-          "apps/frontend-bank/src/**/*.js",
-          "apps/frontend-bank/src/**/*.jsx"
+          "stock-exchange/front/src/**/*.ts",
+          "stock-exchange/front/src/**/*.tsx",
+          "stock-exchange/front/src/**/*.js",
+          "stock-exchange/front/src/**/*.jsx"
         ]
       }
     }

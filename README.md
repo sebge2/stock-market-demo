@@ -95,30 +95,33 @@ Application React moderne qui communique avec les services backend :
 
 ```
 stock-market-demo/
-├── apps/
-│   ├── frontend-bank/            # React app pour la Banque
+├── bank/                         # Service Bank complet
+│   ├── front/                    # React Frontend
 │   │   ├── src/
 │   │   ├── index.html
 │   │   └── project.json
-│   │
-│   └── frontend-exchange/        # React app pour la Bourse
-│       ├── src/
-│       ├── index.html
-│       └── project.json
+│   ├── src/                      # Backend Java
+│   │   ├── main/
+│   │   └── test/
+│   ├── pom.xml
+│   └── README.md
 │
-├── bank/                         # Bank microservice (Java/Maven)
-│   ├── src/
-│   └── pom.xml
-│
-├── stock-exchange/               # Stock Exchange microservice (Java/Maven)
-│   ├── src/
-│   └── pom.xml
+├── stock-exchange/               # Service Stock Exchange complet
+│   ├── front/                    # React Frontend
+│   │   ├── src/
+│   │   ├── index.html
+│   │   └── project.json
+│   ├── src/                      # Backend Java
+│   │   ├── main/
+│   │   └── test/
+│   ├── pom.xml
+│   └── README.md
 │
 ├── nx.json
 ├── package.json
 ├── tsconfig.base.json
-├── vite.config.bank.ts
-├── vite.config.exchange.ts
+├── vite.config.bank.front.ts
+├── vite.config.exchange.front.ts
 ├── README.md
 ├── AGENTS.md
 └── MONOREPO.md

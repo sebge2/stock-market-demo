@@ -100,9 +100,11 @@ stock-market-demo/
 │   │   ├── src/
 │   │   ├── index.html
 │   │   └── project.json
-│   ├── src/                      # Backend Java
-│   │   ├── main/
-│   │   └── test/
+│   ├── backend/                  # Backend Java
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   └── test/
+│   │   └── README.md
 │   ├── pom.xml
 │   └── README.md
 │
@@ -111,9 +113,11 @@ stock-market-demo/
 │   │   ├── src/
 │   │   ├── index.html
 │   │   └── project.json
-│   ├── src/                      # Backend Java
-│   │   ├── main/
-│   │   └── test/
+│   ├── backend/                  # Backend Java
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   └── test/
+│   │   └── README.md
 │   ├── pom.xml
 │   └── README.md
 │

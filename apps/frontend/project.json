@@ -9,7 +9,8 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "frontend:build",
-        "hmr": true
+        "hmr": true,
+        "portInUse": "accept"
       },
       "configurations": {
         "development": {
@@ -27,21 +28,7 @@
       ],
       "options": {
         "outputPath": "dist/apps/frontend",
-        "main": "apps/frontend/src/main.tsx",
-        "tsConfig": "apps/frontend/tsconfig.json",
-        "assets": [
-          "apps/frontend/src/favicon.ico",
-          "apps/frontend/src/assets"
-        ],
-        "styles": [
-          "apps/frontend/src/style.css"
-        ],
-        "scripts": [],
-        "vendorChunk": true,
-        "extractLicenses": false,
-        "buildLibsFromSource": true,
-        "sourceMap": true,
-        "namedChunks": true
+        "configFile": "vite.config.ts"
       },
       "configurations": {
         "development": {

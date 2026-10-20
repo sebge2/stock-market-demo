@@ -1,6 +1,6 @@
-.app {
+.app.exchange-app {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   padding: 2rem;
 }
 
@@ -27,13 +27,13 @@
   margin: 0 auto;
 }
 
-.services {
+.features {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
 }
 
-.service-card {
+.feature-card {
   background: white;
   border-radius: 12px;
   padding: 2rem;
@@ -41,25 +41,25 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.service-card:hover {
+.feature-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
-.service-card h2 {
+.feature-card h2 {
   margin-top: 0;
-  color: #667eea;
+  color: #f5576c;
   font-size: 1.5rem;
 }
 
-.service-card p {
+.feature-card p {
   color: #666;
   margin-bottom: 1.5rem;
   line-height: 1.6;
 }
 
-.service-card button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.feature-card button {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -70,10 +70,10 @@
   transition: opacity 0.3s ease;
 }
 
-.service-card button:hover {
+.feature-card button:hover {
   opacity: 0.9;
 }
 
-.service-card button:active {
+.feature-card button:active {
   transform: scale(0.98);
 }

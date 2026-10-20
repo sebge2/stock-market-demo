@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Backend Services" type="CompoundRunConfigurationType" factoryName="Compound">
-    <toRun name="Bank Service" type="MavenRunConfiguration" />
+  <configuration default="false" name="Frontend + Exchange Service" type="CompoundRunConfigurationType" factoryName="Compound">
+    <toRun name="Frontend Exchange" type="js.build_tools.npm" />
     <toRun name="Stock Exchange Service" type="MavenRunConfiguration" />
     <method v="2" />
   </configuration>

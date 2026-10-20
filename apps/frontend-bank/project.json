@@ -1,23 +1,23 @@
 {
-  "name": "frontend",
+  "name": "frontend-bank",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/frontend/src",
+  "sourceRoot": "apps/frontend-bank/src",
   "prefix": "app",
   "targets": {
     "serve": {
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "frontend:build",
+        "buildTarget": "frontend-bank:build",
         "hmr": true,
         "portInUse": "accept"
       },
       "configurations": {
         "development": {
-          "buildTarget": "frontend:build:development"
+          "buildTarget": "frontend-bank:build:development"
         },
         "production": {
-          "buildTarget": "frontend:build:production"
+          "buildTarget": "frontend-bank:build:production"
         }
       }
     },
@@ -27,8 +27,8 @@
         "{options.outputPath}"
       ],
       "options": {
-        "outputPath": "dist/apps/frontend",
-        "configFile": "vite.config.ts"
+        "outputPath": "dist/apps/frontend-bank",
+        "configFile": "vite.config.bank.ts"
       },
       "configurations": {
         "development": {
@@ -60,10 +60,10 @@
       ],
       "options": {
         "lintFilePatterns": [
-          "apps/frontend/src/**/*.ts",
-          "apps/frontend/src/**/*.tsx",
-          "apps/frontend/src/**/*.js",
-          "apps/frontend/src/**/*.jsx"
+          "apps/frontend-bank/src/**/*.ts",
+          "apps/frontend-bank/src/**/*.tsx",
+          "apps/frontend-bank/src/**/*.js",
+          "apps/frontend-bank/src/**/*.jsx"
         ]
       }
     }

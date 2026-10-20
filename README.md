@@ -96,23 +96,29 @@ Application React moderne qui communique avec les services backend :
 ```
 stock-market-demo/
 ├── apps/
-│   └── frontend/                 # React application
+│   ├── frontend-bank/            # React app pour la Banque
+│   │   ├── src/
+│   │   ├── index.html
+│   │   └── project.json
+│   │
+│   └── frontend-exchange/        # React app pour la Bourse
 │       ├── src/
 │       ├── index.html
 │       └── project.json
 │
-├── packages/
-│   ├── bank/                     # Bank microservice (Java/Maven)
-│   │   ├── src/
-│   │   └── pom.xml
-│   │
-│   └── stock-exchange/           # Stock Exchange microservice (Java/Maven)
-│       ├── src/
-│       └── pom.xml
+├── bank/                         # Bank microservice (Java/Maven)
+│   ├── src/
+│   └── pom.xml
+│
+├── stock-exchange/               # Stock Exchange microservice (Java/Maven)
+│   ├── src/
+│   └── pom.xml
 │
 ├── nx.json
 ├── package.json
 ├── tsconfig.base.json
+├── vite.config.bank.ts
+├── vite.config.exchange.ts
 ├── README.md
 ├── AGENTS.md
 └── MONOREPO.md
@@ -135,24 +141,47 @@ npm install
 
 ## 🚀 Lancer l'Application
 
-### Frontend
+### Option 1 : Chaque application séparément
+
+**Frontend Bank**
 ```bash
-npm run dev:frontend
+npm run dev:bank
 # Accès : http://localhost:3000
 ```
 
-### Backend Services
+**Frontend Stock Exchange**
 ```bash
-# Bank Service
-cd packages/bank
+npm run dev:exchange
+# Accès : http://localhost:3001 (ou 3000 si 3001 occupé)
+```
+
+**Bank Service (Java)**
+```bash
+cd bank
 mvn spring-boot:run
 # API : http://localhost:8081/api/bank
+```
 
-# Stock Exchange Service (autre terminal)
-cd packages/stock-exchange
+**Stock Exchange Service (Java)**
+```bash
+cd stock-exchange
 mvn spring-boot:run
 # API : http://localhost:8082/api/exchange
 ```
+
+### Option 2 : Avec npm (frontends uniquement)
+```bash
+npm run dev:all-frontends
+# Lance Bank et Exchange frontends en parallèle
+```
+
+### Option 3 : IntelliJ IDEA (Recommandé)
+Utiliser les launchers IntelliJ pour lancer les services :
+- `Frontend Bank` - React sur port 3000
+- `Frontend Exchange` - React sur port 3001
+- `Bank Service` - Spring Boot sur port 8081
+- `Stock Exchange Service` - Spring Boot sur port 8082
+- Launchers composites pour lancer plusieurs services ensemble
 
 ## 📚 Documentation Supplémentaire
 

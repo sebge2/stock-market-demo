@@ -1,32 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Stock Exchange Service" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
-      <option name="myDOMFormatSettings" />
-      <option name="myExecutionSettings" />
-      <option name="myLocalRepository" />
-      <option name="currentProjectPom" value="$PROJECT_DIR$/packages/stock-exchange/pom.xml" />
-      <option name="ignoreDependencyCheck" value="false" />
+      <option name="myRunnerParameters">
+        <MavenRunnerParameters>
+          <option name="cmdOptions" />
+          <option name="profiles">
+            <set />
+          </option>
+          <option name="goals">
+            <list>
+              <option value="spring-boot:run" />
+            </list>
+          </option>
+          <option name="multimoduleDir" />
+          <option name="pomFileName" />
+          <option name="profilesMap">
+            <map />
+          </option>
+          <option name="projectsCmdOptionValues">
+            <list />
+          </option>
+          <option name="resolveToWorkspace" value="false" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/stock-exchange/backend" />
+        </MavenRunnerParameters>
+      </option>
     </MavenSettings>
-    <method v="2" />
-    <option name="INTERPRETER_OPTIONS" value="" />
-    <option name="EXECUTABLE_NAME" value="mvn" />
-    <option name="INTERPRETER_PATH" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/packages/stock-exchange" />
-    <option name="PARENT_ENVS" value="true" />
-    <envs />
-    <method v="2">
-      <option name="RunConfigurationTask" enabled="true" runConfigurationName="Stock Exchange Service" runConfigurationType="MavenRunConfiguration" DebugAllEnabled="false" />
-    </method>
-    <option name="NAME" value="Stock Exchange Service" />
-    <option name="DESCRIPTION" value="Launches Stock Exchange Service on port 8082" />
-    <option name="ALLOW_EXTERNAL_PROCESSES" value="false" />
-    <option name="TARGET_NOT_NULL" value="false" />
-    <option name="PASS_PARENT_ENVS" value="true" />
-    <option name="PARAMETERS" value="spring-boot:run" />
-    <envs />
     <method v="2" />
   </configuration>
 </component>

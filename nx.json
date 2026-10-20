@@ -41,5 +41,10 @@
         "^build"
       ]
     }
-  }
+  },
+  "analytics": true,
+  "nxCloudId": "6ad7b15a6be2b88de337c7f4",
+  "plugins": [
+    "@nx/maven"
+  ]
 }

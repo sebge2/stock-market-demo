@@ -1,0 +1,12 @@
+{
+  "name": "frontend-bank",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nx dev frontend-bank",
+    "build": "nx build frontend-bank",
+    "preview": "vite preview",
+    "test": "nx test frontend-bank",
+    "lint": "nx lint frontend-bank"
+  }
+}

@@ -1,4 +1,18 @@
+# Frontend
+node_modules/
+package-lock.json
+yarn.lock
+dist/
+build/
+coverage/
+
+# Java/Maven
 target/
+*.class
+*.jar
+*.war
+*.nar
+/mvn*
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -6,12 +20,47 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
-.mvn/timing.properties
-# https://maven.apache.org/tools/wrapper/#Usage_with_or_without_Binary_JAR
-.mvn/wrapper/maven-wrapper.jar
+.mvn/
+.mvnrc
 
-# Eclipse m2e generated files
-# Eclipse Core
-.project
-# JDT-specific (Eclipse Java Development Tools)
+# IDE
+.idea/*
+!.idea/runConfigurations/
+!.idea/.gitignore
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-workspace
+*.sublime-project
+*.iml
+*.iws
+*.ipr
 .classpath
+.project
+.settings/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+.cache/
+
+# Nx
+.nx/cache
+.nx/workspace-data

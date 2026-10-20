@@ -1,0 +1,12 @@
+{
+  "name": "frontend-exchange",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nx dev frontend-exchange",
+    "build": "nx build frontend-exchange",
+    "preview": "vite preview",
+    "test": "nx test frontend-exchange",
+    "lint": "nx lint frontend-exchange"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "frontend-exchange",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "stock-exchange/front/src",
+  "prefix": "app",
+  "targets": {
+    "serve": {
+      "executor": "@nx/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "frontend-exchange:build",
+        "hmr": true,
+        "portInUse": "accept"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "frontend-exchange:build:development"
+        },
+        "production": {
+          "buildTarget": "frontend-exchange:build:production"
+        }
+      }
+    },
+    "build": {
+      "executor": "@nx/vite:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/stock-exchange/front",
+        "configFile": "stock-exchange/front/vite.config.ts"
+      },
+      "configurations": {
+        "development": {
+          "sourceMap": true
+        },
+        "production": {
+          "sourceMap": false,
+          "extractLicenses": true,
+          "namedChunks": false,
+          "vendorChunk": false,
+          "buildLibsFromSource": false
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "watch": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "stock-exchange/front/src/**/*.ts",
+          "stock-exchange/front/src/**/*.tsx",
+          "stock-exchange/front/src/**/*.js",
+          "stock-exchange/front/src/**/*.jsx"
+        ]
+      }
+    }
+  }
+}

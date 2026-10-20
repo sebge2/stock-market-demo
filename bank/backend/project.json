@@ -1,0 +1,44 @@
+{
+  "name": "backend-bank",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "bank/backend/src",
+  "projectType": "library",
+  "prefix": "app",
+  "targets": {
+    "build": {
+      "executor": "@nx/maven:build",
+      "options": {
+        "outputPath": "dist/bank/backend"
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mvn spring-boot:run",
+        "cwd": "bank/backend"
+      },
+      "configurations": {
+        "development": {
+          "command": "mvn spring-boot:run",
+          "cwd": "bank/backend"
+        },
+        "production": {
+          "command": "mvn spring-boot:run -Dspring-boot.run.arguments='--spring.profiles.active=prod'",
+          "cwd": "bank/backend"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nx/maven:test",
+      "options": {}
+    },
+    "lint": {
+      "executor": "@nx/maven:lint",
+      "options": {}
+    }
+  },
+  "tags": [
+    "type:backend",
+    "scope:bank"
+  ]
+}

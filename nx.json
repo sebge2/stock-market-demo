@@ -1,0 +1,49 @@
+{
+  "extends": "nx/presets/npm.json",
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "npmScope": "stock-market",
+  "sourceRoot": ".",
+  "projectNameAndRootFormat": "as-provided",
+  "affected": {
+    "defaultBase": "main"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "build",
+          "test",
+          "lint"
+        ]
+      }
+    }
+  },
+  "targetDefaults": {
+    "build": {
+      "cache": true,
+      "dependsOn": [
+        "^build"
+      ]
+    },
+    "test": {
+      "cache": true,
+      "inputs": [
+        "default",
+        "^default"
+      ]
+    },
+    "lint": {
+      "cache": true
+    },
+    "serve": {
+      "dependsOn": [
+        "^build"
+      ]
+    }
+  },
+  "plugins": [
+    "@nx/maven"
+  ],
+  "analytics": true
+}

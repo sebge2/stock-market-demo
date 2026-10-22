@@ -3,16 +3,18 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "stock-exchange/backend/user-service",
   "targets": {
-    "dev": {
+    "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd stock-exchange/backend/user-service && mvn spring-boot:run"
+        "command": "mvn spring-boot:run",
+        "cwd": "stock-exchange/backend/user-service"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "cd stock-exchange/backend/user-service && mvn clean package"
+        "command": "mvn clean package",
+        "cwd": "stock-exchange/backend/user-service"
       }
     }
   },

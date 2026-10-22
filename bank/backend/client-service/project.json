@@ -1,0 +1,34 @@
+{
+  "name": "client-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "bank/backend/client-service/src",
+  "projectType": "library",
+  "prefix": "app",
+  "tags": [
+    "type:backend",
+    "scope:bank",
+    "type:microservice"
+  ],
+  "targets": {
+    "build": {
+      "executor": "@nx/maven:build",
+      "options": {},
+      "configurations": {
+        "production": {
+          "args": "-DskipTests"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mvn spring-boot:run",
+        "cwd": "bank/backend/client-service"
+      }
+    },
+    "test": {
+      "executor": "@nx/maven:test",
+      "options": {}
+    }
+  }
+}

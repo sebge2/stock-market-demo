@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All Backends" type="CompoundRunConfigurationType" factoryName="Compound">
-    <toRun name="Backend Bank" type="js.build_tools.npm" />
     <toRun name="Backend Exchange" type="js.build_tools.npm" />
+    <toRun name="All Microservices" type="CompoundRunConfigurationType" />
     <method v="2" />
   </configuration>
 </component>

@@ -19,12 +19,11 @@ Frontend (React)
 └── stock-exchange/front    (Port 3001)
 
 Backend Services
-├── bank/backend/
+├── bank/backend/           (Microservices)
 │   ├── user-service        (Port 8083)
 │   ├── client-service      (Port 8084)
 │   └── portfolio-service   (Port 8085)
-├── stock-exchange/         (Port 8082)
-└── Main Bank Service       (Port 8081)
+└── stock-exchange/         (Port 8082)
 ```
 
 ## 🚀 Stack Technologique
@@ -38,14 +37,13 @@ Backend Services
 | **Build Backend** | Maven | 3.9+ |
 | **Database** | H2 | Embedded |
 
-## 📂 Projets Nx (7 Total)
+## 📂 Projets Nx (6 Total)
 
 ### Frontends (2)
 - **frontend-bank** - Bank UI (port 3000)
 - **frontend-exchange** - Exchange UI (port 3001)
 
-### Backends (5)
-- **backend-bank** - Bank main service (port 8081)
+### Backends (4)
 - **backend-exchange** - Exchange service (port 8082)
 - **user-service** - User management microservice (port 8083)
 - **client-service** - Client account microservice (port 8084)
@@ -61,19 +59,17 @@ npm run dev:exchange           # Frontend Exchange (3001)
 
 ### Option 2: Backends Séparément
 ```bash
-npm run dev:backend:bank       # Bank service (8081)
 npm run dev:backend:exchange   # Exchange service (8082)
 npm run dev:microservices      # Tous microservices (8083-8085)
 ```
 
 ### Option 3: Tout en Parallèle
 ```bash
-npm run dev:all                # Tous les services (7)
+npm run dev:all                # Tous les services (6)
 ```
 
 ### Option 4: Depuis chaque dossier
 ```bash
-cd bank && mvn spring-boot:run           # Port 8081
 cd stock-exchange && mvn spring-boot:run # Port 8082
 cd bank/backend/user-service && mvn spring-boot:run     # Port 8083
 cd bank/backend/client-service && mvn spring-boot:run   # Port 8084
@@ -86,8 +82,7 @@ cd bank/backend/portfolio-service && mvn spring-boot:run # Port 8085
 - **Frontend Bank** → Port 3000
 - **Frontend Exchange** → Port 3001
 
-### Backends
-- **Backend Bank** → Port 8081
+### Backend
 - **Backend Exchange** → Port 8082
 
 ### Microservices
@@ -97,8 +92,8 @@ cd bank/backend/portfolio-service && mvn spring-boot:run # Port 8085
 - **All Microservices** → Tous 3 en parallèle
 
 ### Groupés
-- **All Backends** → Bank + Exchange
-- **All Services** → Tous les 7 services
+- **All Backends** → Exchange + tous microservices
+- **All Services** → Tous les 6 services
 
 ## 📍 Endpoints
 
@@ -106,7 +101,6 @@ cd bank/backend/portfolio-service && mvn spring-boot:run # Port 8085
 |---------|------|----------|-----------|
 | Frontend Bank | 3000 | http://localhost:3000 | - |
 | Frontend Exchange | 3001 | http://localhost:3001 | - |
-| Bank Service | 8081 | /api/bank | /api/bank/h2-console |
 | Exchange Service | 8082 | /api/exchange | /api/exchange/h2-console |
 | User Service | 8083 | /api/user | /api/user/h2-console |
 | Client Service | 8084 | /api/client | /api/client/h2-console |

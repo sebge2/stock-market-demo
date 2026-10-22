@@ -1,7 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Frontend + Exchange Service" type="CompoundRunConfigurationType">
-    <toRun name="Stock Exchange Service" type="MavenRunConfiguration" />
-    <toRun name="Frontend Exchange" type="js.build_tools.npm" />
-    <method v="2" />
-  </configuration>
-</component>

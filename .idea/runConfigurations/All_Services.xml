@@ -4,6 +4,7 @@
     <toRun name="Frontend Exchange" type="js.build_tools.npm" />
     <toRun name="Backend Exchange" type="js.build_tools.npm" />
     <toRun name="All Microservices" type="CompoundRunConfigurationType" />
+    <toRun name="Exchange Microservices" type="CompoundRunConfigurationType" />
     <method v="2" />
   </configuration>
 </component>

@@ -1,0 +1,20 @@
+{
+  "name": "exchange-user-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "stock-exchange/backend/user-service",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd stock-exchange/backend/user-service && mvn spring-boot:run"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "cd stock-exchange/backend/user-service && mvn clean package"
+      }
+    }
+  },
+  "tags": ["type:backend", "platform:java", "scope:exchange"]
+}

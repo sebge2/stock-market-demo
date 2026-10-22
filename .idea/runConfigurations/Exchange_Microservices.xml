@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Exchange Microservices" type="CompoundRunConfigurationType" factoryName="Compound">
+    <toRun name="Exchange User Service" type="js.build_tools.npm" />
+    <toRun name="Exchange Company Service" type="js.build_tools.npm" />
+    <method v="2" />
+  </configuration>
+</component>

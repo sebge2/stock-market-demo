@@ -2,7 +2,7 @@
 name: issue-reviewer
 description: Review une issue GitHub In Review - merge la PR et passe en done si OK, sinon retour en ready, ou blocked après 3 refus
 type: general-purpose
-model: claude-opus-5-5
+model: claude-sonnet-5-5
 tools:
   - Bash
   - Read

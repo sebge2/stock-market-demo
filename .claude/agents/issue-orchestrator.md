@@ -2,7 +2,7 @@
 name: issue-orchestrator
 description: Orchestre les issues GitHub - appelle issue-reviewer pour les issues In Review, issue-developer pour les issues Ready, ignore les Blocked, et reboucle
 type: general-purpose
-model: claude-opus-5-5
+model: claude-haiku-4-5-20251001
 tools:
   - Bash
   - Read

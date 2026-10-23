@@ -1,0 +1,56 @@
+name: Automated Ticket Workflow
+
+on:
+  # Lancer automatiquement toutes les heures
+  schedule:
+    - cron: '0 * * * *'
+
+  # Ou manuellement
+  workflow_dispatch:
+
+  # Sur nouveaux tickets Ready
+  issues:
+    types: [labeled, opened]
+
+  # Sur nouveaux PRs
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  orchestrate:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Git
+        run: |
+          git config --global user.name "GitHub Bot"
+          git config --global user.email "bot@github.com"
+
+      - name: Run Orchestrator
+        env:
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+        run: |
+          chmod +x scripts/workflow-orchestrator.sh
+          ./scripts/workflow-orchestrator.sh
+
+      - name: Debug Info
+        if: failure()
+        run: |
+          echo "Workflow failed - check logs above"
+          echo "Repository: ${{ github.repository }}"
+          echo "Event: ${{ github.event_name }}"

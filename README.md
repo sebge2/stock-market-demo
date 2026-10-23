@@ -1,197 +1,147 @@
 # Stock Market Demo 📈
 
-Une application de démonstration pour tester les technologies modernes en créant un écosystème financier complet avec **Java backend** et **React frontend**.
+Une application de démonstration pour tester les technologies modernes en créant un écosystème financier complet avec **architecture microservices Java**, **React frontend**, et **Nx monorepo**.
 
 ## 🎯 Objectif
 
 Créer un environnement sandbox pour explorer et expérimenter les meilleures pratiques en matière de :
-- Architecture microservices (Java Spring Boot)
-- Frontend moderne (React + TypeScript)
+- Architecture microservices (Java 21 + Spring Boot 3.2)
+- Frontend moderne (React 18 + TypeScript + Vite)
 - Intégration backend/frontend
 - Gestion des données financières
 - Monorepo avec Nx
 
-## 🏗️ Architecture
-
-### Backend (Java 21 + Spring Boot 3.2)
-Deux services microservices indépendants :
-
-#### 1. **Bank Service** 🏦
-- Gestion des comptes clients
-- Soldes et portefeuilles
-- Validation des opérations
-- Historique des transactions
-- **Port :** 8081
-- **Context Path :** `/api/bank`
-
-#### 2. **Stock Exchange Service** 📊
-- Gestion des listes de valeurs
-- Cotation des actions
-- Exécution des ordres
-- Historique des prix
-- **Port :** 8082
-- **Context Path :** `/api/exchange`
-
-### Frontend (React 18 + TypeScript + Vite)
-Application React moderne qui communique avec les services backend :
-- Dashboard centralisé
-- Gestion de portefeuille
-- Affichage des cotations
-- Historique des transactions
-- **Port :** 3000
-
-## 📊 Architecture Générale
+## 🏗️ Architecture Globale
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     Frontend (React)                        │
-│                      Port 3000                              │
-└──────────────────┬────────────────────────────────────────┘
-                   │
-        ┌──────────┴──────────┐
-        │                     │
-┌───────▼────────┐  ┌─────────▼──────────┐
-│  Bank Service  │  │ Stock Exchange     │
-│  (Port 8081)   │  │ (Port 8082)        │
-│  Spring Boot   │  │ Spring Boot        │
-│  Java 21       │  │ Java 21            │
-└────────────────┘  └────────────────────┘
+Frontend (React)
+├── bank/front              (Port 3000)
+└── stock-exchange/front    (Port 3001)
+
+Backend Microservices
+├── bank/backend/
+│   ├── user-service        (Port 8083)
+│   ├── client-service      (Port 8084)
+│   └── portfolio-service   (Port 8085)
+└── stock-exchange/backend/
+    ├── user-service        (Port 8086)
+    └── company-service     (Port 8087)
 ```
 
 ## 🚀 Stack Technologique
 
 | Couche | Technologie | Version |
 |--------|-------------|---------|
-| **Frontend** | React | 18.2+ |
+| **Frontend** | React + TypeScript | 18.2+, 5.3+ |
 | **Frontend Build** | Vite | 5.0+ |
-| **Frontend Lang** | TypeScript | 5.3+ |
-| **Monorepo** | Nx | 18.0+ |
-| **Backend** | Java | 21 (LTS) |
-| **Framework Backend** | Spring Boot | 3.2.0 |
+| **Monorepo** | Nx | 19.0+ |
+| **Backend Services** | Java + Spring Boot | 21, 3.2.0 |
 | **Build Backend** | Maven | 3.9+ |
-| **DB Demo** | H2 | Embedded |
+| **Database** | H2 | Embedded |
 
-## 📋 Fonctionnalités Clés
+## 📂 Projets Nx (7 Total)
 
-### Phase 1 (Setup) ✅
-- [x] Structure monorepo avec Nx
-- [x] Services Java avec Spring Boot
-- [x] Frontend React de base
-- [ ] Connexion Frontend ↔ Backend
+### Frontends (2)
+- **frontend-bank** - Bank UI (port 3000)
+- **frontend-exchange** - Exchange UI (port 3001)
 
-### Phase 2 (Développement)
-- [ ] API Bank (gestion de comptes)
-- [ ] API Stock Exchange (gestion de titres)
-- [ ] UI Dashboard
-- [ ] Authentification
+### Microservices Bank (3)
+- **user-service** - User management (port 8083)
+- **client-service** - Client accounts (port 8084)
+- **portfolio-service** - Portfolio management (port 8085)
 
-### Phase 3 (Intégration)
-- [ ] Communication Frontend-Backend
-- [ ] WebSocket pour les cotations en temps réel
-- [ ] Cache et optimisations
-- [ ] Tests intégrés
-
-## 📂 Structure du Projet
-
-```
-stock-market-demo/
-├── bank/                         # Service Bank complet
-│   ├── front/                    # React Frontend
-│   │   ├── src/
-│   │   ├── index.html
-│   │   └── project.json
-│   ├── backend/                  # Backend Java
-│   │   ├── src/
-│   │   │   ├── main/
-│   │   │   └── test/
-│   │   └── README.md
-│   ├── pom.xml
-│   └── README.md
-│
-├── stock-exchange/               # Service Stock Exchange complet
-│   ├── front/                    # React Frontend
-│   │   ├── src/
-│   │   ├── index.html
-│   │   └── project.json
-│   ├── backend/                  # Backend Java
-│   │   ├── src/
-│   │   │   ├── main/
-│   │   │   └── test/
-│   │   └── README.md
-│   ├── pom.xml
-│   └── README.md
-│
-├── nx.json
-├── package.json
-├── tsconfig.base.json
-├── README.md
-├── AGENTS.md
-└── MONOREPO.md
-```
-
-## 🛠️ Installation
-
-### Prérequis
-- **Node.js** 18+ (pour npm et le frontend)
-- **Java 21** (LTS)
-- **Maven 3.9+**
-- **Git**
-
-### Setup
-
-```bash
-# Installer les dépendances frontend/Nx
-npm install
-```
+### Microservices Exchange (2)
+- **exchange-user-service** - User management (port 8086)
+- **exchange-company-service** - Company listings (port 8087)
 
 ## 🚀 Lancer l'Application
 
-### Option 1 : Chaque application séparément
-
-**Frontend Bank**
+### Option 1: Frontends Séparément
 ```bash
-npm run dev:bank
-# Accès : http://localhost:3000
+npm run dev:bank               # Frontend Bank (3000)
+npm run dev:exchange           # Frontend Exchange (3001)
 ```
 
-**Frontend Stock Exchange**
+### Option 2: Microservices Séparément
 ```bash
-npm run dev:exchange
-# Accès : http://localhost:3001 (ou 3000 si 3001 occupé)
+npm run dev:microservices           # Bank microservices (8083-8085)
+npm run dev:exchange-microservices  # Exchange microservices (8086-8087)
 ```
 
-**Bank Service (Java)**
+### Option 3: Tout en Parallèle
 ```bash
-cd bank
-mvn spring-boot:run
-# API : http://localhost:8081/api/bank
+npm run dev:all                # Tous les services (7)
 ```
 
-**Stock Exchange Service (Java)**
+### Option 4: Depuis chaque dossier
 ```bash
-cd stock-exchange
-mvn spring-boot:run
-# API : http://localhost:8082/api/exchange
+cd bank/backend/user-service && mvn spring-boot:run            # Port 8083
+cd bank/backend/client-service && mvn spring-boot:run          # Port 8084
+cd bank/backend/portfolio-service && mvn spring-boot:run       # Port 8085
+cd stock-exchange/backend/user-service && mvn spring-boot:run  # Port 8086
+cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 ```
 
-### Option 2 : Avec npm (frontends uniquement)
-```bash
-npm run dev:all-frontends
-# Lance Bank et Exchange frontends en parallèle
-```
+## 🎮 IntelliJ Launchers
 
-### Option 3 : IntelliJ IDEA (Recommandé)
-Utiliser les launchers IntelliJ pour lancer les services :
-- `Frontend Bank` - React sur port 3000
-- `Frontend Exchange` - React sur port 3001
-- `Bank Service` - Spring Boot sur port 8081
-- `Stock Exchange Service` - Spring Boot sur port 8082
-- Launchers composites pour lancer plusieurs services ensemble
+### Frontends
+- **Frontend Bank** → Port 3000
+- **Frontend Exchange** → Port 3001
+
+
+### Bank Microservices
+- **User Service** → Port 8083
+- **Client Service** → Port 8084
+- **Portfolio Service** → Port 8085
+- **All Microservices** → Tous 3 en parallèle
+
+### Exchange Microservices
+- **Exchange User Service** → Port 8086
+- **Exchange Company Service** → Port 8087
+- **Exchange Microservices** → Tous 2 en parallèle
+
+### Groupés
+- **All Backends** → Tous microservices (5 services)
+- **All Services** → Tous les 7 services
+
+## 📍 Endpoints
+
+| Service | Port | Endpoint | H2 Console |
+|---------|------|----------|-----------|
+| Frontend Bank | 3000 | http://localhost:3000 | - |
+| Frontend Exchange | 3001 | http://localhost:3001 | - |
+| Bank User Service | 8083 | /api/user | /api/user/h2-console |
+| Bank Client Service | 8084 | /api/client | /api/client/h2-console |
+| Bank Portfolio Service | 8085 | /api/portfolio | /api/portfolio/h2-console |
+| Exchange User Service | 8086 | /api/user | /api/user/h2-console |
+| Exchange Company Service | 8087 | /api/company | /api/company/h2-console |
+
+## 📦 Commandes Nx Utiles
+
+```bash
+# Voir tous les projets
+nx show projects
+
+# Voir le graphique des dépendances
+nx graph
+
+# Lancer un projet spécifique
+nx serve frontend-bank
+nx serve user-service
+
+# Lancer plusieurs projets
+nx run-many --target=serve --projects=user-service,client-service,portfolio-service
+
+# Build tous les projets
+nx run-many --target=build --all
+```
 
 ## 📚 Documentation Supplémentaire
 
-- [AGENTS.md](./AGENTS.md) - Description des agents et architecture métier
-- [MONOREPO.md](./MONOREPO.md) - Guide complet du monorepo Nx
+- [MONOREPO.md](MONOREPO.md) - Guide complet du monorepo Nx
+- [INTELLIJ_SETUP.md](INTELLIJ_SETUP.md) - Configuration IntelliJ
+- [AGENTS.md](AGENTS.md) - Architecture métier et rôles
+- Voir les README dans chaque répertoire pour des détails spécifiques
 
 ## 👤 Auteur
 

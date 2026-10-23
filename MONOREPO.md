@@ -1,318 +1,394 @@
 # Monorepo Structure avec Nx 📦
 
-Documentation de la structure et de l'organisation du monorepo Stock Market Demo utilisant **Nx** pour le frontend et **Maven** pour les services Java.
+Documentation de la structure et de l'organisation du monorepo Stock Market Demo utilisant **Nx** pour gérer frontend ET backend avec Maven.
 
 ## 📁 Structure du Projet
 
 ```
 stock-market-demo/
-├── apps/
-│   └── frontend/                  # React + TypeScript application
-│       ├── src/
-│       │   ├── App.tsx           # Composant principal
-│       │   ├── App.css
-│       │   ├── main.tsx          # Point d'entrée
-│       │   └── style.css
-│       ├── index.html            # HTML racine
-│       ├── project.json          # Config Nx du projet
-│       ├── package.json
-│       ├── tsconfig.json
-│       ├── tsconfig.app.json
-│       └── tsconfig.spec.json
 │
-├── packages/
-│   ├── bank/                     # Service Banque (Java/Spring Boot)
+├── bank/                         Service Bank complet
+│   ├── front/                    React Frontend (Nx-managed)
+│   │   ├── src/
+│   │   │   ├── App.tsx
+│   │   │   ├── main.tsx
+│   │   │   └── style.css
+│   │   ├── vite.config.ts        Vite configuration
+│   │   ├── tsconfig.json
+│   │   ├── project.json          Nx configuration
+│   │   ├── index.html
+│   │   └── README.md
+│   │
+│   ├── backend/                  Java Spring Boot Backend (Nx-managed via Maven)
 │   │   ├── src/
 │   │   │   ├── main/
 │   │   │   │   ├── java/com/stockmarket/bank/
 │   │   │   │   │   └── BankApplication.java
 │   │   │   │   └── resources/
 │   │   │   │       └── application.yml
-│   │   │   └── test/java/...
-│   │   ├── pom.xml               # Maven POM
+│   │   │   └── test/
+│   │   ├── project.json          Nx configuration (Maven integration)
 │   │   └── README.md
 │   │
-│   └── stock-exchange/           # Service Bourse (Java/Spring Boot)
-│       ├── src/
-│       │   ├── main/
-│       │   │   ├── java/com/stockmarket/exchange/
-│       │   │   │   └── StockExchangeApplication.java
-│       │   │   └── resources/
-│       │   │       └── application.yml
-│       │   └── test/java/...
-│       ├── pom.xml               # Maven POM
-│       └── README.md
+│   ├── pom.xml                   Maven POM for backend
+│   └── README.md
 │
-├── nx.json                       # Configuration Nx workspace
-├── package.json                  # Dependencies npm (Frontend)
-├── tsconfig.base.json            # Config TypeScript partagée
-├── vite.config.ts               # Config Vite
-├── jest.preset.js               # Config Jest
-├── README.md                     # Documentation principale
-├── AGENTS.md                     # Architecture métier
-├── MONOREPO.md                   # Ce fichier
-└── .gitignore
+│
+├── stock-exchange/               Service Stock Exchange complet
+│   ├── front/                    React Frontend (Nx-managed)
+│   │   ├── src/
+│   │   │   ├── App.tsx
+│   │   │   ├── main.tsx
+│   │   │   └── style.css
+│   │   ├── vite.config.ts        Vite configuration
+│   │   ├── tsconfig.json
+│   │   ├── project.json          Nx configuration
+│   │   ├── index.html
+│   │   └── README.md
+│   │
+│   ├── backend/                  Java Spring Boot Backend (Nx-managed via Maven)
+│   │   ├── src/
+│   │   │   ├── main/
+│   │   │   │   ├── java/com/stockmarket/exchange/
+│   │   │   │   │   └── StockExchangeApplication.java
+│   │   │   │   └── resources/
+│   │   │   │       └── application.yml
+│   │   │   └── test/
+│   │   ├── project.json          Nx configuration (Maven integration)
+│   │   └── README.md
+│   │
+│   ├── pom.xml                   Maven POM for backend
+│   └── README.md
+│
+│
+└── Configuration & Documentation racine
+    ├── nx.json                   Nx workspace config (with Maven plugin)
+    ├── package.json              NPM dependencies + scripts
+    ├── tsconfig.base.json        Base TypeScript config
+    ├── .npmrc                    NPM configuration
+    ├── README.md                 Project overview
+    ├── AGENTS.md                 Architecture & roles
+    ├── MONOREPO.md               This file
+    ├── INTELLIJ_SETUP.md         IntelliJ configuration
+    └── .gitignore
 ```
 
 ## 🎯 Concepts Clés
 
 ### Frontend (Géré par Nx)
-- **Location** : `apps/frontend/`
-- **Technology** : React + TypeScript + Vite
-- **Build Tool** : Nx + Vite
-- **Package Manager** : npm/yarn
+- **Locations**: `bank/front/`, `stock-exchange/front/`
+- **Technology**: React 18+ + TypeScript + Vite
+- **Build Tool**: Nx + Vite
+- **Package Manager**: npm
+- **Projects**: `frontend-bank`, `frontend-exchange`
 
-### Backend Services (Indépendants)
-- **Location** : `packages/bank/` et `packages/stock-exchange/`
-- **Technology** : Java 21 + Spring Boot 3.2
-- **Build Tool** : Maven
-- **Package Manager** : Maven Central
+### Backend (Géré par Nx via Maven)
+- **Locations**: `bank/backend/`, `stock-exchange/backend/`
+- **Technology**: Java 21 + Spring Boot 3.2 + Maven 3.9+
+- **Build Tool**: Maven (via Nx integration)
+- **Package Manager**: Maven Central
+- **Projects**: `backend-bank`, `backend-exchange`
 
 ## 🚀 Installation et Démarrage
 
-### Installation des dépendances
+### Installation des Dépendances
 
 ```bash
-# Installer les dépendances frontend/Nx
+# Installer toutes les dépendances (npm + Maven via Nx)
 npm install
-
-# Les services Java utilisent Maven, aucune installation npm nécessaire
 ```
 
-### Développement
+### Lancer les Applications
 
-#### Frontend
+#### Frontend Uniquement
 
 ```bash
-# Dev mode avec hot reload
-npm run dev:frontend
+# Bank Frontend seul
+npm run dev:bank
+# ou
+nx serve frontend-bank
 
-# Build production
-npm run build:frontend
+# Exchange Frontend seul
+npm run dev:exchange
+# ou
+nx serve frontend-exchange
 
-# Lint
-npm run lint:frontend
-
-# Tests
-npm run test:frontend
+# Les deux frontends en parallèle
+npm run dev:all-frontends
 ```
 
-#### Backend Services
+#### Backend Uniquement
 
 ```bash
-# Bank Service
-cd packages/bank
-mvn spring-boot:run          # Port 8081
+# Bank Backend seul
+npm run dev:backend:bank
+# ou
+nx serve backend-bank
 
-# Stock Exchange Service
-cd packages/stock-exchange
-mvn spring-boot:run          # Port 8082
+# Exchange Backend seul
+npm run dev:backend:exchange
+# ou
+nx serve backend-exchange
+
+# Les deux backends en parallèle
+npm run dev:all-backends
 ```
 
-### Build Complet
+#### Tous les Services
 
 ```bash
+# Lance tous les services (4 au total)
+npm run dev:all
+# ou
+nx run-many --target=serve --all --parallel
+```
+
+### Build
+
+```bash
+# Build tous les projets
+npm run build
+
 # Build frontend uniquement
-npm run build:frontend
+npm run build:bank
+npm run build:exchange
 
-# Pour les services Java, se placer dans chaque dossier
-cd packages/bank
-mvn clean package
-# JAR généré : target/bank-0.1.0.jar
-
-cd packages/stock-exchange
-mvn clean package
-# JAR généré : target/stock-exchange-0.1.0.jar
+# Build backend uniquement
+npm run build:backend:bank
+npm run build:backend:exchange
 ```
 
-## 📋 Commandes Nx Utiles
-
-### Serve et Build
+### Tests
 
 ```bash
-# Serveur de développement frontend
-nx serve frontend
+# Test tous les projets
+npm run test
 
-# Build frontend
-nx build frontend
+# Test frontend
+npm run test:bank
+npm run test:exchange
 
-# Visualiser le graphique des dépendances
-nx graph
+# Test backend
+npm run test:backend:bank
+npm run test:backend:exchange
+```
 
-# Voir l'état du cache
+### Lint
+
+```bash
+# Lint tous les projets
+npm run lint
+
+# Lint frontend
+npm run lint:bank
+npm run lint:exchange
+
+# Lint backend
+npm run lint:backend:bank
+npm run lint:backend:exchange
+```
+
+## 📊 Projets Nx
+
+### Reconnaissance par Nx
+
+```bash
 nx show projects
+# Output:
+# ["backend-bank", "backend-exchange", "frontend-bank", "frontend-exchange"]
 ```
 
-### Affected Commands
+### Voir le Graph de Dépendances
 
 ```bash
-# Build uniquement les projets modifiés
+nx graph
+# Ouvre un navigateur avec le graphique complet
+```
+
+## 🔗 Dépendances Entre Services
+
+### Architecture
+
+```
+Frontend Bank ──→ Bank API (port 8081)
+Frontend Exchange ──→ Exchange API (port 8082)
+
+Bank API ←────────────────────────→ Exchange API (optionnel)
+```
+
+### API Communication
+
+**Frontend vers Backend**:
+```typescript
+// Frontend Bank calls Bank Service
+const response = await fetch('http://localhost:8081/api/bank/accounts');
+
+// Frontend Exchange calls Exchange Service
+const response = await fetch('http://localhost:8082/api/exchange/stocks');
+```
+
+## 🛠️ Ajouter un Nouveau Service
+
+### Créer un nouveau service complet
+
+1. **Créer la structure**:
+```bash
+mkdir -p new-service/front/src
+mkdir -p new-service/backend/src/{main,test}
+```
+
+2. **Copier les configurations**:
+```bash
+cp bank/front/project.json new-service/front/
+cp bank/front/vite.config.ts new-service/front/
+cp bank/front/tsconfig.json new-service/front/
+cp bank/backend/project.json new-service/backend/
+cp bank/pom.xml new-service/
+```
+
+3. **Mettre à jour les paths**:
+   - Dans `project.json` files
+   - Dans `pom.xml`
+   - Dans `vite.config.ts`
+
+4. **Nx reconnaît automatiquement le nouveau service**
+
+## 🎯 Commandes Utiles
+
+### Commandes Affected (Builds Optimisés)
+
+```bash
+# Build uniquement ce qui a changé depuis main
 npm run affected:build
 
-# Test uniquement les projets modifiés
+# Test uniquement ce qui a changé
 npm run affected:test
 
-# Lint uniquement les projets modifiés
+# Lint uniquement ce qui a changé
 npm run affected:lint
 ```
 
-## 🏗️ Configuration
-
-### nx.json
-Configuration du workspace Nx :
-- `npmScope` : "@stock-market"
-- `affected.defaultBase` : "main"
-- `tasksRunnerOptions` : Cache et parallelization
-
-### Frontend (apps/frontend/)
-
-**project.json** - Définit les targets :
-- `serve` : Lancer le dev server (port 3000)
-- `build` : Build production
-- `test` : Jest tests
-- `lint` : ESLint
-
-**tsconfig.json** - Configuration TypeScript
-
-**vite.config.ts** - Configuration Vite
-
-### Backend (packages/bank/, packages/stock-exchange/)
-
-**pom.xml** - Configuration Maven :
-- Parent : spring-boot-starter-parent 3.2.0
-- Dependencies : Spring Web, Data JPA, etc.
-- Plugins : spring-boot-maven-plugin
-- Java Version : 21
-
-**application.yml** - Configuration Spring Boot :
-- Port (8081/8082)
-- Database (H2 in-memory)
-- Logging level
-
-## 📦 Ajouter un Nouveau Package Frontend
+### Inspections
 
 ```bash
-# Créer la structure avec Nx
-npx nx generate @nx/react:app my-new-app
+# Voir tous les projets
+nx show projects
 
-# Ou manuellement :
-mkdir -p apps/my-new-app/src
-cp apps/frontend/project.json apps/my-new-app/
-cp apps/frontend/package.json apps/my-new-app/
-cp apps/frontend/tsconfig*.json apps/my-new-app/
+# Voir les configurations d'un projet
+nx show project frontend-bank
+
+# Voir les cibles disponibles
+nx list
+
+# Vérifier les dépendances
+nx dep-graph
 ```
 
-## 📦 Ajouter un Nouveau Service Java
+## 🧠 Concepts Nx
+
+### Caching
+- Nx cache les builds et tests
+- Les tâches identiques ne sont pas relancées
+- Cache invalidé si le code source change
+
+### Parallelization
+- Nx exécute les tâches en parallèle quand possible
+- `nx run-many` peut lancer plusieurs tâches sur plusieurs projets
+- `npm run dev:all` lance 4 services simultanément
+
+### Dependency Graph
+- Nx calcule automatiquement les dépendances
+- `nx graph` visualise les relations
+- Utilisé pour les commandes `affected`
+
+## 📦 Gestion des Dépendances
+
+### Frontend (npm)
+```bash
+npm install @package/name
+npm install -D @package/dev-name
+```
+
+### Backend (Maven)
+```bash
+# Éditer pom.xml et ajouter la dépendance directement
+# Puis:
+mvn dependency:resolve
+```
+
+## 🚢 Déploiement
+
+### Build Production
 
 ```bash
-# Créer la structure
-mkdir -p packages/my-service/src/main/java/com/stockmarket/myservice
-mkdir -p packages/my-service/src/main/resources
+# Frontend
+npm run build:bank
+npm run build:exchange
+# Output: dist/bank/front/, dist/stock-exchange/front/
 
-# Copier les fichiers de configuration
-cp packages/bank/pom.xml packages/my-service/
-cp packages/bank/src/main/resources/application.yml packages/my-service/src/main/resources/
-
-# Éditer le pom.xml : changer l'artifactId et la description
-# Créer MyServiceApplication.java en suivant BankApplication.java
+# Backend
+npm run build:backend:bank
+npm run build:backend:exchange
+# Output: dist/bank/backend/, dist/stock-exchange/backend/
 ```
 
-## 🔗 Communication Entre Services
+### Docker (optionnel)
 
-### Frontend ↔ Backend
+Chaque service peut avoir son Dockerfile:
+```dockerfile
+# bank/Dockerfile
+FROM node:20 AS builder
+WORKDIR /app
+COPY . .
+RUN npm install && npm run build:bank
 
-```typescript
-// Exemple en React
-const response = await fetch('http://localhost:8081/api/bank/accounts');
-const data = await response.json();
+FROM node:20
+COPY --from=builder /app/dist/bank/front /app
+CMD ["npm", "serve"]
 ```
 
-### Backend ↔ Backend (Optional)
+## 📚 Ressources
 
-Utiliser RestTemplate ou WebClient en Spring pour communiquer entre services :
+- [Nx Documentation](https://nx.dev)
+- [Maven Documentation](https://maven.apache.org)
+- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
+- [React Documentation](https://react.dev)
+- [Vite Documentation](https://vitejs.dev)
 
-```java
-// Dans BankApplication.java ou Stock Exchange
-RestTemplate restTemplate = new RestTemplate();
-String response = restTemplate.getForObject(
-  "http://localhost:8082/api/exchange/prices",
-  String.class
-);
-```
+## 🆘 Troubleshooting
 
-## 🎯 Avantages de cette Architecture
-
-### Nx (Frontend)
-- ✅ Build cache
-- ✅ Affected commands
-- ✅ Dependency graph
-- ✅ Scalable monorepo
-
-### Maven (Backend)
-- ✅ Dépendance management robuste
-- ✅ Écosystème Java riche
-- ✅ Build reproductible
-- ✅ Plugins nombreux
-
-### Séparation
-- ✅ Frontend et Backend indépendants
-- ✅ Stack technologies différentes
-- ✅ Déploiement flexible
-- ✅ Scalabilité per-service
-
-## 🔄 Workflow de Développement
-
-1. **Créer une branche**
-   ```bash
-   git checkout -b feature/ma-feature
-   ```
-
-2. **Développer**
-   - Frontend : modifier les fichiers dans `apps/frontend/`
-   - Backend : modifier les fichiers dans `packages/*/src/`
-
-3. **Tester**
-   ```bash
-   # Frontend
-   npm run test:frontend
-   npm run lint:frontend
-
-   # Backend (dans le dossier du service)
-   mvn test
-   ```
-
-4. **Build**
-   ```bash
-   # Frontend
-   npm run build:frontend
-
-   # Backend
-   mvn clean package
-   ```
-
-5. **Commit**
-   ```bash
-   git commit -m "feat: description de la feature"
-   ```
-
-6. **Push & PR**
-   ```bash
-   git push origin feature/ma-feature
-   ```
-
-## 🔍 Visualiser l'Architecture
+### Nx ne reconnaît pas un service
 
 ```bash
-# Affiche le graphe des dépendances
-nx graph
+# Régénérer le cache Nx
+nx reset
+
+# Vérifier les projets
+nx show projects
 ```
 
-## 📚 Documentation Supplémentaire
+### Build Maven échoue dans Nx
 
-- [Nx Docs](https://nx.dev)
-- [Spring Boot Docs](https://spring.io/projects/spring-boot)
-- [React Docs](https://react.dev)
-- [Vite Docs](https://vitejs.dev)
-- [Maven Docs](https://maven.apache.org)
-- [AGENTS.md](./AGENTS.md) - Architecture métier
-- [README.md](./README.md) - Overview du projet
+```bash
+# Vérifier que Maven est installé
+mvn --version
+
+# Build manual du service
+cd bank && mvn clean package
+```
+
+### Port déjà en utilisation
+
+```bash
+# Modifier le port dans vite.config.ts (frontend)
+# ou application.yml (backend)
+
+# ou : tuer le processus
+lsof -i :8081
+kill -9 <PID>
+```
+
+---
+
+**Dernière mise à jour**: 2026-10-20
+**Status**: Production-ready

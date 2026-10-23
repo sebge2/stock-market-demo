@@ -5,20 +5,10 @@
   "prefix": "app",
   "targets": {
     "serve": {
-      "executor": "@nx/vite:dev-server",
-      "defaultConfiguration": "development",
+      "executor": "nx:run-commands",
       "options": {
-        "buildTarget": "frontend-bank:build",
-        "hmr": true,
-        "portInUse": "accept"
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "frontend-bank:build:development"
-        },
-        "production": {
-          "buildTarget": "frontend-bank:build:production"
-        }
+        "command": "vite",
+        "cwd": "bank/front"
       }
     },
     "build": {

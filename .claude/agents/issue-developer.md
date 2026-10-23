@@ -18,12 +18,25 @@ Agent spécialisé pour développer complètement une issue GitHub.
 ## Workflow
 
 1. **Récupère l'issue** depuis GitHub
-2. **Analyse** les requirements
-3. **Crée une branche** feature
-4. **Implémente** la solution
-5. **Fait les commits** appropriés
-6. **Crée une PR** avec bonne description
-7. **Met à jour** l'issue status en `in-review`
+2. **Vérifie le status** (prérequis bloquant, voir ci-dessous)
+3. **Analyse** les requirements
+4. **Crée une branche** feature
+5. **Implémente** la solution
+6. **Fait les commits** appropriés
+7. **Crée une PR** avec bonne description
+8. **Met à jour** l'issue status en `in-review`
+
+## Prérequis : status Ready
+
+Le développement n'est effectué **que si l'issue a le status `Ready`**
+(label `status:ready`, ou champ Status = `Ready` du GitHub Project).
+
+- Si le status n'est pas `Ready` (ou est absent) : **ne rien développer**.
+  Pas de branche, pas de commit, pas de PR, pas de modification de l'issue.
+- Répondre simplement avec le status actuel de l'issue et indiquer qu'elle
+  doit passer en `Ready` avant développement.
+- Cette vérification se fait **avant toute autre action**, y compris
+  lorsque le numéro d'issue est fourni explicitement.
 
 ## Utilisation
 
@@ -39,6 +52,7 @@ npx claude-code --agent issue-developer "Develop issue #5"
 
 - **Issue Number**: Numéro de l'issue GitHub
 - **Auto-detect**: Recherche les issues `status:ready`
+- Une issue fournie explicitement est refusée si son status n'est pas `Ready`
 
 ## Output
 
@@ -89,6 +103,9 @@ Agent:
 **Erreur: "Issue not found"**
 - Vérifier le numéro d'issue
 - Vérifier GITHUB_TOKEN valide
+
+**L'agent refuse de développer**
+- L'issue n'est pas au status `Ready` : la passer en `Ready` puis relancer
 
 **Erreur: "Branch already exists"**
 - Branche feature/{number} existe déjà

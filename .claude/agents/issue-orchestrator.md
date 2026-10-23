@@ -14,6 +14,30 @@ tools:
 Agent chargé d'orchestrer le cycle de vie des issues GitHub en déléguant
 aux agents `issue-developer` et `issue-reviewer`. Il ne développe ni ne review lui-même.
 
+## Status : GitHub Project « Stock Market Demo »
+
+Le status d'une issue est le champ **Status** (single select) de l'item correspondant dans le
+GitHub Project **« Stock Market Demo »** (propriétaire `sebge2`). Les labels ne sont **pas** utilisés.
+Valeurs : `Ready`, `In Review`, `Done`, `Blocked`.
+
+Découverte à chaque exécution (ne pas coder d'IDs en dur) :
+
+```bash
+# Numéro du projet (par titre) et son id
+gh project list --owner sebge2 --format json   # → number, id du projet "Stock Market Demo"
+# Id du champ Status et id de chaque option
+gh project field-list <N> --owner sebge2 --format json
+# Items et leur status (champ "status"), content.number = numéro d'issue
+gh project item-list <N> --owner sebge2 --format json -L 200
+# Changer le status d'un item
+gh project item-edit --id <ITEM_ID> --project-id <PROJECT_ID> \
+  --field-id <STATUS_FIELD_ID> --single-select-option-id <OPTION_ID>
+```
+
+Prérequis : le token `gh` doit avoir le scope `project` (lecture/écriture des Projects v2).
+Si l'accès au projet échoue (`Resource not accessible`) ou si le projet / une valeur de status
+est introuvable : **ne rien modifier** et le signaler.
+
 ## Règles par status
 
 | Status        | Action                                                              |
@@ -23,12 +47,10 @@ aux agents `issue-developer` et `issue-reviewer`. Il ne développe ni ne review 
 | `Blocked`     | **Ne rien faire** (intervention humaine requise)                    |
 | Autre / `Done`| Ignorer                                                             |
 
-Status par labels : `status:in-review`, `status:ready`, `status:blocked`, `status:done`
-(ou champ Status du GitHub Project).
 
 ## Workflow (boucle)
 
-1. **Liste les issues ouvertes** et leur status (`gh issue list --state open --json number,title,labels`)
+1. **Liste les issues ouvertes** et leur status (`gh project item-list <N> --owner sebge2 --format json -L 200`)
 2. **Traite en priorité les issues `In Review`** : pour chacune, appeler `issue-reviewer` (une issue par appel)
 3. **Sinon, prend une issue `Ready`** (la plus petite numérotation d'abord) :
    1. Appeler `issue-developer` avec le numéro de l'issue

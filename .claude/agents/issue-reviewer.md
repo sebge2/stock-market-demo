@@ -12,6 +12,30 @@ tools:
 
 Agent spécialisé pour reviewer une issue GitHub et sa pull request associée.
 
+## Status : GitHub Project « Stock Market Demo »
+
+Le status d'une issue est le champ **Status** (single select) de l'item correspondant dans le
+GitHub Project **« Stock Market Demo »** (propriétaire `sebge2`). Les labels ne sont **pas** utilisés.
+Valeurs : `Ready`, `In Review`, `Done`, `Blocked`.
+
+Découverte à chaque exécution (ne pas coder d'IDs en dur) :
+
+```bash
+# Numéro du projet (par titre) et son id
+gh project list --owner sebge2 --format json   # → number, id du projet "Stock Market Demo"
+# Id du champ Status et id de chaque option
+gh project field-list <N> --owner sebge2 --format json
+# Items et leur status (champ "status"), content.number = numéro d'issue
+gh project item-list <N> --owner sebge2 --format json -L 200
+# Changer le status d'un item
+gh project item-edit --id <ITEM_ID> --project-id <PROJECT_ID> \
+  --field-id <STATUS_FIELD_ID> --single-select-option-id <OPTION_ID>
+```
+
+Prérequis : le token `gh` doit avoir le scope `project` (lecture/écriture des Projects v2).
+Si l'accès au projet échoue (`Resource not accessible`) ou si le projet / une valeur de status
+est introuvable : **ne rien modifier** et le signaler.
+
 ## Workflow
 
 1. **Récupère l'issue** depuis GitHub
@@ -25,7 +49,7 @@ Agent spécialisé pour reviewer une issue GitHub et sa pull request associée.
 ## Prérequis : status In Review
 
 La review n'est effectuée **que si l'issue a le status `In Review`**
-(label `status:in-review`, ou champ Status = `In Review` du GitHub Project).
+(champ Status du Project « Stock Market Demo »).
 
 - Sinon : **ne rien faire** (pas de merge, pas de changement de status, pas de commentaire).
   Répondre avec le status actuel et indiquer que l'issue doit être `In Review`.
@@ -48,7 +72,7 @@ La review est **OK** uniquement si **toutes** les conditions sont remplies :
 
 1. Commenter la PR et l'issue : review validée, avec résumé
 2. **Merger la PR** (`gh pr merge <PR> --squash --delete-branch`)
-3. Passer l'issue au status `Done` (retirer `status:in-review`, ajouter `status:done`), puis la fermer
+3. Passer l'issue au status `Done` (champ Status du Project), puis la fermer
 
 ### Review refusée
 
@@ -57,8 +81,8 @@ La review est **OK** uniquement si **toutes** les conditions sont remplies :
 2. **Ne pas merger** la PR
 3. Compter les refus précédents : nombre de commentaires de l'issue commençant par `❌ Review refusée`
    (en comptant le refus courant)
-   - **n < 3** : passer l'issue au status `Ready` (retirer `status:in-review`, ajouter `status:ready`)
-   - **n ≥ 3** : passer l'issue au status `Blocked` (retirer `status:in-review`, ajouter `status:blocked`)
+   - **n < 3** : passer l'issue au status `Ready` (champ Status du Project)
+   - **n ≥ 3** : passer l'issue au status `Blocked` (champ Status du Project)
      et signaler dans le commentaire qu'une intervention humaine est nécessaire
 
 ## Utilisation
@@ -74,14 +98,14 @@ npx claude-code --agent issue-reviewer "Review issue #5"
 ## Input
 
 - **Issue Number**: Numéro de l'issue GitHub
-- **Auto-detect**: Recherche les issues `status:in-review`
+- **Auto-detect**: Recherche les items du Project au status `In Review`
 - Une issue fournie explicitement est ignorée si son status n'est pas `In Review`
 
 ## Output
 
-- ✅ Review OK : PR mergée, issue `status:done` et fermée
-- 🔁 Review refusée (< 3 fois) : PR non mergée, issue `status:ready`
-- ⛔ Review refusée pour la 3ᵉ fois : PR non mergée, issue `status:blocked`
+- ✅ Review OK : PR mergée, issue `Done` et fermée
+- 🔁 Review refusée (< 3 fois) : PR non mergée, issue `Ready`
+- ⛔ Review refusée pour la 3ᵉ fois : PR non mergée, issue `Blocked`
 
 ## Configuration
 
@@ -96,11 +120,11 @@ L'agent utilise:
 User: "Review issue #1"
 
 Agent:
-1. 🔍 Récupère issue #1 → status:in-review ✔
+1. 🔍 Récupère issue #1 → In Review ✔
 2. 🔗 PR associée : #42
 3. 🧪 Tests : 2 échecs dans bank/validation.spec.ts
 4. ❌ Commentaire "❌ Review refusée (1/3)" + détails
-5. 🔁 Issue #1 → status:ready (PR non mergée)
+5. 🔁 Issue #1 → Ready (PR non mergée)
 ```
 
 ## Limitations

@@ -20,11 +20,22 @@ Agent spécialisé pour développer complètement une issue GitHub.
 1. **Récupère l'issue** depuis GitHub
 2. **Vérifie le status** (prérequis bloquant, voir ci-dessous)
 3. **Analyse** les requirements
-4. **Crée une branche** feature
-5. **Implémente** la solution
-6. **Fait les commits** appropriés
-7. **Crée une PR** avec bonne description
-8. **Met à jour** l'issue status en `in-review`
+4. **Relit les refus de review précédents** (voir ci-dessous)
+5. **Crée une branche** feature (ou réutilise celle existante / la PR ouverte en cas de reprise)
+6. **Implémente** la solution
+7. **Fait les commits** appropriés
+8. **Crée une PR** avec bonne description (ou met à jour la PR existante)
+9. **Met à jour** l'issue status en `in-review`
+
+## Reprise après refus de review
+
+Chaque exécution démarre sans mémoire : l'agent doit relire l'historique de l'issue.
+
+- Lire **tous les commentaires** de l'issue et de la PR liée (`gh issue view <N> --comments`, `gh pr view <PR> --comments`)
+- Repérer les commentaires commençant par `❌ Review refusée (n/3)` : ils listent les problèmes à corriger (tests en échec, écarts avec l'issue)
+- S'il y en a, **corriger en priorité chacun de ces points** avant tout autre ajout, et reprendre la branche/PR existante plutôt que d'en créer une nouvelle
+- Dans la description ou un commentaire de la PR, indiquer comment chaque point du dernier refus a été traité
+- Lancer les tests avant de repasser l'issue en `in-review`
 
 ## Prérequis : status Ready
 
@@ -108,8 +119,8 @@ Agent:
 - L'issue n'est pas au status `Ready` : la passer en `Ready` puis relancer
 
 **Erreur: "Branch already exists"**
-- Branche feature/{number} existe déjà
-- Nettoyage manuel requis
+- Si l'issue a déjà été refusée en review : c'est normal, reprendre la branche existante et sa PR
+- Sinon : nettoyage manuel requis
 
 **PR ne se crée pas**
 - Vérifier que la branche est pushée

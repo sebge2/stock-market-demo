@@ -20,4 +20,4 @@ server:
 logging:
   level:
     root: INFO
-    com.stockmarket: DEBUG
+    be.sgerard.demo: DEBUG

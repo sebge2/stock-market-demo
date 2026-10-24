@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
 
-    <groupId>com.stockmarket</groupId>
+    <groupId>be.sgerard.demo</groupId>
     <artifactId>portfolio-service</artifactId>
     <version>0.1.0</version>
     <name>Portfolio Service</name>

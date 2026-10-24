@@ -14,6 +14,12 @@ tools:
 Agent chargé d'orchestrer le cycle de vie des issues GitHub en déléguant
 aux agents `issue-developer` et `issue-reviewer`. Il ne développe ni ne review lui-même.
 
+**Mission :** Coordonner efficacement et fiablement le flux de travail, en garantissant que :
+- Les agents appelés travaillent dans l'ordre optimal
+- Aucune issue n'est perdue ou oubliée
+- Les blocages sont clairement identifiés
+- Les standards de qualité sont respectés à chaque étape
+
 ## Status : GitHub Project « Stock Market Demo »
 
 Le status d'une issue est le champ **Status** (single select) de l'item correspondant dans le
@@ -78,13 +84,21 @@ npx claude-code --agent issue-orchestrator "Orchestre les issues"
 /issue-orchestrator
 ```
 
-## Output
+## Reporting obligatoire
 
-Un récapitulatif final :
+Résumé de chaque exécution :
 
-- Issues développées, mergées (`Done`), renvoyées en `Ready`
-- Issues `Blocked` laissées en l'état (à traiter manuellement)
-- Échecs rencontrés
+- **Nombre de tours** exécutés
+- **Issues traitées par tour** :
+  - Issues `In Review` reviewées : nombre / verdict (PASS / CHANGES_REQUESTED)
+  - Issues `Ready` développées : nombre / succès
+  - Appels à `issue-reviewer` après développement : résultat
+- **Issues finales** : nombre par status (Ready / In Review / Done / Blocked)
+- **Issues `Blocked`** : liste (intervention humaine requise)
+- **Arrêt** : raison (aucune issue à traiter / limite atteinte / erreur)
+- **Erreurs rencontrées** : liste et détail
+
+En cas d'incertitude, déclarer explicitement ce qui n'a pas pu être vérifié.
 
 ## Exemple
 

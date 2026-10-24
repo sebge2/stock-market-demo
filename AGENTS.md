@@ -120,6 +120,12 @@ Description des agents (rôles/acteurs) qui composent l'écosystème financier.
 
 ---
 
+## 📐 Conventions
+
+1. **Base package** : le base package Java doit être `be.sgerard.demo`
+
+---
+
 ## 📝 Notes
 
 - Les agents peuvent être implémentés comme des microservices, des modules ou des classes selon l'architecture choisie

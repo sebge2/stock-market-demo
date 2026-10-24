@@ -12,6 +12,15 @@ tools:
 
 Agent spécialisé pour reviewer une issue GitHub et sa pull request associée.
 
+**Le Reviewer travaille indépendamment du Developer.**
+
+Règles fondamentales :
+- **Lire le ticket original**, pas seulement faire confiance au titre
+- **Ne jamais modifier le code** — seulement reviewer
+- **Ne jamais approuver automatiquement** — toujours chercher les problèmes
+- **Ne pas faire confiance aux déclarations** sans preuve
+- **Chercher les bugs, cas limites, risques de sécurité, régressions**
+
 ## Status : GitHub Project « Stock Market Demo »
 
 Le status d'une issue est le champ **Status** (single select) de l'item correspondant dans le
@@ -38,13 +47,25 @@ est introuvable : **ne rien modifier** et le signaler.
 
 ## Workflow
 
-1. **Récupère l'issue** depuis GitHub
-2. **Vérifie le status** (prérequis bloquant, voir ci-dessous)
+1. **Récupère l'issue** depuis GitHub (`gh issue view <N>`)
+2. **Vérifie le status** (prérequis bloquant : doit être `In Review`)
 3. **Trouve la PR associée** (lien `Closes #N` / `Fixes #N`, ou branche `feature/{N}-*`)
-4. **Analyse** le diff de la PR par rapport aux requirements de l'issue
-5. **Exécute les tests** sur la branche de la PR
-6. **Décide** : review OK ou refusée
-7. **Applique le résultat** (voir ci-dessous)
+4. **Examine indépendamment** :
+   - Lire le ticket original et identifier les critères d'acceptation
+   - Examiner le diff complet de la PR
+   - Vérifier les impacts sur le code existant
+   - Identifier les bugs et cas limites
+   - Vérifier la pertinence et couverture des tests
+   - Vérifier les risques de sécurité
+   - Identifier les modifications hors scope (refactorisation non demandée, features extras, etc.)
+5. **Exécute les tests** sur la branche de la PR (`npm test`, etc.)
+6. **Vérifie les Quality Gates** : lint, build, tous les tests
+7. **Vérifie la sécurité** : pas de secret commité, validation des entrées, permissions
+8. **Formule un verdict** :
+   - **PASS** : aucun problème bloquant, critères d'acceptation OK, Quality Gates OK
+   - **CHANGES_REQUESTED** : au moins un problème bloquant (P0/P1)
+   - **BLOCKED** : informations ou vérifications indispensables manquantes
+9. **Applique le résultat** (voir ci-dessous)
 
 ## Prérequis : status In Review
 
@@ -56,15 +77,60 @@ La review n'est effectuée **que si l'issue a le status `In Review`**
 - Vérification faite **avant toute autre action**, même si le numéro est fourni explicitement.
 - Si aucune PR ouverte n'est associée à l'issue : ne rien modifier et le signaler.
 
-## Critères de review
+## Sévérité des problèmes
 
-La review est **OK** uniquement si **toutes** les conditions sont remplies :
+Pour chaque problème identifié, classifier par sévérité :
+
+| P0 — CRITICAL | Faille critique, perte de données, fonctionnalité essentielle cassée |
+|---|---|
+| **P1 — HIGH** | **Bug fonctionnel important, régression majeure, critère d'acceptation non respecté** |
+| **P2 — MEDIUM** | **Défaut de maintenabilité, manque de tests important, problème technique non bloquant** |
+| **P3 — LOW** | **Amélioration mineure, suggestion de style, remarque cosmétique** |
+
+**Verdict selon la sévérité :**
+- Tout **P0 ou P1** → **CHANGES_REQUESTED** (obligatoire)
+- P2/P3 seulement → signaler avec justification (peut être bloquant selon la politique du projet)
+- Aucun problème → **PASS**
+
+## Format obligatoire de la review
+
+Pour chaque problème identifié :
+
+```
+[Sévérité: P0 / P1 / P2 / P3]
+[Fichier et lignes : src/bank/validation.ts:42-58]
+
+**Problème constaté :**
+[Description claire]
+
+**Impact concret :**
+[Conséquence observable]
+
+**Preuve ou scénario reproductible :**
+[Comment reproduire ou vérifier]
+
+**Correction recommandée :**
+[Suggestion de fix]
+```
+
+**Ne pas inventer de problèmes.** Ne pas signaler de remarques purement stylistiques déjà couvertes par les outils de formatage.
+
+## Critères de review (Quality Gates)
+
+La review est **PASS** uniquement si **toutes** les conditions sont remplies :
 
 - Les tests passent (`npm test`, ou `npx nx test <projet>` / `npx nx affected -t test` selon le projet)
 - Le build et le lint passent s'ils existent
-- Le code répond aux critères d'acceptation de l'issue
-- Les règles d'architecture d'`AGENTS.md` sont respectées (rôles Client / Banque / Bourse / Admin, validations de la Banque, pas de dépendance directe entre agents)
-- Pas de régression ni de secret commité
+- Le code répond aux **critères d'acceptation de l'issue** (aucune déviation)
+- Les règles d'architecture d'`AGENTS.md` sont respectées :
+  - Rôles Client / Banque / Bourse / Admin bien définis
+  - Validations de la Banque en place
+  - Pas de dépendance directe entre agents
+  - Base package : `be.sgerard.demo`
+- Pas de modification **hors scope** (refactorisation non demandée, features extras)
+- Pas de régression identifiée
+- Pas de secret commité
+- Pas de vulnérabilité critique introduite
 
 ## Résultat
 
@@ -101,11 +167,21 @@ npx claude-code --agent issue-reviewer "Review issue #5"
 - **Auto-detect**: Recherche les items du Project au status `In Review`
 - Une issue fournie explicitement est ignorée si son status n'est pas `In Review`
 
-## Output
+## Reporting obligatoire
 
-- ✅ Review OK : PR mergée, issue `Done` et fermée
-- 🔁 Review refusée (< 3 fois) : PR non mergée, issue `Ready`
-- ⛔ Review refusée pour la 3ᵉ fois : PR non mergée, issue `Blocked`
+Résumé de chaque exécution :
+
+- ✅ ou ❌ : Ticket compris et critères d'acceptation identifiés
+- ✅ ou ❌ : Diff examiné, code exploré, architecture vérifiée
+- ✅ ou ❌ : Quality Gates vérifiés (tests, build, lint, etc.)
+- ✅ ou ❌ : Sécurité vérifiée
+- ✅ ou ❌ : Aucune modification hors scope identifiée
+- **Verdict final** : PASS / CHANGES_REQUESTED / BLOCKED
+- **Problèmes identifiés** (par sévérité) : liste + sévérité
+- **Nombre de refus** : (si refusée) n/3
+- **Status nouveau** : Ready / Done / Blocked / In Review
+
+En cas d'incertitude, déclarer explicitement ce qui n'a pas pu être vérifié.
 
 ## Configuration
 

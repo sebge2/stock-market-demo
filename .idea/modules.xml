@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/stock-market-demo.iml" filepath="$PROJECT_DIR$/.idea/stock-market-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bank/backend/client-service/client-service.iml" filepath="$PROJECT_DIR$/bank/backend/client-service/client-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/stock-exchange/backend/company-service/company-service.iml" filepath="$PROJECT_DIR$/stock-exchange/backend/company-service/company-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bank/backend/portfolio-service/portfolio-service.iml" filepath="$PROJECT_DIR$/bank/backend/portfolio-service/portfolio-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/bank/backend/user-service/user-service.iml" filepath="$PROJECT_DIR$/bank/backend/user-service/user-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/stock-exchange/backend/user-service/user-service (1) (com.stockmarket.exchange).iml" filepath="$PROJECT_DIR$/stock-exchange/backend/user-service/user-service (1) (com.stockmarket.exchange).iml" />
     </modules>
   </component>
 </project>

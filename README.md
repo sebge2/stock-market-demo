@@ -20,11 +20,11 @@ Frontend (React)
 
 Backend Microservices
 ├── bank/backend/
-│   ├── user-service        (Port 8083)
+│   ├── bank-employee-service        (Port 8083)
 │   ├── client-service      (Port 8084)
 │   └── portfolio-service   (Port 8085)
 └── stock-exchange/backend/
-    ├── user-service        (Port 8086)
+    ├── bank-employee-service        (Port 8086)
     └── company-service     (Port 8087)
 ```
 
@@ -46,7 +46,7 @@ Backend Microservices
 - **frontend-exchange** - Exchange UI (port 3001)
 
 ### Microservices Bank (3)
-- **user-service** - User management (port 8083)
+- **bank-employee-service** - User management (port 8083)
 - **client-service** - Client accounts (port 8084)
 - **portfolio-service** - Portfolio management (port 8085)
 
@@ -75,7 +75,7 @@ npm run dev:all                # Tous les services (7)
 
 ### Option 4: Depuis chaque dossier
 ```bash
-cd bank/backend/user-service && mvn spring-boot:run            # Port 8083
+cd bank/backend/bank-employee-service && mvn spring-boot:run            # Port 8083
 cd bank/backend/client-service && mvn spring-boot:run          # Port 8084
 cd bank/backend/portfolio-service && mvn spring-boot:run       # Port 8085
 cd stock-exchange/backend/user-service && mvn spring-boot:run  # Port 8086
@@ -127,10 +127,10 @@ nx graph
 
 # Lancer un projet spécifique
 nx serve frontend-bank
-nx serve user-service
+nx serve bank-employee-service
 
 # Lancer plusieurs projets
-nx run-many --target=serve --projects=user-service,client-service,portfolio-service
+nx run-many --target=serve --projects=bank-employee-service,client-service,portfolio-service
 
 # Build tous les projets
 nx run-many --target=build --all

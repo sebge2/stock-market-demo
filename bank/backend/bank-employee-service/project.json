@@ -1,7 +1,7 @@
 {
-  "name": "user-service",
+  "name": "bank-employee-service",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "bank/backend/user-service/src",
+  "sourceRoot": "bank/backend/bank-employee-service/src",
   "projectType": "library",
   "prefix": "app",
   "tags": [
@@ -23,7 +23,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn spring-boot:run",
-        "cwd": "bank/backend/user-service"
+        "cwd": "bank/backend/bank-employee-service"
       }
     },
     "test": {

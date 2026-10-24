@@ -131,6 +131,8 @@ Description des agents (rôles/acteurs) qui composent l'écosystème financier.
 7. Les DTO doivent avoir comme suffixe `Dto` et se trouver dans un package `model/dto`.
 8. Les DTO si il existent doivent etre mappé avec des mappers. Les mappers doivent se trouver dans un package parent `mapper`.
 9. Les entités JPA n'implémentent pas equals et hashcode.
+10. Use final variable if possible, but not for function parameters.
+11. Don't use final fields in JPA entities.
 
 ---
 

@@ -2,6 +2,17 @@
 <project version="4">
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="KubernetesApiProvider">{}</component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/stock-exchange/backend/exchange-staff-service/pom.xml" />
+        <option value="$PROJECT_DIR$/stock-exchange/backend/company-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank/backend/portfolio-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank/backend/client-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank/backend/bank-employee-service/pom.xml" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="openjdk-27" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

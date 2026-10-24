@@ -122,7 +122,6 @@ Agent :
    - Critères : API return 200 + liste paginée, tests d'auth, etc.
    - Notes : Transaction entity, TransactionRepository, TransactionController
    - Architecture : Client → Bank API → Portfolio Service
-6. Crée l'issue
 ```
 
 ## Limitations

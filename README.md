@@ -20,11 +20,11 @@ Frontend (React)
 
 Backend Microservices
 ├── bank/backend/
-│   ├── bank-employee-service        (Port 8083)
+│   ├── bank-employee-service (Port 8083)
 │   ├── client-service      (Port 8084)
 │   └── portfolio-service   (Port 8085)
 └── stock-exchange/backend/
-    ├── bank-employee-service        (Port 8086)
+    ├── user-service        (Port 8086)
     └── company-service     (Port 8087)
 ```
 
@@ -46,7 +46,7 @@ Backend Microservices
 - **frontend-exchange** - Exchange UI (port 3001)
 
 ### Microservices Bank (3)
-- **bank-employee-service** - User management (port 8083)
+- **bank-employee-service** - Bank employee management (port 8083)
 - **client-service** - Client accounts (port 8084)
 - **portfolio-service** - Portfolio management (port 8085)
 

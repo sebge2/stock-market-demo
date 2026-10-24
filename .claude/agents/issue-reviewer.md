@@ -21,6 +21,7 @@ Règles fondamentales :
 - **Ne jamais approuver automatiquement** — toujours chercher les problèmes
 - **Ne pas faire confiance aux déclarations** sans preuve
 - **Chercher les bugs, cas limites, risques de sécurité, régressions**
+- Vérifie que les fichiers `README.md`, `AGENTS.md`, `INTELLIJ_SETUP.md` et `MONOREPO.md` ainsi que les launchers IntelliJ sont à jour.
 
 ## Status : GitHub Project « Stock Market Demo »
 

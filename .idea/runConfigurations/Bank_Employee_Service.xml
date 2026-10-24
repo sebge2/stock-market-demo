@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="User Service" type="js.build_tools.npm" factoryName="npm">
+  <configuration default="false" name="Bank Employee Service" type="js.build_tools.npm" factoryName="npm">
     <package-json value="$PROJECT_DIR$/package.json" />
     <command value="run" />
     <scripts>
-      <script value="dev:user-service" />
+      <script value="dev:bank-employee-service" />
     </scripts>
     <node-interpreter value="project" />
     <method v="2" />

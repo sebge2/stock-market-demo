@@ -20,7 +20,7 @@ Frontend (React)
 
 Backend Microservices
 ├── bank/backend/
-│   ├── user-service        (Port 8083)
+│   ├── bank-employee-service (Port 8083)
 │   ├── client-service      (Port 8084)
 │   └── portfolio-service   (Port 8085)
 └── stock-exchange/backend/
@@ -46,7 +46,7 @@ Backend Microservices
 - **frontend-exchange** - Exchange UI (port 3001)
 
 ### Microservices Bank (3)
-- **user-service** - User management (port 8083)
+- **bank-employee-service** - Bank employee management (port 8083)
 - **client-service** - Client accounts (port 8084)
 - **portfolio-service** - Portfolio management (port 8085)
 
@@ -75,7 +75,7 @@ npm run dev:all                # Tous les services (7)
 
 ### Option 4: Depuis chaque dossier
 ```bash
-cd bank/backend/user-service && mvn spring-boot:run            # Port 8083
+cd bank/backend/bank-employee-service && mvn spring-boot:run            # Port 8083
 cd bank/backend/client-service && mvn spring-boot:run          # Port 8084
 cd bank/backend/portfolio-service && mvn spring-boot:run       # Port 8085
 cd stock-exchange/backend/user-service && mvn spring-boot:run  # Port 8086
@@ -90,7 +90,7 @@ cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 
 
 ### Bank Microservices
-- **User Service** → Port 8083
+- **Bank Employee Service** → Port 8083
 - **Client Service** → Port 8084
 - **Portfolio Service** → Port 8085
 - **All Microservices** → Tous 3 en parallèle
@@ -110,7 +110,7 @@ cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 |---------|------|----------|-----------|
 | Frontend Bank | 3000 | http://localhost:3000 | - |
 | Frontend Exchange | 3001 | http://localhost:3001 | - |
-| Bank User Service | 8083 | /api/user | /api/user/h2-console |
+| Bank Employee Service | 8083 | /api/employee | /api/employee/h2-console |
 | Bank Client Service | 8084 | /api/client | /api/client/h2-console |
 | Bank Portfolio Service | 8085 | /api/portfolio | /api/portfolio/h2-console |
 | Exchange User Service | 8086 | /api/user | /api/user/h2-console |
@@ -127,10 +127,10 @@ nx graph
 
 # Lancer un projet spécifique
 nx serve frontend-bank
-nx serve user-service
+nx serve bank-employee-service
 
 # Lancer plusieurs projets
-nx run-many --target=serve --projects=user-service,client-service,portfolio-service
+nx run-many --target=serve --projects=bank-employee-service,client-service,portfolio-service
 
 # Build tous les projets
 nx run-many --target=build --all

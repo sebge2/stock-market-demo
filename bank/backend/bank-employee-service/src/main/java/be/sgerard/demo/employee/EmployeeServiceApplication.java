@@ -1,12 +1,12 @@
-package com.stockmarket.bank.user;
+package be.sgerard.demo.employee;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class UserServiceApplication {
+public class EmployeeServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserServiceApplication.class, args);
+        SpringApplication.run(EmployeeServiceApplication.class, args);
     }
 }

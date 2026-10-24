@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All Microservices" type="CompoundRunConfigurationType" factoryName="Compound">
-    <toRun name="User Service" type="js.build_tools.npm" />
+    <toRun name="Bank Employee Service" type="js.build_tools.npm" />
     <toRun name="Client Service" type="js.build_tools.npm" />
     <toRun name="Portfolio Service" type="js.build_tools.npm" />
     <method v="2" />

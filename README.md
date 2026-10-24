@@ -90,7 +90,7 @@ cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 
 
 ### Bank Microservices
-- **User Service** → Port 8083
+- **Bank Employee Service** → Port 8083
 - **Client Service** → Port 8084
 - **Portfolio Service** → Port 8085
 - **All Microservices** → Tous 3 en parallèle
@@ -110,7 +110,7 @@ cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 |---------|------|----------|-----------|
 | Frontend Bank | 3000 | http://localhost:3000 | - |
 | Frontend Exchange | 3001 | http://localhost:3001 | - |
-| Bank User Service | 8083 | /api/user | /api/user/h2-console |
+| Bank Employee Service | 8083 | /api/employee | /api/employee/h2-console |
 | Bank Client Service | 8084 | /api/client | /api/client/h2-console |
 | Bank Portfolio Service | 8085 | /api/portfolio | /api/portfolio/h2-console |
 | Exchange User Service | 8086 | /api/user | /api/user/h2-console |

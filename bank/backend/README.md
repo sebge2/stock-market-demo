@@ -6,7 +6,7 @@ Backend du service Bank avec architecture microservices.
 
 ```
 bank/backend/
-├── user-service/               User management microservice
+├── bank-employee-service/      Employee management microservice
 │   ├── src/
 │   └── pom.xml
 ├── client-service/             Client account management microservice
@@ -25,8 +25,8 @@ bank/backend/
 ### Individuellement
 
 ```bash
-# User Service
-cd user-service && mvn spring-boot:run
+# Bank Employee Service
+cd bank-employee-service && mvn spring-boot:run
 
 # Client Service
 cd client-service && mvn spring-boot:run
@@ -39,7 +39,7 @@ cd portfolio-service && mvn spring-boot:run
 
 ```bash
 # Terminal 1
-cd user-service && mvn spring-boot:run
+cd bank-employee-service && mvn spring-boot:run
 
 # Terminal 2
 cd client-service && mvn spring-boot:run
@@ -52,16 +52,16 @@ cd portfolio-service && mvn spring-boot:run
 
 | Service | Port | Endpoint | H2 Console |
 |---------|------|----------|-----------|
-| User Service | 8083 | /api/user | /api/user/h2-console |
+| Bank Employee Service | 8083 | /api/employee | /api/employee/h2-console |
 | Client Service | 8084 | /api/client | /api/client/h2-console |
 | Portfolio Service | 8085 | /api/portfolio | /api/portfolio/h2-console |
 
 ## 🏗️ Microservices
 
-### User Service (8083)
-- User registration
-- Authentication
-- Profile management
+### Bank Employee Service (8083)
+- Employee management
+- Departments
+- Roles and permissions
 
 ### Client Service (8084)
 - Account management
@@ -80,7 +80,7 @@ cd portfolio-service && mvn spring-boot:run
 mvn clean package
 
 # Build individual microservices
-cd user-service && mvn clean package
+cd bank-employee-service && mvn clean package
 cd ../client-service && mvn clean package
 cd ../portfolio-service && mvn clean package
 ```

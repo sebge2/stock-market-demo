@@ -5,17 +5,24 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  *
@@ -24,7 +31,33 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "employee")
-public class Employee extends AbstractEntity {
+public class Employee {
+
+  /**
+   *
+   * Internal unique identifier.
+   *
+   */
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  @Column(name = "id", nullable = false, updatable = false)
+  private UUID id;
+
+  /**
+   *
+   * Creation date, set automatically on first persist.
+   *
+   */
+  @Column(name = "created_at", nullable = false, updatable = false)
+  private LocalDateTime createdAt;
+
+  /**
+   *
+   * Last update date, refreshed automatically on every update.
+   *
+   */
+  @Column(name = "updated_at", nullable = false)
+  private LocalDateTime updatedAt;
 
   /**
    *
@@ -263,6 +296,55 @@ public class Employee extends AbstractEntity {
    */
   public void removeRole(Role role) {
     roles.remove(role);
+  }
+
+  /**
+   *
+   * Initializes the audit timestamps.
+   *
+   */
+  @PrePersist
+  void onCreate() {
+    LocalDateTime now = LocalDateTime.now();
+    createdAt = now;
+    updatedAt = now;
+  }
+
+  /**
+   *
+   * Refreshes the update timestamp.
+   *
+   */
+  @PreUpdate
+  void onUpdate() {
+    updatedAt = LocalDateTime.now();
+  }
+
+  /**
+   *
+   * @return the identifier
+   *
+   */
+  public UUID getId() {
+    return id;
+  }
+
+  /**
+   *
+   * @return the creation date
+   *
+   */
+  public LocalDateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  /**
+   *
+   * @return the last update date
+   *
+   */
+  public LocalDateTime getUpdatedAt() {
+    return updatedAt;
   }
 
   /**

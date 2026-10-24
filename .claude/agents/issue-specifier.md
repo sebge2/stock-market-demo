@@ -61,12 +61,7 @@ Priorités :
 5. **Structurer l'issue** avec :
    - Titre clair et concis
    - Description contextualisée
-   - Critères d'acceptation précis et mesurables (checklist)
-   - Notes techniques (entités JPA, services, patterns)
-   - Impacts architecturaux (dépendances entre agents, base package)
-   - Références aux standards d'engineering quality
-   - Estimé en Story Points (optionnel)
-   - Labels appropriés
+   - Pas de code dans l'issue, ca n'est pas le but.
 
 6. **Valider** :
    - Aucune ambiguïté restante
@@ -78,7 +73,7 @@ Priorités :
 ### Phase 4 : Livraison
 
 7. **Fournir l'issue** :
-   - Format markdown prêt à copier-coller dans GitHub
+   - Fichier markdown prêt à copier-coller dans GitHub
    - Résumé des décisions prises
 
 ## Questions de départ (template)
@@ -100,8 +95,6 @@ L'agent pose ces questions pour bien comprendre :
 Résultat final :
 
 - ✅ Issue complète en markdown
-- ✅ Critères d'acceptation testables
-- ✅ Notes techniques claires
 - ✅ Architecturalement cohérente
 - ✅ Prête à être créée sur GitHub
 - ✅ Prête à être développée (status `Ready`)

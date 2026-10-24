@@ -126,9 +126,10 @@ Description des agents (rôles/acteurs) qui composent l'écosystème financier.
 2. La parsistence est faites avec JPA
 3. Les IDs des entités sont des UUID auto générés
 4. Le code et complémentaire sont en anglais.
-5. En Java : les classes, méthodes et champs doivent avoir de la Javadoc au format: `````/** {BLANK LINE}{DOC}{BLANK LINE}*/`````
+5. En Java : les classes, méthodes et champs doivent avoir de la Javadoc au format: `````/** {DOC} */````` (sur au moins 3 lignes).
 6. Les entités doivent se trouver dans un package parent `model`.
-7. Les entités doivent avoir comme suffixe `Dto` et se trouver dans un package `model/dto`.
+7. Les DTO doivent avoir comme suffixe `Dto` et se trouver dans un package `model/dto`.
+8. Les DTO si il existent doivent etre mappé avec des mappers. Les mappers doivent se trouver dans un package parent `mapper`.
 
 ---
 

@@ -3,6 +3,7 @@ name: issue-developer
 description: Développe une issue GitHub - crée branche, implémente, crée PR
 type: general-purpose
 model: claude-sonnet-5-5
+permissionMode: auto
 tools: 
   - Bash
   - Read

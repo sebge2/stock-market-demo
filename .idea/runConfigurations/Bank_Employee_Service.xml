@@ -1,12 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Bank Employee Service" type="js.build_tools.npm" factoryName="npm">
+  <configuration default="false" name="Bank Employee Service" type="js.build_tools.npm">
     <package-json value="$PROJECT_DIR$/package.json" />
     <command value="run" />
     <scripts>
       <script value="dev:bank-employee-service" />
     </scripts>
     <node-interpreter value="project" />
+    <envs>
+      <env name="spring.profiles.active" value="local" />
+    </envs>
     <method v="2" />
   </configuration>
 </component>

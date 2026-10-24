@@ -13,6 +13,7 @@ Microservice managing the bank employees (persistence layer).
 mvn spring-boot:run
 # Port: 8083
 # API: http://localhost:8083/api/employee
+# OpenAPI: http://localhost:8083/api/employee/swagger-ui/index.html
 ```
 
 ## Structure

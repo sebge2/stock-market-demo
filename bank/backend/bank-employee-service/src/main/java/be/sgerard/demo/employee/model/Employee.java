@@ -127,7 +127,7 @@ public class Employee {
   @JoinTable(name = "employee_role",
       joinColumns = @JoinColumn(name = "employee_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
-  private final Set<Role> roles = new LinkedHashSet<>();
+  private Set<Role> roles = new LinkedHashSet<>();
 
   /**
    *

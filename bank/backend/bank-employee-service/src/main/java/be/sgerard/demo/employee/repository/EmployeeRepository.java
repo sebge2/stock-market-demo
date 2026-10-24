@@ -30,4 +30,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
    * @return the employees of the department
    */
   List<Employee> findByDepartmentId(UUID departmentId);
+
+  /**
+   *
+   * Reports whether a role is assigned to at least one employee.
+   *
+   * @param roleId role identifier
+   * @return {@code true} when the role is assigned
+   */
+  boolean existsByRolesId(UUID roleId);
 }

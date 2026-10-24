@@ -20,4 +20,13 @@ public interface RoleRepository extends JpaRepository<Role, UUID> {
    * @return the matching entity, if any
    */
   Optional<Role> findByName(String name);
+
+  /**
+   *
+   * Reports whether a permission is assigned to at least one role.
+   *
+   * @param permissionId permission identifier
+   * @return {@code true} when the permission is assigned
+   */
+  boolean existsByPermissionsId(UUID permissionId);
 }

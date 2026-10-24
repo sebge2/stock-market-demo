@@ -114,6 +114,15 @@ public class Permission {
 
   /**
    *
+   * @param code the new unique code
+   *
+   */
+  public void setCode(String code) {
+    this.code = code;
+  }
+
+  /**
+   *
    * @return the description
    *
    */

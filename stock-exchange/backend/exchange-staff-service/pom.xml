@@ -11,11 +11,11 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
-  <groupId>com.stockmarket.exchange</groupId>
-  <artifactId>user-service</artifactId>
+  <groupId>be.sgerard.demo</groupId>
+  <artifactId>exchange-staff-service</artifactId>
   <version>1.0.0</version>
-  <name>User Service (Exchange)</name>
-  <description>User management microservice for Stock Exchange</description>
+  <name>Exchange Staff Service</name>
+  <description>Staff management microservice for Stock Exchange</description>
 
   <properties>
     <java.version>21</java.version>
@@ -33,6 +33,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
 
     <dependency>

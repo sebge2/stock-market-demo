@@ -6,7 +6,7 @@ Backend du service Bank avec architecture microservices.
 
 ```
 bank/backend/
-├── bank-employee-service/               Employee management microservice
+├── user-service/               User management microservice
 │   ├── src/
 │   └── pom.xml
 ├── client-service/             Client account management microservice
@@ -26,7 +26,7 @@ bank/backend/
 
 ```bash
 # User Service
-cd bank-employee-service && mvn spring-boot:run
+cd user-service && mvn spring-boot:run
 
 # Client Service
 cd client-service && mvn spring-boot:run
@@ -39,7 +39,7 @@ cd portfolio-service && mvn spring-boot:run
 
 ```bash
 # Terminal 1
-cd bank-employee-service && mvn spring-boot:run
+cd user-service && mvn spring-boot:run
 
 # Terminal 2
 cd client-service && mvn spring-boot:run
@@ -80,7 +80,7 @@ cd portfolio-service && mvn spring-boot:run
 mvn clean package
 
 # Build individual microservices
-cd bank-employee-service && mvn clean package
+cd user-service && mvn clean package
 cd ../client-service && mvn clean package
 cd ../portfolio-service && mvn clean package
 ```

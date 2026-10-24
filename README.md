@@ -24,7 +24,7 @@ Backend Microservices
 │   ├── client-service      (Port 8084)
 │   └── portfolio-service   (Port 8085)
 └── stock-exchange/backend/
-    ├── user-service        (Port 8086)
+    ├── exchange-staff-service (Port 8086)
     └── company-service     (Port 8087)
 ```
 
@@ -51,7 +51,7 @@ Backend Microservices
 - **portfolio-service** - Portfolio management (port 8085)
 
 ### Microservices Exchange (2)
-- **exchange-user-service** - User management (port 8086)
+- **exchange-staff-service** - Staff management (port 8086)
 - **exchange-company-service** - Company listings (port 8087)
 
 ## 🚀 Lancer l'Application
@@ -78,7 +78,7 @@ npm run dev:all                # Tous les services (7)
 cd bank/backend/bank-employee-service && mvn spring-boot:run            # Port 8083
 cd bank/backend/client-service && mvn spring-boot:run          # Port 8084
 cd bank/backend/portfolio-service && mvn spring-boot:run       # Port 8085
-cd stock-exchange/backend/user-service && mvn spring-boot:run  # Port 8086
+cd stock-exchange/backend/exchange-staff-service && mvn spring-boot:run  # Port 8086
 cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 ```
 
@@ -96,7 +96,7 @@ cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 - **All Microservices** → Tous 3 en parallèle
 
 ### Exchange Microservices
-- **Exchange User Service** → Port 8086
+- **Exchange Staff Service** → Port 8086
 - **Exchange Company Service** → Port 8087
 - **Exchange Microservices** → Tous 2 en parallèle
 
@@ -113,7 +113,7 @@ cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 | Bank Employee Service | 8083 | /api/employee | /api/employee/h2-console |
 | Bank Client Service | 8084 | /api/client | /api/client/h2-console |
 | Bank Portfolio Service | 8085 | /api/portfolio | /api/portfolio/h2-console |
-| Exchange User Service | 8086 | /api/user | /api/user/h2-console |
+| Exchange Staff Service | 8086 | /api/staff | /api/staff/h2-console |
 | Exchange Company Service | 8087 | /api/company | /api/company/h2-console |
 
 ## 📦 Commandes Nx Utiles

@@ -1,20 +1,20 @@
 {
-  "name": "exchange-user-service",
+  "name": "exchange-staff-service",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "stock-exchange/backend/user-service",
+  "sourceRoot": "stock-exchange/backend/exchange-staff-service",
   "targets": {
     "serve": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn spring-boot:run",
-        "cwd": "stock-exchange/backend/user-service"
+        "cwd": "stock-exchange/backend/exchange-staff-service"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn clean package",
-        "cwd": "stock-exchange/backend/user-service"
+        "cwd": "stock-exchange/backend/exchange-staff-service"
       }
     }
   },

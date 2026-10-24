@@ -1,10 +1,10 @@
-package com.stockmarket.bank.portfolio.repository;
+package be.sgerard.demo.portfolio.repository;
 
-import com.stockmarket.bank.portfolio.domain.Portfolio;
-import com.stockmarket.bank.portfolio.domain.Position;
-import com.stockmarket.bank.portfolio.domain.Purchase;
-import com.stockmarket.bank.portfolio.domain.PurchaseReceipt;
-import com.stockmarket.bank.portfolio.domain.PurchaseStatus;
+import be.sgerard.demo.portfolio.domain.Portfolio;
+import be.sgerard.demo.portfolio.domain.Position;
+import be.sgerard.demo.portfolio.domain.Purchase;
+import be.sgerard.demo.portfolio.domain.PurchaseReceipt;
+import be.sgerard.demo.portfolio.domain.PurchaseStatus;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

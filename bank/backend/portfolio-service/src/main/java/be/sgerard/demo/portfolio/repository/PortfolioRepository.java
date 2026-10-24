@@ -1,6 +1,6 @@
-package com.stockmarket.bank.portfolio.repository;
+package be.sgerard.demo.portfolio.repository;
 
-import com.stockmarket.bank.portfolio.domain.Portfolio;
+import be.sgerard.demo.portfolio.domain.Portfolio;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

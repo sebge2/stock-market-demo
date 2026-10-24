@@ -23,7 +23,7 @@ mvn spring-boot:run
 ```
 portfolio-service/
 ├── src/main/
-│   ├── java/com/stockmarket/bank/portfolio/
+│   ├── java/be/sgerard/demo/portfolio/
 │   │   └── PortfolioServiceApplication.java
 │   └── resources/
 │       └── application.yml

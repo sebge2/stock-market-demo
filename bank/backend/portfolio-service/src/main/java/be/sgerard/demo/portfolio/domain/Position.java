@@ -1,4 +1,4 @@
-package com.stockmarket.bank.portfolio.domain;
+package be.sgerard.demo.portfolio.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

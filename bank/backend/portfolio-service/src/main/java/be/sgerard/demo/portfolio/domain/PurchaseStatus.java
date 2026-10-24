@@ -1,4 +1,4 @@
-package com.stockmarket.bank.portfolio.domain;
+package be.sgerard.demo.portfolio.domain;
 
 /**
  * Lifecycle status of a {@link Purchase}.

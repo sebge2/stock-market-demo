@@ -123,6 +123,9 @@ Description des agents (rôles/acteurs) qui composent l'écosystème financier.
 ## 📐 Conventions
 
 1. **Base package** : le base package Java doit être `be.sgerard.demo`
+2. La parsistence est faites avec JPA
+3. Les IDs des entités sont des UUID auto générés
+4. Le code et complémentaire sont en anglais.
 
 ---
 

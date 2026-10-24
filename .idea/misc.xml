@@ -10,6 +10,10 @@
         <option value="$PROJECT_DIR$/bank/backend/portfolio-service/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/client-service/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-employee-service/pom.xml" />
+        <option value="$PROJECT_DIR$/bank/backend/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/bank/backend/api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/bank/backend/bank-api-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/bank/backend/bank-eureka-server/pom.xml" />
       </list>
     </option>
   </component>

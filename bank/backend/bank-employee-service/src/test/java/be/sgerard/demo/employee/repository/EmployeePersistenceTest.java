@@ -66,15 +66,30 @@ class EmployeePersistenceTest {
   @Autowired
   private TestEntityManager entityManager;
 
+  /**
+   *
+   * Persists and flushes an active department with the given name.
+   *
+   */
   private Department newDepartment(String name) {
     return departments.saveAndFlush(new Department(name, "desc", DepartmentStatus.ACTIVE));
   }
 
+  /**
+   *
+   * Persists and flushes an active employee with the given email in the given department.
+   *
+   */
   private Employee newEmployee(String email, Department department) {
     return employees.saveAndFlush(
         new Employee("John", "Doe", email, "hash", EmployeeStatus.ACTIVE, department));
   }
 
+  /**
+   *
+   * Verifies that an employee gets a generated id and audit timestamps, and can be found by email.
+   *
+   */
   @Test
   void employeeGetsGeneratedIdAndTimestamps() {
     Employee saved = newEmployee("john@bank.be", newDepartment("Risk"));
@@ -88,6 +103,11 @@ class EmployeePersistenceTest {
     assertThat(employees.findByEmail("unknown@bank.be")).isEmpty();
   }
 
+  /**
+   *
+   * Verifies that an update refreshes the update timestamp and keeps the creation timestamp.
+   *
+   */
   @Test
   void updateRefreshesUpdatedAtButNotCreatedAt() throws InterruptedException {
     Employee saved = newEmployee("john@bank.be", newDepartment("Risk"));
@@ -103,6 +123,11 @@ class EmployeePersistenceTest {
     assertThat(saved.getStatus()).isEqualTo(EmployeeStatus.ON_LEAVE);
   }
 
+  /**
+   *
+   * Verifies that employees are retrieved by their department.
+   *
+   */
   @Test
   void employeesAreFoundByDepartment() {
     Department risk = newDepartment("Risk");
@@ -115,6 +140,11 @@ class EmployeePersistenceTest {
     assertThat(employees.findByDepartmentId(legal.getId())).hasSize(1);
   }
 
+  /**
+   *
+   * Verifies that two employees cannot share the same email.
+   *
+   */
   @Test
   void duplicateEmailIsRejected() {
     Department department = newDepartment("Risk");
@@ -124,6 +154,11 @@ class EmployeePersistenceTest {
         .isInstanceOf(DataIntegrityViolationException.class);
   }
 
+  /**
+   *
+   * Verifies that blank, missing or too long employee fields are rejected by validation.
+   *
+   */
   @Test
   void invalidEmployeeIsRejected() {
     Department department = newDepartment("Risk");
@@ -142,6 +177,11 @@ class EmployeePersistenceTest {
         .isInstanceOf(ConstraintViolationException.class);
   }
 
+  /**
+   *
+   * Verifies that the employee string representation does not leak the password hash.
+   *
+   */
   @Test
   void toStringDoesNotExposePassword() {
     Employee employee = newEmployee("john@bank.be", newDepartment("Risk"));
@@ -149,6 +189,11 @@ class EmployeePersistenceTest {
     assertThat(employee.toString()).doesNotContain("hash");
   }
 
+  /**
+   *
+   * Verifies that a department name is unique and that the manager is optional.
+   *
+   */
   @Test
   void departmentNameIsUniqueAndManagerIsOptional() {
     Department department = newDepartment("Risk");
@@ -159,6 +204,11 @@ class EmployeePersistenceTest {
         .isInstanceOf(DataIntegrityViolationException.class);
   }
 
+  /**
+   *
+   * Verifies that the manager of a department is persisted and reloaded.
+   *
+   */
   @Test
   void departmentManagerIsPersisted() {
     Department department = newDepartment("Risk");
@@ -171,6 +221,11 @@ class EmployeePersistenceTest {
     assertThat(found.getManager().getId()).isEqualTo(manager.getId());
   }
 
+  /**
+   *
+   * Verifies that a blank name or a too long description is rejected for a department.
+   *
+   */
   @Test
   void invalidDepartmentIsRejected() {
     assertThatThrownBy(() -> departments.saveAndFlush(new Department("", null, DepartmentStatus.ACTIVE)))
@@ -180,6 +235,11 @@ class EmployeePersistenceTest {
         .isInstanceOf(ConstraintViolationException.class);
   }
 
+  /**
+   *
+   * Verifies that a permission can be shared by several roles (many-to-many).
+   *
+   */
   @Test
   void roleCarriesPermissionsSharedBetweenRoles() {
     Permission approve = permissions.saveAndFlush(
@@ -198,6 +258,11 @@ class EmployeePersistenceTest {
     assertThat(roles.findByName("AUDITOR").orElseThrow().getPermissions()).hasSize(1);
   }
 
+  /**
+   *
+   * Verifies that a role name is unique.
+   *
+   */
   @Test
   void roleNameIsUnique() {
     roles.saveAndFlush(new Role("MANAGER", null, RoleStatus.ACTIVE));
@@ -206,6 +271,11 @@ class EmployeePersistenceTest {
         .isInstanceOf(DataIntegrityViolationException.class);
   }
 
+  /**
+   *
+   * Verifies that a permission code is unique and searchable.
+   *
+   */
   @Test
   void permissionCodeIsUnique() {
     permissions.saveAndFlush(new Permission("VIEW_REPORTS", null, PermissionCategory.REPORT));
@@ -216,6 +286,11 @@ class EmployeePersistenceTest {
         .isInstanceOf(DataIntegrityViolationException.class);
   }
 
+  /**
+   *
+   * Verifies that a blank code or a missing category is rejected for a permission.
+   *
+   */
   @Test
   void invalidPermissionIsRejected() {
     assertThatThrownBy(() -> permissions.saveAndFlush(new Permission(" ", null, PermissionCategory.AUDIT)))
@@ -224,6 +299,11 @@ class EmployeePersistenceTest {
         .isInstanceOf(ConstraintViolationException.class);
   }
 
+  /**
+   *
+   * Verifies that employee roles are persisted and that removing one keeps the role itself.
+   *
+   */
   @Test
   void employeeRolesArePersistedAndRemovable() {
     Role role = roles.saveAndFlush(new Role("MANAGER", null, RoleStatus.ACTIVE));

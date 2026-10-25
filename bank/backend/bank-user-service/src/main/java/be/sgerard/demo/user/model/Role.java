@@ -1,4 +1,4 @@
-package be.sgerard.demo.employee.model;
+package be.sgerard.demo.user.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,6 +7,9 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
@@ -14,16 +17,19 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
  *
- * A fine-grained right (for instance APPROVE_TRANSACTION) that can be granted through roles.
+ * A named set of permissions that can be assigned to user profiles.
  *
  */
 @Entity
-@Table(name = "permission")
-public class Permission {
+@Table(name = "role")
+public class Role {
 
   /**
    *
@@ -53,17 +59,17 @@ public class Permission {
 
   /**
    *
-   * Unique code of the permission.
+   * Unique name of the role.
    *
    */
   @NotBlank
   @Size(max = 100)
-  @Column(name = "code", nullable = false, unique = true, length = 100)
-  private String code;
+  @Column(name = "name", nullable = false, unique = true, length = 100)
+  private String name;
 
   /**
    *
-   * Description of the permission.
+   * Description of the role.
    *
    */
   @Size(max = 500)
@@ -72,53 +78,64 @@ public class Permission {
 
   /**
    *
-   * Functional category.
+   * Status of the role.
    *
    */
   @NotNull
   @Enumerated(EnumType.STRING)
-  @Column(name = "category", nullable = false, length = 20)
-  private PermissionCategory category;
+  @Column(name = "status", nullable = false, length = 20)
+  private RoleStatus status;
+
+  /**
+   *
+   * Permissions granted by the role. A permission can be shared by several roles.
+   *
+   */
+  @ManyToMany
+  @JoinTable(name = "role_permission",
+      joinColumns = @JoinColumn(name = "role_id"),
+      inverseJoinColumns = @JoinColumn(name = "permission_id"))
+  private Set<Permission> permissions = new LinkedHashSet<>();
 
   /**
    *
    * Constructor required by JPA.
    *
    */
-  protected Permission() {
+  protected Role() {
   }
 
   /**
    *
    * Creates a new instance.
    *
-   * @param code Unique code of the permission
-   * @param description Description of the permission
-   * @param category Functional category
+   * @param name Unique name of the role
+   * @param description Description of the role
+   * @param status Status of the role
    *
    */
-  public Permission(String code, String description, PermissionCategory category) {
-    this.code = code;
+  public Role(String name, String description, RoleStatus status) {
+    this.name = name;
     this.description = description;
-    this.category = category;
+    this.status = status;
   }
 
   /**
    *
-   * @return the unique code
+   * @return the name
    *
    */
-  public String getCode() {
-    return code;
+  public String getName() {
+    return name;
   }
 
   /**
    *
-   * @param code the new unique code
+   * @param name the new name
    *
    */
-  public void setCode(String code) {
-    this.code = code;
+  public void setName(String name) {
+    this.name = name;
   }
 
   /**
@@ -141,20 +158,51 @@ public class Permission {
 
   /**
    *
-   * @return the functional category
+   * @return the status
    *
    */
-  public PermissionCategory getCategory() {
-    return category;
+  public RoleStatus getStatus() {
+    return status;
   }
 
   /**
    *
-   * @param category the new functional category
+   * @param status the new status
    *
    */
-  public void setCategory(PermissionCategory category) {
-    this.category = category;
+  public void setStatus(RoleStatus status) {
+    this.status = status;
+  }
+
+  /**
+   *
+   * @return an unmodifiable view of the granted permissions
+   *
+   */
+  public Set<Permission> getPermissions() {
+    return Collections.unmodifiableSet(permissions);
+  }
+
+  /**
+   *
+   * Grants a permission.
+   *
+   * @param permission the permission to grant
+   *
+   */
+  public void addPermission(Permission permission) {
+    permissions.add(permission);
+  }
+
+  /**
+   *
+   * Revokes a permission.
+   *
+   * @param permission the permission to revoke
+   *
+   */
+  public void removePermission(Permission permission) {
+    permissions.remove(permission);
   }
 
   /**
@@ -208,11 +256,11 @@ public class Permission {
 
   /**
    *
-   * Textual representation.
+   * Textual representation without lazy associations.
    *
    */
   @Override
   public String toString() {
-    return "Permission{id=" + getId() + ", code=" + code + ", category=" + category + "}";
+    return "Role{id=" + getId() + ", name=" + name + ", status=" + status + "}";
   }
 }

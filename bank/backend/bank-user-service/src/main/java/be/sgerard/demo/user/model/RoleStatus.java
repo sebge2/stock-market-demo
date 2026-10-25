@@ -1,4 +1,4 @@
-package be.sgerard.demo.employee.model;
+package be.sgerard.demo.user.model;
 
 /**
  *

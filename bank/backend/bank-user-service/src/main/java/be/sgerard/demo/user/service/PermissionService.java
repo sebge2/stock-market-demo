@@ -1,11 +1,11 @@
-package be.sgerard.demo.employee.service;
+package be.sgerard.demo.user.service;
 
-import be.sgerard.demo.employee.mapper.PermissionMapper;
-import be.sgerard.demo.employee.model.Permission;
-import be.sgerard.demo.employee.model.dto.PermissionDto;
-import be.sgerard.demo.employee.model.dto.PermissionRequestDto;
-import be.sgerard.demo.employee.repository.PermissionRepository;
-import be.sgerard.demo.employee.repository.RoleRepository;
+import be.sgerard.demo.user.mapper.PermissionMapper;
+import be.sgerard.demo.user.model.Permission;
+import be.sgerard.demo.user.model.dto.PermissionDto;
+import be.sgerard.demo.user.model.dto.PermissionRequestDto;
+import be.sgerard.demo.user.repository.PermissionRepository;
+import be.sgerard.demo.user.repository.RoleRepository;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,8 @@
-package be.sgerard.demo.employee.mapper;
+package be.sgerard.demo.user.mapper;
 
-import be.sgerard.demo.employee.model.Role;
-import be.sgerard.demo.employee.model.dto.RoleDto;
-import be.sgerard.demo.employee.model.dto.RoleRequestDto;
+import be.sgerard.demo.user.model.Role;
+import be.sgerard.demo.user.model.dto.RoleDto;
+import be.sgerard.demo.user.model.dto.RoleRequestDto;
 import org.springframework.stereotype.Component;
 
 /**

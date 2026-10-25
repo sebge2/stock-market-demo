@@ -1,8 +1,8 @@
-package be.sgerard.demo.employee.mapper;
+package be.sgerard.demo.user.mapper;
 
-import be.sgerard.demo.employee.model.Permission;
-import be.sgerard.demo.employee.model.dto.PermissionDto;
-import be.sgerard.demo.employee.model.dto.PermissionRequestDto;
+import be.sgerard.demo.user.model.Permission;
+import be.sgerard.demo.user.model.dto.PermissionDto;
+import be.sgerard.demo.user.model.dto.PermissionRequestDto;
 import org.springframework.stereotype.Component;
 
 /**

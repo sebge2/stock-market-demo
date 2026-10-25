@@ -1,13 +1,12 @@
-package be.sgerard.demo.employee.service;
+package be.sgerard.demo.user.service;
 
-import be.sgerard.demo.employee.mapper.RoleMapper;
-import be.sgerard.demo.employee.model.Permission;
-import be.sgerard.demo.employee.model.Role;
-import be.sgerard.demo.employee.model.dto.RoleDto;
-import be.sgerard.demo.employee.model.dto.RoleRequestDto;
-import be.sgerard.demo.employee.repository.EmployeeRepository;
-import be.sgerard.demo.employee.repository.PermissionRepository;
-import be.sgerard.demo.employee.repository.RoleRepository;
+import be.sgerard.demo.user.mapper.RoleMapper;
+import be.sgerard.demo.user.model.Permission;
+import be.sgerard.demo.user.model.Role;
+import be.sgerard.demo.user.model.dto.RoleDto;
+import be.sgerard.demo.user.model.dto.RoleRequestDto;
+import be.sgerard.demo.user.repository.PermissionRepository;
+import be.sgerard.demo.user.repository.RoleRepository;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,17 +29,14 @@ public class RoleService {
   private final RoleRepository roleRepository;
   /** Permission persistence. */
   private final PermissionRepository permissionRepository;
-  /** Employee persistence used to protect assigned roles. */
-  private final EmployeeRepository employeeRepository;
   /** API mapper. */
   private final RoleMapper roleMapper;
 
   /** Creates the service. */
   public RoleService(RoleRepository roleRepository, PermissionRepository permissionRepository,
-      EmployeeRepository employeeRepository, RoleMapper roleMapper) {
+      RoleMapper roleMapper) {
     this.roleRepository = roleRepository;
     this.permissionRepository = permissionRepository;
-    this.employeeRepository = employeeRepository;
     this.roleMapper = roleMapper;
   }
 
@@ -69,12 +65,9 @@ public class RoleService {
     return roleMapper.toDto(roleRepository.save(role));
   }
 
-  /** Deletes an unassigned role. */
+  /** Deletes a role. */
   @Transactional
   public void delete(UUID id) {
-    if (employeeRepository.existsByRolesId(id)) {
-      throw new ResponseStatusException(HttpStatus.CONFLICT, "Role is assigned to an employee: " + id);
-    }
     roleRepository.delete(findEntity(id));
   }
 

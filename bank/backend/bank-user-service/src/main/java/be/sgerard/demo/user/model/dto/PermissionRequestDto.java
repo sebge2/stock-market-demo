@@ -1,6 +1,6 @@
-package be.sgerard.demo.employee.model.dto;
+package be.sgerard.demo.user.model.dto;
 
-import be.sgerard.demo.employee.model.PermissionCategory;
+import be.sgerard.demo.user.model.PermissionCategory;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

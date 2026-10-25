@@ -1,6 +1,6 @@
-package be.sgerard.demo.employee.model.dto;
+package be.sgerard.demo.user.model.dto;
 
-import be.sgerard.demo.employee.model.RoleStatus;
+import be.sgerard.demo.user.model.RoleStatus;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;

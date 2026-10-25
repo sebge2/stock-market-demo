@@ -1,6 +1,6 @@
-package be.sgerard.demo.employee.model.dto;
+package be.sgerard.demo.user.model.dto;
 
-import be.sgerard.demo.employee.model.RoleStatus;
+import be.sgerard.demo.user.model.RoleStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

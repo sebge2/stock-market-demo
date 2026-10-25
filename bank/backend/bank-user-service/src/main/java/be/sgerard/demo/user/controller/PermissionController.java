@@ -1,8 +1,8 @@
-package be.sgerard.demo.employee.controller;
+package be.sgerard.demo.user.controller;
 
-import be.sgerard.demo.employee.model.dto.PermissionDto;
-import be.sgerard.demo.employee.model.dto.PermissionRequestDto;
-import be.sgerard.demo.employee.service.PermissionService;
+import be.sgerard.demo.user.model.dto.PermissionDto;
+import be.sgerard.demo.user.model.dto.PermissionRequestDto;
+import be.sgerard.demo.user.service.PermissionService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;

@@ -24,6 +24,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
   /**
    *
+   * Finds an employee by its Keycloak user identifier.
+   *
+   * @param keycloakUserId the Keycloak user identifier
+   * @return the matching employee, if any
+   */
+  Optional<Employee> findByKeycloakUserId(UUID keycloakUserId);
+
+  /**
+   *
    * Finds the employees of a department.
    *
    * @param departmentId the department identifier
@@ -31,12 +40,4 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
    */
   List<Employee> findByDepartmentId(UUID departmentId);
 
-  /**
-   *
-   * Reports whether a role is assigned to at least one employee.
-   *
-   * @param roleId role identifier
-   * @return {@code true} when the role is assigned
-   */
-  boolean existsByRolesId(UUID roleId);
 }

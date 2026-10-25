@@ -4,7 +4,8 @@ Microservice managing the bank employees (persistence layer).
 
 ## Description
 
-- Employees, departments, roles and permissions (JPA entities in `be.sgerard.demo.employee.model`)
+- Employees and departments (JPA entities in `be.sgerard.demo.employee.model`)
+- Roles and permissions are managed by `bank-user-service`.
 - Spring Data repositories in `be.sgerard.demo.employee.repository`
 
 ## Run

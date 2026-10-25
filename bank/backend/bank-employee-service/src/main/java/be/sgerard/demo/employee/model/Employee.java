@@ -9,8 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -19,9 +17,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -91,13 +86,12 @@ public class Employee {
 
   /**
    *
-   * Password hash (never the clear text password).
+   * Identifier of the user managed by Keycloak.
    *
    */
-  @NotBlank
-  @Size(max = 255)
-  @Column(name = "encrypted_password", nullable = false)
-  private String encryptedPassword;
+  @NotNull
+  @Column(name = "user_id", nullable = false, unique = true, updatable = false)
+  private UUID userId;
 
   /**
    *
@@ -120,17 +114,6 @@ public class Employee {
 
   /**
    *
-   * Roles assigned to the employee.
-   *
-   */
-  @ManyToMany
-  @JoinTable(name = "employee_role",
-      joinColumns = @JoinColumn(name = "employee_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id"))
-  private Set<Role> roles = new LinkedHashSet<>();
-
-  /**
-   *
    * Constructor required by JPA.
    *
    */
@@ -144,17 +127,17 @@ public class Employee {
    * @param firstName First name
    * @param lastName Last name
    * @param email Unique email address
-   * @param encryptedPassword Password hash
+   * @param userId Keycloak user identifier
    * @param status Employment status
    * @param department Department of the employee
    *
    */
-  public Employee(String firstName, String lastName, String email, String encryptedPassword,
+  public Employee(String firstName, String lastName, String email, UUID userId,
       EmployeeStatus status, Department department) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.email = email;
-    this.encryptedPassword = encryptedPassword;
+    this.userId = userId;
     this.status = status;
     this.department = department;
   }
@@ -215,20 +198,11 @@ public class Employee {
 
   /**
    *
-   * @return the password hash
+   * @return the Keycloak user identifier
    *
    */
-  public String getEncryptedPassword() {
-    return encryptedPassword;
-  }
-
-  /**
-   *
-   * @param encryptedPassword the new password hash
-   *
-   */
-  public void setEncryptedPassword(String encryptedPassword) {
-    this.encryptedPassword = encryptedPassword;
+  public UUID getUserId() {
+    return userId;
   }
 
   /**
@@ -265,37 +239,6 @@ public class Employee {
    */
   public void setDepartment(Department department) {
     this.department = department;
-  }
-
-  /**
-   *
-   * @return an unmodifiable view of the assigned roles
-   *
-   */
-  public Set<Role> getRoles() {
-    return Collections.unmodifiableSet(roles);
-  }
-
-  /**
-   *
-   * Assigns a role.
-   *
-   * @param role the role to assign
-   *
-   */
-  public void addRole(Role role) {
-    roles.add(role);
-  }
-
-  /**
-   *
-   * Removes a role.
-   *
-   * @param role the role to remove
-   *
-   */
-  public void removeRole(Role role) {
-    roles.remove(role);
   }
 
   /**
@@ -349,7 +292,7 @@ public class Employee {
 
   /**
    *
-   * Textual representation without lazy associations nor the password.
+   * Textual representation without lazy associations nor credentials.
    *
    */
   @Override

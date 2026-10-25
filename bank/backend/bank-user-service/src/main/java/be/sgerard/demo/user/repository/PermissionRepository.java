@@ -1,6 +1,6 @@
-package be.sgerard.demo.employee.repository;
+package be.sgerard.demo.user.repository;
 
-import be.sgerard.demo.employee.model.Permission;
+import be.sgerard.demo.user.model.Permission;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;

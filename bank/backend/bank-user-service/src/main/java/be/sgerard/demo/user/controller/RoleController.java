@@ -1,8 +1,8 @@
-package be.sgerard.demo.employee.controller;
+package be.sgerard.demo.user.controller;
 
-import be.sgerard.demo.employee.model.dto.RoleDto;
-import be.sgerard.demo.employee.model.dto.RoleRequestDto;
-import be.sgerard.demo.employee.service.RoleService;
+import be.sgerard.demo.user.model.dto.RoleDto;
+import be.sgerard.demo.user.model.dto.RoleRequestDto;
+import be.sgerard.demo.user.service.RoleService;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;

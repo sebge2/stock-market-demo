@@ -1,0 +1,30 @@
+{
+  "name": "bank-user-service",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "bank/backend/bank-user-service/src",
+  "projectType": "application",
+  "tags": ["type:backend", "scope:bank", "type:microservice"],
+  "implicitDependencies": ["stocket-market-bom"],
+  "targets": {
+    "build": {
+      "executor": "@nx/maven:build",
+      "options": {},
+      "configurations": {
+        "production": {
+          "args": "-DskipTests"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mvn spring-boot:run",
+        "cwd": "bank/backend/bank-user-service"
+      }
+    },
+    "test": {
+      "executor": "@nx/maven:test",
+      "options": {}
+    }
+  }
+}

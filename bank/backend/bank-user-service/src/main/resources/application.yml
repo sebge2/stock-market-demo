@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: bank-user-service
+  jpa:
+    open-in-view: false
+
+server:
+  port: 8086
+  servlet:
+    context-path: /api/user
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+
+logging:
+  level:
+    root: INFO
+    be.sgerard.demo: DEBUG
+
+management:
+  endpoint:
+    loggers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,loggers,threaddump

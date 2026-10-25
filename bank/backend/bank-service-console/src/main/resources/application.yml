@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: bank-service-console
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+    registry-fetch-interval-seconds: 5
+
+server:
+  port: 8090

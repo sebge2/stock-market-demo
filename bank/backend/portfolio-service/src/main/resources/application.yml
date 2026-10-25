@@ -17,7 +17,18 @@ server:
   servlet:
     context-path: /api/portfolio
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+
 logging:
   level:
     root: INFO
     be.sgerard.demo: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,loggers,threaddump

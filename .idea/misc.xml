@@ -15,6 +15,7 @@
         <option value="$PROJECT_DIR$/bank/backend/bank-api-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-eureka-server/pom.xml" />
         <option value="$PROJECT_DIR$/common/stocket-market-bom/pom.xml" />
+        <option value="$PROJECT_DIR$/bank/backend/bank-service-console/pom.xml" />
       </list>
     </option>
   </component>

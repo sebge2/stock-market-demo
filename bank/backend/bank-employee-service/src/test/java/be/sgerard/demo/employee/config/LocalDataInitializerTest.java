@@ -27,11 +27,11 @@ class LocalDataInitializerTest {
 
   /**
    *
-   * Verifies the local employee is linked to the Keycloak administrator.
+   * Verifies the local employee is linked to the authorization-server administrator.
    *
    */
   @Test
-  void loadsSebastienGerardWithKeycloakReference() {
+  void loadsSebastienGerardWithUserReference() {
     Employee employee = employeeRepository.findByEmail("sebastien.gerard@local.test").orElseThrow();
 
     assertThat(employee.getFirstName()).isEqualTo("Sébastien");

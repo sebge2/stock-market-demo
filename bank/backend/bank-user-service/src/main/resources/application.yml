@@ -5,9 +5,7 @@ spring:
     open-in-view: false
 
 server:
-  port: 8086
-  servlet:
-    context-path: /api/user
+  port: 9000
 
 eureka:
   client:

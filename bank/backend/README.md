@@ -59,7 +59,7 @@ cd portfolio-service && mvn spring-boot:run
 | Service | Port | Endpoint | H2 Console |
 |---------|------|----------|-----------|
 | Bank Employee Service | 8083 | /api/employee | /api/employee/h2-console |
-| Bank User Service | 8086 | /api/user | /api/user/h2-console |
+| Bank User Service | 9000 | / | /h2-console |
 | Client Service | 8084 | /api/client | /api/client/h2-console |
 | Portfolio Service | 8085 | /api/portfolio | /api/portfolio/h2-console |
 

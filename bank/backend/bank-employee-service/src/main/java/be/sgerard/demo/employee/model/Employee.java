@@ -86,7 +86,7 @@ public class Employee {
 
   /**
    *
-   * Identifier of the user managed by Keycloak.
+   * Identifier of the user managed by the user service.
    *
    */
   @NotNull
@@ -127,7 +127,7 @@ public class Employee {
    * @param firstName First name
    * @param lastName Last name
    * @param email Unique email address
-   * @param userId Keycloak user identifier
+   * @param userId user-service identifier
    * @param status Employment status
    * @param department Department of the employee
    *
@@ -198,7 +198,7 @@ public class Employee {
 
   /**
    *
-   * @return the Keycloak user identifier
+   * @return the user-service identifier
    *
    */
   public UUID getUserId() {

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class EmployeeMapper {
   /** Creates an employee entity. */
   public Employee toEntity(EmployeeRequestDto request, Department department) {
-    return new Employee(request.getFirstName(), request.getLastName(), request.getEmail(), request.getKeycloakUserId(), request.getStatus(), department);
+    return new Employee(request.getFirstName(), request.getLastName(), request.getEmail(), request.getUserId(), request.getStatus(), department);
   }
   /** Copies mutable request data. */
   public void updateEntity(EmployeeRequestDto request, Employee employee, Department department) {

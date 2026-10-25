@@ -29,18 +29,18 @@ class EmployeePersistenceTest {
 
   /**
    *
-   * Persists an employee linked to a Keycloak user.
+   * Persists an employee linked to a user-service user.
    *
    */
   @Test
-  void persistsEmployeeWithKeycloakUserReference() {
+  void persistsEmployeeWithUserReference() {
     Department department = departmentRepository.saveAndFlush(
         new Department("Risk", "Risk management", DepartmentStatus.ACTIVE));
-    UUID keycloakUserId = UUID.randomUUID();
+    UUID userId = UUID.randomUUID();
     Employee employee = employeeRepository.saveAndFlush(new Employee("John", "Doe", "john@bank.be",
-        keycloakUserId, EmployeeStatus.ACTIVE, department));
+        userId, EmployeeStatus.ACTIVE, department));
 
-    Employee found = employeeRepository.findByKeycloakUserId(keycloakUserId).orElseThrow();
+    Employee found = employeeRepository.findByUserId(userId).orElseThrow();
     assertThat(found.getId()).isEqualTo(employee.getId());
     assertThat(found.getDepartment().getId()).isEqualTo(department.getId());
   }

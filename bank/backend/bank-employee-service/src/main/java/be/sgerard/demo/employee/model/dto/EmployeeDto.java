@@ -36,14 +36,14 @@ public class EmployeeDto {
     }
 
     /**
-     * @return the Keycloak user identifier
+     * @return the user-service identifier
      */
     public UUID getUserId() {
         return userId;
     }
 
     /**
-     * @param userId the Keycloak user identifier
+     * @param userId the user-service identifier
      */
     public void setUserId(UUID userId) {
         this.userId = userId;

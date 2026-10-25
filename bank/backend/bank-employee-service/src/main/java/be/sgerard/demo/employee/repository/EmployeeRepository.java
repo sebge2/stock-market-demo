@@ -24,12 +24,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, UUID> {
 
   /**
    *
-   * Finds an employee by its Keycloak user identifier.
+   * Finds an employee by its user-service identifier.
    *
-   * @param keycloakUserId the Keycloak user identifier
+   * @param userId the user-service identifier
    * @return the matching employee, if any
    */
-  Optional<Employee> findByKeycloakUserId(UUID keycloakUserId);
+  Optional<Employee> findByUserId(UUID userId);
 
   /**
    *

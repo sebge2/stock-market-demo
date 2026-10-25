@@ -4,23 +4,26 @@ spring:
   jpa:
     open-in-view: false
 
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,env,loggers,threaddump
-
 server:
   port: 8083
   servlet:
     context-path: /api/employee
 
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+
 logging:
   level:
     root: INFO
     be.sgerard.demo: DEBUG
+
+management:
+  endpoint:
+    loggers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,loggers,threaddump

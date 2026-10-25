@@ -16,6 +16,7 @@ Service responsable de:
 mvn spring-boot:run
 # Port: 8085
 # API: http://localhost:8085/api/portfolio
+# Loggers Actuator: http://localhost:8085/api/portfolio/actuator/loggers
 ```
 
 ## 🏗️ Structure

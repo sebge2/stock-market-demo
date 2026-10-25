@@ -9,6 +9,7 @@
     "scope:bank",
     "type:microservice"
   ],
+  "implicitDependencies": ["stocket-market-bom"],
   "targets": {
     "build": {
       "executor": "@nx/maven:build",

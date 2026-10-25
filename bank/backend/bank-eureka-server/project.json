@@ -1,0 +1,25 @@
+{
+  "name": "bank-eureka-server",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "bank/backend/bank-eureka-server/src",
+  "projectType": "library",
+  "tags": ["type:backend", "scope:bank", "type:infrastructure"],
+  "implicitDependencies": ["stocket-market-bom"],
+  "targets": {
+    "build": {
+      "executor": "@nx/maven:build",
+      "options": {}
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mvn spring-boot:run",
+        "cwd": "bank/backend/bank-eureka-server"
+      }
+    },
+    "test": {
+      "executor": "@nx/maven:test",
+      "options": {}
+    }
+  }
+}

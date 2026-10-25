@@ -18,5 +18,6 @@
       }
     }
   },
-  "tags": ["type:backend", "platform:java", "scope:exchange"]
+  "tags": ["type:backend", "platform:java", "scope:exchange"],
+  "implicitDependencies": ["stocket-market-bom"]
 }

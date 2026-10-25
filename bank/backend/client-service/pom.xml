@@ -6,10 +6,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
-        <relativePath/>
+        <groupId>be.sgerard.demo</groupId>
+        <artifactId>stocket-market-bom</artifactId>
+        <version>0.1.0</version>
+        <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
 
     <groupId>com.stockmarket</groupId>
@@ -17,18 +17,6 @@
     <version>0.1.0</version>
     <name>Client Service</name>
     <description>Client account management microservice for Bank</description>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>be.sgerard.demo</groupId>
-                <artifactId>stocket-market-bom</artifactId>
-                <version>0.1.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>

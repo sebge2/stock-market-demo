@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.2.0</version>
-    <relativePath/> <!-- lookup parent from repository -->
+    <groupId>be.sgerard.demo</groupId>
+    <artifactId>stocket-market-bom</artifactId>
+    <version>0.1.0</version>
+    <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
   </parent>
 
   <groupId>be.sgerard.demo</groupId>
@@ -16,18 +16,6 @@
   <version>1.0.0</version>
   <name>Company Service (Exchange)</name>
   <description>Company and listing management microservice for Stock Exchange</description>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>be.sgerard.demo</groupId>
-        <artifactId>stocket-market-bom</artifactId>
-        <version>0.1.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

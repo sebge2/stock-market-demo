@@ -4,27 +4,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
-        <relativePath/>
+        <groupId>be.sgerard.demo</groupId>
+        <artifactId>stocket-market-bom</artifactId>
+        <version>0.1.0</version>
+        <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
     <groupId>be.sgerard.demo</groupId>
     <artifactId>bank-eureka-server</artifactId>
     <version>0.1.0</version>
     <name>Bank Eureka Server</name>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>be.sgerard.demo</groupId>
-                <artifactId>stocket-market-bom</artifactId>
-                <version>0.1.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
     <dependencies>
         <dependency>

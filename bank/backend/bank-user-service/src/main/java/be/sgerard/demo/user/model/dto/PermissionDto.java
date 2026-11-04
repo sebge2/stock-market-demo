@@ -1,6 +1,5 @@
 package be.sgerard.demo.user.model.dto;
 
-import be.sgerard.demo.user.model.PermissionCategory;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -17,8 +16,6 @@ public class PermissionDto {
   private String code;
   /** Permission description. */
   private String description;
-  /** Permission category. */
-  private PermissionCategory category;
   /** Creation timestamp. */
   private LocalDateTime createdAt;
   /** Last update timestamp. */
@@ -36,10 +33,6 @@ public class PermissionDto {
   public String getDescription() { return description; }
   /** @param description the description */
   public void setDescription(String description) { this.description = description; }
-  /** @return the category */
-  public PermissionCategory getCategory() { return category; }
-  /** @param category the category */
-  public void setCategory(PermissionCategory category) { this.category = category; }
   /** @return the creation timestamp */
   public LocalDateTime getCreatedAt() { return createdAt; }
   /** @param createdAt the creation timestamp */

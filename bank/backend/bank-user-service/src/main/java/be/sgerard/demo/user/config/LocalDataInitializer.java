@@ -1,7 +1,6 @@
 package be.sgerard.demo.user.config;
 
 import be.sgerard.demo.user.model.Permission;
-import be.sgerard.demo.user.model.PermissionCategory;
 import be.sgerard.demo.user.model.Role;
 import be.sgerard.demo.user.model.RoleStatus;
 import be.sgerard.demo.user.model.UserAccount;
@@ -62,7 +61,7 @@ public class LocalDataInitializer implements ApplicationRunner {
   public void run(ApplicationArguments args) {
     Permission permission = permissionRepository.findByCode("ADMIN")
         .orElseGet(() -> permissionRepository.save(
-            new Permission("ADMIN", "Administrative access", PermissionCategory.ADMIN)));
+            new Permission("ADMIN", "Administrative access")));
     Role role = roleRepository.findByName("ADMIN")
         .orElseGet(() -> roleRepository.save(
             new Role("ADMIN", "Administrator role", RoleStatus.ACTIVE)));

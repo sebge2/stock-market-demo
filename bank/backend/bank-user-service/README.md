@@ -9,6 +9,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
 ```
 
 - Authorization server: <http://localhost:9000>
+- Swagger: <http://localhost:9000/swagger-ui/index.html>
 - OIDC metadata: <http://localhost:9000/.well-known/openid-configuration>
 - Actuator: <http://localhost:9000/actuator>
 - Roles: <http://localhost:9000/roles>

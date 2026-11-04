@@ -2,8 +2,6 @@ package be.sgerard.demo.user.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,7 +9,6 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -72,16 +69,6 @@ public class Permission {
 
   /**
    *
-   * Functional category.
-   *
-   */
-  @NotNull
-  @Enumerated(EnumType.STRING)
-  @Column(name = "category", nullable = false, length = 20)
-  private PermissionCategory category;
-
-  /**
-   *
    * Constructor required by JPA.
    *
    */
@@ -94,13 +81,11 @@ public class Permission {
    *
    * @param code Unique code of the permission
    * @param description Description of the permission
-   * @param category Functional category
    *
    */
-  public Permission(String code, String description, PermissionCategory category) {
+  public Permission(String code, String description) {
     this.code = code;
     this.description = description;
-    this.category = category;
   }
 
   /**
@@ -137,24 +122,6 @@ public class Permission {
    */
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  /**
-   *
-   * @return the functional category
-   *
-   */
-  public PermissionCategory getCategory() {
-    return category;
-  }
-
-  /**
-   *
-   * @param category the new functional category
-   *
-   */
-  public void setCategory(PermissionCategory category) {
-    this.category = category;
   }
 
   /**
@@ -213,6 +180,6 @@ public class Permission {
    */
   @Override
   public String toString() {
-    return "Permission{id=" + getId() + ", code=" + code + ", category=" + category + "}";
+    return "Permission{id=" + getId() + ", code=" + code + "}";
   }
 }

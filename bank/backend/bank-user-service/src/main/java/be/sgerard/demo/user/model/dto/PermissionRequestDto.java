@@ -1,8 +1,6 @@
 package be.sgerard.demo.user.model.dto;
 
-import be.sgerard.demo.user.model.PermissionCategory;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -26,12 +24,6 @@ public class PermissionRequestDto {
   private String description;
 
   /**
-   * Permission category.
-   */
-  @NotNull
-  private PermissionCategory category;
-
-  /**
    * @return the permission code
    */
   public String getCode() { return code; }
@@ -50,14 +42,4 @@ public class PermissionRequestDto {
    * @param description the permission description
    */
   public void setDescription(String description) { this.description = description; }
-
-  /**
-   * @return the permission category
-   */
-  public PermissionCategory getCategory() { return category; }
-
-  /**
-   * @param category the permission category
-   */
-  public void setCategory(PermissionCategory category) { this.category = category; }
 }

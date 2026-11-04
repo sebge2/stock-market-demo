@@ -1,6 +1,7 @@
 package be.sgerard.demo.user.model.dto;
 
 import be.sgerard.demo.user.model.RoleStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -11,21 +12,29 @@ import java.util.UUID;
  * Public representation of a role and its permission identifiers.
  *
  */
+@Schema(name = "Role")
 public class RoleDto {
 
   /** Role identifier. */
+  @Schema(description = "Role identifier")
   private UUID id;
   /** Role name. */
+  @Schema(description = "Role name")
   private String name;
   /** Role description. */
+  @Schema(description = "Role description")
   private String description;
   /** Role status. */
+  @Schema(description = "Role status")
   private RoleStatus status;
   /** Permission identifiers. */
+  @Schema(description = "Permission identifiers")
   private Set<UUID> permissionIds = new LinkedHashSet<>();
   /** Creation timestamp. */
+  @Schema(description = "Creation timestamp")
   private LocalDateTime createdAt;
   /** Update timestamp. */
+  @Schema(description = "Update timestamp")
   private LocalDateTime updatedAt;
 
   /** @return the identifier */ public UUID getId() { return id; }

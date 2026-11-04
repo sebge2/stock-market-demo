@@ -27,13 +27,15 @@ class LocalDataInitializerTest {
 
   /**
    *
-   * Verifies the ADMIN role grants the ADMIN permission.
+   * Verifies the ADMIN role grants the administration and role permissions.
    *
    */
   @Test
   void loadsAdministratorAuthorization() {
     Role role = roleRepository.findByName("ADMIN").orElseThrow();
 
-    assertThat(role.getPermissions()).extracting(Permission::getCode).containsExactly("ADMIN");
+    assertThat(role.getPermissions()).extracting(Permission::getCode).containsExactlyInAnyOrder("ADMIN", "ROLE_LIST", "ROLE_CREATE",
+        "ROLE_UPDATE", "ROLE_DELETE", "PERMISSION_LIST", "PERMISSION_CREATE", "PERMISSION_UPDATE",
+        "PERMISSION_DELETE", "USER_LIST", "USER_CREATE", "USER_UPDATE", "USER_DELETE");
   }
 }

@@ -1,6 +1,7 @@
 package be.sgerard.demo.user.model.dto;
 
 import be.sgerard.demo.user.model.RoleStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,20 +14,25 @@ import java.util.UUID;
  * Payload used to create or update a role and its permissions.
  *
  */
+@Schema(name = "RoleRequest")
 public class RoleRequestDto {
 
   /** Role name. */
   @NotBlank
   @Size(max = 100)
+  @Schema(description = "Role name")
   private String name;
   /** Role description. */
   @Size(max = 500)
+  @Schema(description = "Role description")
   private String description;
   /** Role status. */
   @NotNull
+  @Schema(description = "Role status")
   private RoleStatus status;
   /** Permission identifiers assigned to the role. */
   @NotNull
+  @Schema(description = "Permission identifiers assigned to the role")
   private Set<UUID> permissionIds = new LinkedHashSet<>();
 
   /** @return the role name */

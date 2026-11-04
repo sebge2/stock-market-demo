@@ -83,4 +83,40 @@ public class UserAccount {
   public Set<Role> getRoles() { return Collections.unmodifiableSet(roles); }
   /** @param role role to grant */
   public void addRole(Role role) { roles.add(role); }
+
+  /**
+   *
+   * @param username the new login name
+   *
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  /**
+   *
+   * @param email the new email address
+   *
+   */
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  /**
+   *
+   * @param passwordHash the new BCrypt password hash
+   *
+   */
+  public void setPasswordHash(String passwordHash) {
+    this.passwordHash = passwordHash;
+  }
+
+  /**
+   *
+   * @param role role to revoke
+   *
+   */
+  public void removeRole(Role role) {
+    roles.remove(role);
+  }
 }

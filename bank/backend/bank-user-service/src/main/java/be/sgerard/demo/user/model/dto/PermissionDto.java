@@ -1,5 +1,6 @@
 package be.sgerard.demo.user.model.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -8,17 +9,23 @@ import java.util.UUID;
  * Public representation of a permission.
  *
  */
+@Schema(name = "Permission")
 public class PermissionDto {
 
   /** Permission identifier. */
+  @Schema(description = "Permission identifier")
   private UUID id;
   /** Permission code. */
+  @Schema(description = "Permission code")
   private String code;
   /** Permission description. */
+  @Schema(description = "Permission description")
   private String description;
   /** Creation timestamp. */
+  @Schema(description = "Creation timestamp")
   private LocalDateTime createdAt;
   /** Last update timestamp. */
+  @Schema(description = "Last update timestamp")
   private LocalDateTime updatedAt;
 
   /** @return the identifier */

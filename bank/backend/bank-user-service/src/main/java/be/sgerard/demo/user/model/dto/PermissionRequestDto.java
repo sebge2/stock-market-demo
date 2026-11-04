@@ -1,5 +1,6 @@
 package be.sgerard.demo.user.model.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -8,6 +9,7 @@ import jakarta.validation.constraints.Size;
  * Payload used to create or update a permission.
  *
  */
+@Schema(name = "PermissionRequest")
 public class PermissionRequestDto {
 
   /**
@@ -15,12 +17,14 @@ public class PermissionRequestDto {
    */
   @NotBlank
   @Size(max = 100)
+  @Schema(description = "Permission code")
   private String code;
 
   /**
    * Permission description.
    */
   @Size(max = 500)
+  @Schema(description = "Permission description")
   private String description;
 
   /**

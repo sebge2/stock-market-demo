@@ -52,20 +52,29 @@ public class LocalDataInitializer implements ApplicationRunner {
 
   /**
    *
-   * Creates the ADMIN role and permission when absent.
+   * Creates the ADMIN role, its permissions and the administrator account when absent.
    *
    * @param args startup arguments
    */
   @Override
   @Transactional
   public void run(ApplicationArguments args) {
-    Permission permission = permissionRepository.findByCode("ADMIN")
-        .orElseGet(() -> permissionRepository.save(
-            new Permission("ADMIN", "Administrative access")));
     Role role = roleRepository.findByName("ADMIN")
         .orElseGet(() -> roleRepository.save(
             new Role("ADMIN", "Administrator role", RoleStatus.ACTIVE)));
-    role.addPermission(permission);
+    role.addPermission(findOrCreatePermission("ADMIN", "Administrative access"));
+    role.addPermission(findOrCreatePermission("ROLE_LIST", "List and read roles"));
+    role.addPermission(findOrCreatePermission("ROLE_CREATE", "Create roles"));
+    role.addPermission(findOrCreatePermission("ROLE_UPDATE", "Update roles"));
+    role.addPermission(findOrCreatePermission("ROLE_DELETE", "Delete roles"));
+    role.addPermission(findOrCreatePermission("PERMISSION_LIST", "List and read permissions"));
+    role.addPermission(findOrCreatePermission("PERMISSION_CREATE", "Create permissions"));
+    role.addPermission(findOrCreatePermission("PERMISSION_UPDATE", "Update permissions"));
+    role.addPermission(findOrCreatePermission("PERMISSION_DELETE", "Delete permissions"));
+    role.addPermission(findOrCreatePermission("USER_LIST", "List and read users"));
+    role.addPermission(findOrCreatePermission("USER_CREATE", "Create users"));
+    role.addPermission(findOrCreatePermission("USER_UPDATE", "Update users"));
+    role.addPermission(findOrCreatePermission("USER_DELETE", "Delete users"));
     roleRepository.save(role);
 
     UserAccount administrator = userAccountRepository.findByUsername("sebastien.gerard")
@@ -73,5 +82,18 @@ public class LocalDataInitializer implements ApplicationRunner {
             "sebastien.gerard", "sebastien.gerard@local.test", passwordEncoder.encode("changeit")));
     administrator.addRole(role);
     userAccountRepository.save(administrator);
+  }
+
+  /**
+   *
+   * Returns the permission with the given code, creating it when absent.
+   *
+   * @param code permission code
+   * @param description permission description
+   * @return the existing or created permission
+   */
+  private Permission findOrCreatePermission(String code, String description) {
+    return permissionRepository.findByCode(code)
+        .orElseGet(() -> permissionRepository.save(new Permission(code, description)));
   }
 }

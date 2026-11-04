@@ -133,6 +133,10 @@ Description des agents (rôles/acteurs) qui composent l'écosystème financier.
 9. Les entités JPA n'implémentent pas equals et hashcode.
 10. Use final variable if possible, but not for function parameters.
 11. Don't use final fields in JPA entities.
+12. Check that every endpoint is secured.
+12. Check that every endpoint is documented.
+13. Don't user "var" keyword, but use "final" keyword if possible.
+14. Remove the suffix "DTO" from objects declared in Open API.
 
 ---
 

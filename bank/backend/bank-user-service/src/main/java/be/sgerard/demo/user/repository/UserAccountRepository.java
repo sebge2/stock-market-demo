@@ -20,4 +20,14 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> 
    * @return matching account, if present
    */
   Optional<UserAccount> findByUsername(String username);
+
+  /**
+   *
+   * Finds an account by email address.
+   *
+   * @param email email address
+   * @return matching account, if present
+   *
+   */
+  Optional<UserAccount> findByEmail(String email);
 }

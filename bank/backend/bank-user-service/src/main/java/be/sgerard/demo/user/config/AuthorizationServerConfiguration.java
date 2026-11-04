@@ -61,7 +61,7 @@ public class AuthorizationServerConfiguration {
 
   /**
    *
-   * Configures form login for user authentication.
+   * Configures form login and bearer-token (JWT) authentication for the application endpoints.
    *
    * @param http HTTP security builder
    * @return application filter chain
@@ -71,7 +71,9 @@ public class AuthorizationServerConfiguration {
   @Order(2)
   public SecurityFilterChain applicationSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/**").permitAll()
-        .anyRequest().authenticated()).formLogin(Customizer.withDefaults());
+        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+        .anyRequest().authenticated()).formLogin(Customizer.withDefaults())
+        .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
     return http.build();
   }
 

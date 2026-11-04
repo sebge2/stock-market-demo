@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.security.OAuthFlow;
 import io.swagger.v3.oas.models.security.OAuthFlows;
 import io.swagger.v3.oas.models.security.Scopes;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,14 +26,15 @@ public class OpenApiConfiguration {
    *
    * Describes the API and its OAuth2 authorization-code flow.
    *
+   * @param baseUrl public base URL of this service
    * @return OpenAPI definition
    */
   @Bean
-  public OpenAPI openApi() {
+  public OpenAPI openApi(@Value("${bank.user-service.base-url}") String baseUrl) {
     final OAuthFlow flow = new OAuthFlow()
-        .authorizationUrl("http://localhost:9000/oauth2/authorize")
-        .tokenUrl("http://localhost:9000/oauth2/token")
-        .scopes(new Scopes().addString("openid", "OpenID Connect").addString("profile", "User profile"));
+        .authorizationUrl(baseUrl + "/oauth2/authorize")
+        .tokenUrl(baseUrl + "/oauth2/token")
+        .scopes(new Scopes().addString("user.read", "Read the current user profile"));
     return new OpenAPI()
         .info(new Info().title("Bank User Service API").version("0.1.0"))
         .components(new Components().addSecuritySchemes(OAUTH2_SCHEME,

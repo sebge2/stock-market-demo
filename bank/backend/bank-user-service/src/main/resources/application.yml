@@ -7,6 +7,17 @@ spring:
 server:
   port: 9000
 
+bank:
+  user-service:
+    base-url: ${BANK_USER_SERVICE_BASE_URL:http://localhost:9000}
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: swagger-ui
+      use-pkce-with-authorization-code-grant: true
+      scopes: user.read
+
 eureka:
   client:
     service-url:

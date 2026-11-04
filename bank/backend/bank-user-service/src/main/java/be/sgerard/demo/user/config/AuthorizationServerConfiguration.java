@@ -11,6 +11,7 @@ import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -41,6 +42,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class AuthorizationServerConfiguration {
 
+  /** Client id of the public client used by Swagger UI. */
+  public static final String SWAGGER_CLIENT_ID = "swagger-ui";
+
   /**
    *
    * Configures OAuth2 and OIDC protocol endpoints.
@@ -61,7 +65,7 @@ public class AuthorizationServerConfiguration {
 
   /**
    *
-   * Configures form login for user authentication.
+   * Configures form login and bearer-token (JWT) authentication for the application endpoints.
    *
    * @param http HTTP security builder
    * @return application filter chain
@@ -71,7 +75,9 @@ public class AuthorizationServerConfiguration {
   @Order(2)
   public SecurityFilterChain applicationSecurityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/**").permitAll()
-        .anyRequest().authenticated()).formLogin(Customizer.withDefaults());
+        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+        .anyRequest().authenticated()).formLogin(Customizer.withDefaults())
+        .oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
     return http.build();
   }
 
@@ -79,10 +85,12 @@ public class AuthorizationServerConfiguration {
    *
    * Registers local OAuth2 clients.
    *
+   * @param baseUrl public base URL of this service
    * @return registered client repository
    */
   @Bean
-  public RegisteredClientRepository registeredClientRepository() {
+  public RegisteredClientRepository registeredClientRepository(
+      @Value("${bank.user-service.base-url}") String baseUrl) {
     RegisteredClient frontend = RegisteredClient.withId(UUID.randomUUID().toString())
         .clientId("bank-frontend")
         .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
@@ -94,7 +102,15 @@ public class AuthorizationServerConfiguration {
         .scope("user.read")
         .clientSettings(ClientSettings.builder().requireProofKey(true).build())
         .build();
-    return new InMemoryRegisteredClientRepository(frontend);
+    RegisteredClient swagger = RegisteredClient.withId(UUID.randomUUID().toString())
+        .clientId(SWAGGER_CLIENT_ID)
+        .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+        .redirectUri(baseUrl + "/swagger-ui/oauth2-redirect.html")
+        .scope("user.read")
+        .clientSettings(ClientSettings.builder().requireProofKey(true).requireAuthorizationConsent(false).build())
+        .build();
+    return new InMemoryRegisteredClientRepository(frontend, swagger);
   }
 
   /**
@@ -127,11 +143,13 @@ public class AuthorizationServerConfiguration {
    *
    * Defines the issuer published by discovery metadata.
    *
+   * @param baseUrl public base URL of this service
    * @return authorization-server settings
    */
   @Bean
-  public AuthorizationServerSettings authorizationServerSettings() {
-    return AuthorizationServerSettings.builder().issuer("http://localhost:9000").build();
+  public AuthorizationServerSettings authorizationServerSettings(
+      @Value("${bank.user-service.base-url}") String baseUrl) {
+    return AuthorizationServerSettings.builder().issuer(baseUrl).build();
   }
 
   /**

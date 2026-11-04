@@ -75,6 +75,8 @@ public class UserAccount {
   public UUID getId() { return id; }
   /** @return the login name */
   public String getUsername() { return username; }
+  /** @return the email address */
+  public String getEmail() { return email; }
   /** @return the password hash */
   public String getPasswordHash() { return passwordHash; }
   /** @return assigned roles */

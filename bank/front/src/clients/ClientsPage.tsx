@@ -64,12 +64,12 @@ export function ClientsPage({ clients, loading }: ClientsPageProps) {
           <div className="eyebrow">Clientèle</div>
           <h1>Clients</h1>
         </div>
-        <button type="button" className="btn-primary" disabled title="Création indisponible pour le moment">
+        <a href="#client-new" className="btn-primary">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
             <path d="M10 4v12M4 10h12" />
           </svg>
           Nouveau client
-        </button>
+        </a>
       </header>
 
       <section aria-label="Liste des clients" className="card" aria-busy={loading}>

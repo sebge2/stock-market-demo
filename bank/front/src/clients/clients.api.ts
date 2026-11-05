@@ -59,6 +59,8 @@ export interface ClientChanges {
   firstName: string;
   /** Last name. */
   lastName: string;
+  /** Email address, required on creation (used to create the user account). */
+  email?: string;
 }
 
 /** Maps a client returned by the API to the displayed model. */
@@ -113,6 +115,25 @@ export async function updateClient(id: string, changes: ClientChanges): Promise<
   });
   if (!response.ok) {
     throw new ApiError(response.status, `Erreur ${response.status} lors de la modification du client`);
+  }
+  return toClient((await response.json()) as ClientApi);
+}
+
+/** Creates a client (and its user account in the user service) and returns it. */
+export async function createClient(changes: ClientChanges): Promise<Client> {
+  const response = await fetch(`${CLIENT_API_URL}/clients`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${getAccessToken() ?? ''}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: changes.type === 'Entreprise' ? 'COMPANY' : 'INDIVIDUAL',
+      status: changes.status === 'Actif' ? 'ACTIVE' : 'INACTIVE',
+      firstName: changes.firstName,
+      lastName: changes.lastName,
+      email: changes.email,
+    }),
+  });
+  if (!response.ok) {
+    throw new ApiError(response.status, `Erreur ${response.status} lors de la création du client`);
   }
   return toClient((await response.json()) as ClientApi);
 }

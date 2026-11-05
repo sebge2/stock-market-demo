@@ -10,6 +10,12 @@ const STATUSES: ClientStatus[] = ['Actif', 'Inactif'];
 
 /** Props of the client form. */
 interface ClientFormProps {
+  /** Form title. */
+  title?: string;
+  /** Label of the submit button. */
+  submitLabel?: string;
+  /** Whether the email field is shown and required (client creation). */
+  withEmail?: boolean;
   /** Initial values of the fields. */
   initial: ClientChanges;
   /** Saves the changes; rejects when the call fails. */
@@ -19,11 +25,12 @@ interface ClientFormProps {
 }
 
 /** Form used to edit all the information of a client. */
-export function ClientForm({ initial, onSubmit, onCancel }: ClientFormProps) {
+export function ClientForm({ title = 'Modifier la fiche', submitLabel = 'Enregistrer', withEmail = false, initial, onSubmit, onCancel }: ClientFormProps) {
   const [type, setType] = useState(initial.type);
   const [status, setStatus] = useState(initial.status);
   const [firstName, setFirstName] = useState(initial.firstName);
   const [lastName, setLastName] = useState(initial.lastName);
+  const [email, setEmail] = useState(initial.email ?? '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,21 +38,25 @@ export function ClientForm({ initial, onSubmit, onCancel }: ClientFormProps) {
     event.preventDefault();
     setSaving(true);
     setError(null);
-    onSubmit({ type, status, firstName: firstName.trim(), lastName: lastName.trim() }).catch((e: Error) => {
+    onSubmit({ type, status, firstName: firstName.trim(), lastName: lastName.trim(), ...(withEmail ? { email: email.trim() } : {}) }).catch((e: Error) => {
       setError(
         e instanceof ApiError && e.status === 403
-          ? "Vous n'avez pas la permission de modifier ce client."
+          ? `Vous n'avez pas la permission de ${withEmail ? 'créer' : 'modifier'} ce client.`
           : e instanceof ApiError && e.status === 400
             ? 'Les informations saisies ne sont pas valides.'
-            : e.message,
+            : e instanceof ApiError && e.status === 409
+              ? 'Un client ou un utilisateur avec ce courriel existe déjà.'
+              : e instanceof ApiError && (e.status === 502 || e.status === 503)
+                ? 'Le service des utilisateurs est indisponible, réessayez plus tard.'
+                : e.message,
       );
       setSaving(false);
     });
   };
 
   return (
-    <form aria-label="Modifier la fiche" className="panel form" onSubmit={submit}>
-      <h2>Modifier la fiche</h2>
+    <form aria-label={title} className="panel form" onSubmit={submit}>
+      <h2>{title}</h2>
       {error && <div role="alert" className="alert">{error}</div>}
       <div className="form-grid">
         <label className="form-field">
@@ -56,6 +67,12 @@ export function ClientForm({ initial, onSubmit, onCancel }: ClientFormProps) {
           <span className="field-label">Nom</span>
           <input required maxLength={100} value={lastName} onChange={(e) => setLastName(e.target.value)} />
         </label>
+        {withEmail && (
+          <label className="form-field">
+            <span className="field-label">Courriel</span>
+            <input required type="email" maxLength={255} value={email} onChange={(e) => setEmail(e.target.value)} />
+          </label>
+        )}
         <label className="form-field">
           <span className="field-label">Type</span>
           <select value={type} onChange={(e) => setType(e.target.value as ClientType)}>
@@ -75,8 +92,8 @@ export function ClientForm({ initial, onSubmit, onCancel }: ClientFormProps) {
       </div>
       <div className="form-actions">
         <button type="button" className="btn-secondary" onClick={onCancel} disabled={saving}>Annuler</button>
-        <button type="submit" className="btn-primary" disabled={saving || firstName.trim() === '' || lastName.trim() === ''}>
-          {saving ? 'Enregistrement…' : 'Enregistrer'}
+        <button type="submit" className="btn-primary" disabled={saving || firstName.trim() === '' || lastName.trim() === '' || (withEmail && email.trim() === '')}>
+          {saving ? 'Enregistrement…' : submitLabel}
         </button>
       </div>
     </form>

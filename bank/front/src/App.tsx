@@ -4,7 +4,8 @@ import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './a
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
 import { EmployeeForm } from './employees/EmployeeForm';
-import { type Client, fetchClients, updateClient } from './clients/clients.api';
+import { type Client, createClient, fetchClients, updateClient } from './clients/clients.api';
+import { ClientCreatePage } from './clients/ClientCreatePage';
 import { ClientDetailPage } from './clients/ClientDetailPage';
 import { ClientsPage } from './clients/ClientsPage';
 import { DashboardPage } from './dashboard/DashboardPage';
@@ -266,7 +267,15 @@ export function App() {
         {onClients ? (
           <>
             {clientsError && <div role="alert" className="alert">{clientsError}</div>}
-            {clientRoute ? (
+            {clientRoute === 'new' ? (
+              <ClientCreatePage
+                onCreate={async (changes) => {
+                  const created = await createClient(changes);
+                  setClients((current) => [created, ...current]);
+                  window.location.hash = `#client-${created.id}`;
+                }}
+              />
+            ) : clientRoute ? (
               <ClientDetailPage
                 client={clients.find((c) => c.id === clientRoute)}
                 tab={clientSection === 'portfolio' ? 'portfolio' : 'info'}

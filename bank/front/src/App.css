@@ -1039,3 +1039,12 @@ a.tab {
 .row-chevron:hover {
   color: #1a56b0;
 }
+
+a.btn-primary {
+  color: #fff;
+  text-decoration: none;
+}
+
+a.btn-primary:hover {
+  background: #154790;
+}

@@ -7,6 +7,12 @@ const STATUSES: EmployeeStatus[] = ['Actif', 'Inactif', 'Suspendu', 'En congé']
 
 /** Props of the employee form. */
 interface EmployeeFormProps {
+  /** Form title. */
+  title: string;
+  /** Label of the submit button. */
+  submitLabel: string;
+  /** Message displayed when the server refuses the action (403). */
+  forbiddenMessage: string;
   /** Initial values of the fields. */
   initial: EmployeeChanges;
   /** Departments that can be chosen. */
@@ -17,8 +23,8 @@ interface EmployeeFormProps {
   onCancel: () => void;
 }
 
-/** Form used to edit an employee sheet. */
-export function EmployeeForm({ initial, departments, onSubmit, onCancel }: EmployeeFormProps) {
+/** Form used to create or edit an employee. */
+export function EmployeeForm({ title, submitLabel, forbiddenMessage, initial, departments, onSubmit, onCancel }: EmployeeFormProps) {
   const [firstName, setFirstName] = useState(initial.firstName);
   const [lastName, setLastName] = useState(initial.lastName);
   const [email, setEmail] = useState(initial.email);
@@ -42,18 +48,20 @@ export function EmployeeForm({ initial, departments, onSubmit, onCancel }: Emplo
     }).catch((e: Error) => {
       setError(
         e instanceof ApiError && e.status === 409
-          ? 'Un employé avec ce courriel existe déjà.'
+          ? 'Un employé ou un utilisateur avec ce courriel existe déjà.'
           : e instanceof ApiError && e.status === 403
-            ? "Vous n'avez pas la permission de modifier cet employé."
-            : e.message,
+            ? forbiddenMessage
+            : e instanceof ApiError && (e.status === 502 || e.status === 503)
+              ? "Le service des utilisateurs est indisponible, réessayez plus tard."
+              : e.message,
       );
       setSaving(false);
     });
   };
 
   return (
-    <form aria-label="Modifier la fiche" className="panel form" onSubmit={submit}>
-      <h2>Modifier la fiche</h2>
+    <form aria-label={title} className="panel form" onSubmit={submit}>
+      <h2>{title}</h2>
       {error && <div role="alert" className="alert">{error}</div>}
       <div className="form-grid">
         <label className="form-field">
@@ -99,7 +107,7 @@ export function EmployeeForm({ initial, departments, onSubmit, onCancel }: Emplo
           className="btn-primary"
           disabled={saving || firstName.trim() === '' || lastName.trim() === '' || email.trim() === ''}
         >
-          {saving ? 'Enregistrement…' : 'Enregistrer'}
+          {saving ? 'Enregistrement…' : submitLabel}
         </button>
       </div>
     </form>

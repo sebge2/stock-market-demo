@@ -3,10 +3,11 @@ import './App.css';
 import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './auth/auth';
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
+import { EmployeeForm } from './employees/EmployeeForm';
 import { DashboardPage } from './dashboard/DashboardPage';
 import { DepartmentDetailPage } from './departments/DepartmentDetailPage';
 import { DepartmentsPage } from './departments/DepartmentsPage';
-import { ApiError, type Department, createDepartment, fetchDepartments, updateDepartment, updateEmployee, fetchEmployees } from './employees/employees.api';
+import { ApiError, type Department, createDepartment, createEmployee, fetchDepartments, updateDepartment, updateEmployee, fetchEmployees } from './employees/employees.api';
 import {
   type Employee,
   type EmployeeStatus,
@@ -57,6 +58,7 @@ export function App() {
   const [department, setDepartment] = useState('Tous');
   const [seniority, setSeniority] = useState('Toutes');
   const [page, setPage] = useState(1);
+  const [creatingEmployee, setCreatingEmployee] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [departmentList, setDepartmentList] = useState<Department[]>([]);
   const [route, setRoute] = useState(window.location.hash);
@@ -276,7 +278,7 @@ export function App() {
             <div className="eyebrow">Ressources humaines</div>
             <h1>Annuaire des employés</h1>
           </div>
-          <button type="button" className="btn-primary">
+          <button type="button" className="btn-primary" disabled={creatingEmployee} onClick={() => setCreatingEmployee(true)}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
               <path d="M10 4v12M4 10h12" />
             </svg>
@@ -285,6 +287,23 @@ export function App() {
         </header>
 
         {error && <div role="alert" className="alert">{error}</div>}
+
+        {creatingEmployee && (
+          <EmployeeForm
+            title="Nouvel employé"
+            submitLabel="Créer"
+            forbiddenMessage="Vous n'avez pas la permission de créer un employé."
+            initial={{ firstName: '', lastName: '', email: '', jobTitle: '', status: 'Actif', departmentId: null }}
+            departments={departmentList}
+            onSubmit={async (input) => {
+              const created = await createEmployee(input, departmentList);
+              setEmployees((current) => [...current, created]);
+              setCreatingEmployee(false);
+              window.location.hash = `#employee-${created.id}`;
+            }}
+            onCancel={() => setCreatingEmployee(false)}
+          />
+        )}
 
         <section aria-label="Liste des employés" className="card" aria-busy={loading}>
           <div className="tabs">

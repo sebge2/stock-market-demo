@@ -173,16 +173,27 @@ export interface EmployeeChanges {
   departmentId: string | null;
 }
 
-/** Updates an employee and returns it, with its department name resolved from the given departments. */
-export async function updateEmployee(id: string, changes: EmployeeChanges, departments: Department[]): Promise<Employee> {
-  const updated = await send<EmployeeApi>('PUT', `/employees/${id}`, {
+/** Converts the entered employee data to the API payload. */
+function toEmployeeRequest(changes: EmployeeChanges) {
+  return {
     firstName: changes.firstName,
     lastName: changes.lastName,
     email: changes.email,
     jobTitle: changes.jobTitle || null,
     status: (Object.keys(STATUS_LABELS) as EmployeeApi['status'][]).find((k) => STATUS_LABELS[k] === changes.status),
     departmentId: changes.departmentId,
-  });
+  };
+}
+
+/** Creates an employee (and its user account in the user service) and returns it. */
+export async function createEmployee(changes: EmployeeChanges, departments: Department[]): Promise<Employee> {
+  const created = await send<EmployeeApi>('POST', '/employees', toEmployeeRequest(changes));
+  return toEmployee(created, new Map(departments.map((d) => [d.id, d.name])));
+}
+
+/** Updates an employee and returns it, with its department name resolved from the given departments. */
+export async function updateEmployee(id: string, changes: EmployeeChanges, departments: Department[]): Promise<Employee> {
+  const updated = await send<EmployeeApi>('PUT', `/employees/${id}`, toEmployeeRequest(changes));
   return toEmployee(updated, new Map(departments.map((d) => [d.id, d.name])));
 }
 

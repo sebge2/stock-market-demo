@@ -91,6 +91,9 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
 
       {editing && (
         <EmployeeForm
+          title="Modifier la fiche"
+          submitLabel="Enregistrer"
+          forbiddenMessage="Vous n'avez pas la permission de modifier cet employé."
           initial={{
             firstName: employee.firstName,
             lastName: employee.lastName,

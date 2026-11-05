@@ -797,10 +797,6 @@ select:focus-visible {
   grid-template-columns: 2.2fr 2fr 1.2fr;
 }
 
-.btn-outline:disabled {
-  background: #fff;
-}
-
 .kpi-foot {
   display: flex;
   align-items: center;

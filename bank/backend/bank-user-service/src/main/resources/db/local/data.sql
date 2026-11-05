@@ -111,6 +111,7 @@ VALUES ('00000000-0000-4000-a000-000000000001', 'authorization_code'),
 
 INSERT INTO oauth_client_redirect_uri (oauth_client_id, redirect_uri)
 VALUES ('00000000-0000-4000-a000-000000000001', 'http://localhost:4200/login/oauth2/code/bank'),
+       ('00000000-0000-4000-a000-000000000001', 'http://localhost:3000/auth/callback'),
        ('00000000-0000-4000-a000-000000000002', 'http://localhost:9000/swagger-ui/oauth2-redirect.html'),
   ('00000000-0000-4000-a000-000000000003', 'http://localhost:8083/api/employee/swagger-ui/oauth2-redirect.html'),
   ('00000000-0000-4000-a000-000000000004', 'http://localhost:8084/api/client/swagger-ui/oauth2-redirect.html'),
@@ -120,6 +121,7 @@ INSERT INTO oauth_client_scope (oauth_client_id, scope)
 VALUES ('00000000-0000-4000-a000-000000000001', 'openid'),
        ('00000000-0000-4000-a000-000000000001', 'profile'),
        ('00000000-0000-4000-a000-000000000001', 'user.read'),
+       ('00000000-0000-4000-a000-000000000001', 'employee.read'),
        ('00000000-0000-4000-a000-000000000002', 'user.read'),
   ('00000000-0000-4000-a000-000000000003', 'employee.read'),
   ('00000000-0000-4000-a000-000000000004', 'client.read'),

@@ -1,0 +1,48 @@
+/** Employment status of an employee. */
+export type EmployeeStatus = 'Actif' | 'Inactif' | 'Suspendu' | 'En congé';
+
+/** Employee row displayed in the directory. */
+export interface Employee {
+  /** Employee display name. */
+  name: string;
+  /** Employee registration number. */
+  matricule: string;
+  /** Job title. */
+  position: string;
+  /** Department name. */
+  department: string;
+  /** Hiring date (ISO format). */
+  hireDate: string;
+  /** Employment status. */
+  status: EmployeeStatus;
+}
+
+/** Seniority filter options, keyed by label with the matching predicate on years of service. */
+export const SENIORITY_FILTERS: Record<string, (years: number) => boolean> = {
+  Toutes: () => true,
+  "Moins d'un an": (years) => years < 1,
+  '1 à 5 ans': (years) => years >= 1 && years < 5,
+  'Plus de 5 ans': (years) => years >= 5,
+};
+
+/** Returns the number of full years elapsed since the given ISO date. */
+export function yearsSince(isoDate: string, now: Date = new Date()): number {
+  const hired = new Date(isoDate);
+  return (now.getTime() - hired.getTime()) / (365.25 * 24 * 3600 * 1000);
+}
+
+/** Formats an ISO date as dd/MM/yyyy. */
+export function formatDate(isoDate: string): string {
+  const [year, month, day] = isoDate.split('-');
+  return `${day}/${month}/${year}`;
+}
+
+/** Returns the initials of a name (first letters of the first two words). */
+export function initials(name: string): string {
+  return name
+    .split(' ')
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+}

@@ -195,6 +195,7 @@ public class ClientService {
     final String username = UserCreationHelper.generateUsername(request.getEmail());
     final UserServiceCreationRequestDto userRequest = new UserServiceCreationRequestDto(
         username,
+        request.getFirstName() + " " + request.getLastName(),
         request.getEmail(),
         UserCreationHelper.generateTemporaryPassword(),
         UserCreationHelper.createDefaultRoleIds());

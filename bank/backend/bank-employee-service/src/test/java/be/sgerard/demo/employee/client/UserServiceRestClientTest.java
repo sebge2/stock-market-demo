@@ -110,7 +110,7 @@ class UserServiceRestClientTest {
    *
    */
   private UserServiceCreationRequestDto request() {
-    return new UserServiceCreationRequestDto("john.doe", "john.doe@example.com", "Secret123!",
+    return new UserServiceCreationRequestDto("john.doe", "John Doe", "john.doe@example.com", "Secret123!",
         new LinkedHashSet<>());
   }
 

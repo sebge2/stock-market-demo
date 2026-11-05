@@ -4,7 +4,9 @@ import be.sgerard.demo.employee.mapper.DepartmentMapper;
 import be.sgerard.demo.employee.model.Department;
 import be.sgerard.demo.employee.model.dto.DepartmentDto;
 import be.sgerard.demo.employee.model.dto.DepartmentRequestDto;
+import be.sgerard.demo.employee.model.Employee;
 import be.sgerard.demo.employee.repository.DepartmentRepository;
+import be.sgerard.demo.employee.repository.EmployeeRepository;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -37,14 +39,23 @@ public class DepartmentService {
 
   /**
    *
+   * Employee persistence, used to resolve department managers.
+   *
+   */
+  private final EmployeeRepository employeeRepository;
+
+  /**
+   *
    * Creates the department service.
    *
    * @param departmentRepository repository used to persist departments
    * @param departmentMapper mapper used to translate departments
    */
-  public DepartmentService(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper) {
+  public DepartmentService(DepartmentRepository departmentRepository, DepartmentMapper departmentMapper,
+      EmployeeRepository employeeRepository) {
     this.departmentRepository = departmentRepository;
     this.departmentMapper = departmentMapper;
+    this.employeeRepository = employeeRepository;
   }
 
   /**
@@ -78,7 +89,7 @@ public class DepartmentService {
   @Transactional
   public DepartmentDto create(DepartmentRequestDto request) {
     ensureNameIsAvailable(request.getName(), null);
-    Department department = departmentMapper.toEntity(request);
+    Department department = departmentMapper.toEntity(request, findManager(request.getManagerId()));
     return departmentMapper.toDto(departmentRepository.save(department));
   }
 
@@ -94,7 +105,7 @@ public class DepartmentService {
   public DepartmentDto update(UUID id, DepartmentRequestDto request) {
     Department department = findEntity(id);
     ensureNameIsAvailable(request.getName(), id);
-    departmentMapper.updateEntity(request, department);
+    departmentMapper.updateEntity(request, department, findManager(request.getManagerId()));
     return departmentMapper.toDto(departmentRepository.save(department));
   }
 
@@ -107,6 +118,21 @@ public class DepartmentService {
   @Transactional
   public void delete(UUID id) {
     departmentRepository.delete(findEntity(id));
+  }
+
+  /**
+   *
+   * Resolves the manager of a department.
+   *
+   * @param managerId identifier of the manager, may be null
+   * @return the manager, or null when no manager is given
+   */
+  private Employee findManager(UUID managerId) {
+    if (managerId == null) {
+      return null;
+    }
+    return employeeRepository.findById(managerId).orElseThrow(
+        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found: " + managerId));
   }
 
   /**

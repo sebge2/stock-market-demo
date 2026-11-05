@@ -21,6 +21,15 @@ public class EmployeeRequestDto {
   @NotBlank @Email @Size(max = 255) private String email;
   @NotNull private EmployeeStatus status;
   private UUID departmentId;
+
+  /**
+   *
+   * Job title of the employee.
+   *
+   */
+  @Size(max = 100)
+  @Schema(description = "Job title of the employee")
+  private String jobTitle;
   /** @return the first name */ public String getFirstName() { return firstName; }
   /** @param firstName the first name */ public void setFirstName(String firstName) { this.firstName = firstName; }
   /** @return the last name */ public String getLastName() { return lastName; }
@@ -31,4 +40,22 @@ public class EmployeeRequestDto {
   /** @param status the status */ public void setStatus(EmployeeStatus status) { this.status = status; }
   /** @return the department identifier */ public UUID getDepartmentId() { return departmentId; }
   /** @param departmentId the department identifier */ public void setDepartmentId(UUID departmentId) { this.departmentId = departmentId; }
+
+  /**
+   *
+   * @return the job title
+   *
+   */
+  public String getJobTitle() {
+    return jobTitle;
+  }
+
+  /**
+   *
+   * @param jobTitle the job title
+   *
+   */
+  public void setJobTitle(String jobTitle) {
+    this.jobTitle = jobTitle;
+  }
 }

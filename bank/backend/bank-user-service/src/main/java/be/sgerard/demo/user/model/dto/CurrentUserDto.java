@@ -15,6 +15,14 @@ public class CurrentUserDto {
   /** Login name. */
   @Schema(description = "Login name")
   private String username;
+  /**
+   *
+   * Full name.
+   *
+   */
+  @Schema(description = "Full name")
+  private String fullName;
+
   /** Email address. */
   @Schema(description = "Email address")
   private String email;
@@ -34,4 +42,22 @@ public class CurrentUserDto {
   public Set<String> getPermissions() { return permissions; }
   /** @param permissions the permission names */
   public void setPermissions(Set<String> permissions) { this.permissions = permissions; }
+
+  /**
+   *
+   * @return the full name
+   *
+   */
+  public String getFullName() {
+    return fullName;
+  }
+
+  /**
+   *
+   * @param fullName the full name
+   *
+   */
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
+  }
 }

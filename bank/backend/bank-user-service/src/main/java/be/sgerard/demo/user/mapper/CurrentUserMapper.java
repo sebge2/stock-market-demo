@@ -21,11 +21,12 @@ public class CurrentUserMapper {
    * Converts an account to its current-user representation.
    *
    * @param account user account
-   * @return the DTO exposing the username, the email and the names of the granted permissions
+   * @return the DTO exposing the username, the full name, the email and the names of the granted permissions
    */
   public CurrentUserDto toDto(UserAccount account) {
     final CurrentUserDto dto = new CurrentUserDto();
     dto.setUsername(account.getUsername());
+    dto.setFullName(account.getFullName());
     dto.setEmail(account.getEmail());
     dto.setPermissions(account.getRoles().stream().flatMap(role -> role.getPermissions().stream())
         .map(Permission::getCode).sorted(Comparator.naturalOrder())

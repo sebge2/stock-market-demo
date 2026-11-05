@@ -14,6 +14,14 @@ import java.util.UUID;
 public class DepartmentDto {
 
   /**
+   *
+   * Identifier of the employee managing the department.
+   *
+   */
+  @Schema(description = "Identifier of the employee managing the department")
+  private UUID managerId;
+
+  /**
    * Department identifier.
    */
   private UUID id;
@@ -126,4 +134,22 @@ public class DepartmentDto {
    *
    */
   public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+  /**
+   *
+   * @return the identifier of the employee managing the department
+   *
+   */
+  public UUID getManagerId() {
+    return managerId;
+  }
+
+  /**
+   *
+   * @param managerId the identifier of the employee managing the department
+   *
+   */
+  public void setManagerId(UUID managerId) {
+    this.managerId = managerId;
+  }
 }

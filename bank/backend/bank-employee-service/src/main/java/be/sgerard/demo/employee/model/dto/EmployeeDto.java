@@ -12,6 +12,14 @@ import java.util.UUID;
  */
 @Schema(name = "Employee")
 public class EmployeeDto {
+
+  /**
+   *
+   * Job title of the employee.
+   *
+   */
+  @Schema(description = "Job title of the employee")
+  private String jobTitle;
     private UUID id;
     @Schema(description = "Identifier of the user automatically created in the user service")
     private UUID userId;
@@ -148,4 +156,22 @@ public class EmployeeDto {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+  /**
+   *
+   * @return the job title of the employee
+   *
+   */
+  public String getJobTitle() {
+    return jobTitle;
+  }
+
+  /**
+   *
+   * @param jobTitle the job title of the employee
+   *
+   */
+  public void setJobTitle(String jobTitle) {
+    this.jobTitle = jobTitle;
+  }
 }

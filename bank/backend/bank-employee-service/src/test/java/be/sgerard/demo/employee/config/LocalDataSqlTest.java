@@ -40,5 +40,7 @@ class LocalDataSqlTest {
         .isEqualTo(UUID.fromString("72e91c48-68b6-4de7-9a40-21b9b6224001"));
     assertThat(employee.getDepartment().getName()).isEqualTo("IT");
     assertThat(employee.getDepartment().getDescription()).isEqualTo("IT Support");
+    assertThat(employee.getJobTitle()).isEqualTo("IT Manager");
+    assertThat(employee.getDepartment().getManager().getId()).isEqualTo(employee.getId());
   }
 }

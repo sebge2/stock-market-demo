@@ -29,7 +29,8 @@ public class UserMapper {
      *
      */
     public UserAccount toEntity(UserRequestDto request, String passwordHash) {
-        return new UserAccount(UUID.randomUUID(), request.getUsername(), request.getEmail(), passwordHash);
+        return new UserAccount(UUID.randomUUID(), request.getUsername(), request.getFullName(), request.getEmail(),
+                passwordHash);
     }
 
     /**
@@ -42,6 +43,7 @@ public class UserMapper {
      */
     public void updateEntity(UserRequestDto request, UserAccount account) {
         account.setUsername(request.getUsername());
+        account.setFullName(request.getFullName());
         account.setEmail(request.getEmail());
     }
 
@@ -57,6 +59,7 @@ public class UserMapper {
         final UserDto dto = new UserDto();
         dto.setId(account.getId());
         dto.setUsername(account.getUsername());
+        dto.setFullName(account.getFullName());
         dto.setEmail(account.getEmail());
         dto.setRoleIds(account.getRoles().stream().map(Role::getId)
                 .collect(Collectors.toCollection(LinkedHashSet::new)));

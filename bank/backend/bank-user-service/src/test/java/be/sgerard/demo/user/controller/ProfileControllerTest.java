@@ -37,10 +37,11 @@ class ProfileControllerTest {
     mockMvc.perform(get("/profile").with(jwt().jwt(token -> token.subject("sebastien.gerard"))))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.username").value("sebastien.gerard"))
+        .andExpect(jsonPath("$.fullName").value("Sébastien Gérard"))
         .andExpect(jsonPath("$.email").value("sebastien.gerard@local.test"))
         .andExpect(jsonPath("$.permissions", hasItems("ADMIN", "ROLE_LIST", "EMPLOYEE_LIST")))
         .andExpect(jsonPath("$.permissions[?(@ =~ /[0-9a-f]{8}-.*/)]").isEmpty())
-        .andExpect(jsonPath("$.length()").value(3));
+        .andExpect(jsonPath("$.length()").value(4));
   }
 
   /**

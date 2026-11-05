@@ -26,8 +26,10 @@ public class EmployeeMapper {
    *
    */
   public Employee toEntity(EmployeeRequestDto request, Department department, UUID userId) {
-    return new Employee(request.getFirstName(), request.getLastName(), request.getEmail(),
+    final Employee employee = new Employee(request.getFirstName(), request.getLastName(), request.getEmail(),
         userId, request.getStatus(), department);
+    employee.setJobTitle(request.getJobTitle());
+    return employee;
   }
 
   /**
@@ -46,6 +48,7 @@ public class EmployeeMapper {
     employee.setEmail(request.getEmail());
     employee.setStatus(request.getStatus());
     employee.setDepartment(department);
+    employee.setJobTitle(request.getJobTitle());
   }
 
   /**
@@ -64,6 +67,7 @@ public class EmployeeMapper {
     dto.setLastName(employee.getLastName());
     dto.setEmail(employee.getEmail());
     dto.setStatus(employee.getStatus());
+    dto.setJobTitle(employee.getJobTitle());
     dto.setDepartmentId(
         employee.getDepartment() == null ? null : employee.getDepartment().getId());
     dto.setCreatedAt(employee.getCreatedAt());

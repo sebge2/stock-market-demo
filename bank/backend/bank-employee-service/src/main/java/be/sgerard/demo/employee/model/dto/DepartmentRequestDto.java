@@ -1,5 +1,7 @@
 package be.sgerard.demo.employee.model.dto;
 
+import java.util.UUID;
+
 import be.sgerard.demo.employee.model.DepartmentStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +15,14 @@ import jakarta.validation.constraints.Size;
  */
 @Schema(name = "DepartmentRequest")
 public class DepartmentRequestDto {
+
+  /**
+   *
+   * Identifier of the employee managing the department (optional).
+   *
+   */
+  @Schema(description = "Identifier of the employee managing the department (optional)")
+  private UUID managerId;
 
   /**
    *
@@ -91,5 +101,23 @@ public class DepartmentRequestDto {
    */
   public void setStatus(DepartmentStatus status) {
     this.status = status;
+  }
+
+  /**
+   *
+   * @return the identifier of the employee managing the department (optional)
+   *
+   */
+  public UUID getManagerId() {
+    return managerId;
+  }
+
+  /**
+   *
+   * @param managerId the identifier of the employee managing the department (optional)
+   *
+   */
+  public void setManagerId(UUID managerId) {
+    this.managerId = managerId;
   }
 }

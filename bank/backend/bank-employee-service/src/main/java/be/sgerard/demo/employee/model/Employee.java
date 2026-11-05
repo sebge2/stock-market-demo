@@ -114,6 +114,15 @@ public class Employee {
 
   /**
    *
+   * Job title of the employee (for instance "Software Engineer").
+   *
+   */
+  @Size(max = 100)
+  @Column(name = "job_title", length = 100)
+  private String jobTitle;
+
+  /**
+   *
    * Constructor required by JPA.
    *
    */
@@ -298,5 +307,23 @@ public class Employee {
   @Override
   public String toString() {
     return "Employee{id=" + getId() + ", email=" + email + ", status=" + status + "}";
+  }
+
+  /**
+   *
+   * @return the job title
+   *
+   */
+  public String getJobTitle() {
+    return jobTitle;
+  }
+
+  /**
+   *
+   * @param jobTitle the new job title
+   *
+   */
+  public void setJobTitle(String jobTitle) {
+    this.jobTitle = jobTitle;
   }
 }

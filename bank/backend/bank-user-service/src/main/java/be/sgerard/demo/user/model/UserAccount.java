@@ -35,6 +35,11 @@ public class UserAccount {
   @Size(max = 100)
   @Column(name = "username", nullable = false, unique = true, length = 100)
   private String username;
+  /** Full name (first and last names) displayed for the user. */
+  @NotBlank
+  @Size(max = 200)
+  @Column(name = "full_name", nullable = false, length = 200)
+  private String fullName;
   /** Email address. */
   @NotBlank
   @Email
@@ -61,12 +66,14 @@ public class UserAccount {
    *
    * @param id user-service identifier
    * @param username login name
+   * @param fullName full name
    * @param email email address
    * @param passwordHash BCrypt password hash
    */
-  public UserAccount(UUID id, String username, String email, String passwordHash) {
+  public UserAccount(UUID id, String username, String fullName, String email, String passwordHash) {
     this.id = id;
     this.username = username;
+    this.fullName = fullName;
     this.email = email;
     this.passwordHash = passwordHash;
   }
@@ -75,6 +82,8 @@ public class UserAccount {
   public UUID getId() { return id; }
   /** @return the login name */
   public String getUsername() { return username; }
+  /** @return the full name */
+  public String getFullName() { return fullName; }
   /** @return the email address */
   public String getEmail() { return email; }
   /** @return the password hash */
@@ -91,6 +100,15 @@ public class UserAccount {
    */
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  /**
+   *
+   * @param fullName the new full name
+   *
+   */
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 
   /**

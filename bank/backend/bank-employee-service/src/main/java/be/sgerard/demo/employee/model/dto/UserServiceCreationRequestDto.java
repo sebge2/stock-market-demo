@@ -20,6 +20,13 @@ public class UserServiceCreationRequestDto {
 
   /**
    *
+   * Full name of the user.
+   *
+   */
+  private String fullName;
+
+  /**
+   *
    * Email address.
    *
    */
@@ -57,9 +64,10 @@ public class UserServiceCreationRequestDto {
    * @param roleIds the role identifiers
    *
    */
-  public UserServiceCreationRequestDto(String username, String email, String password,
+  public UserServiceCreationRequestDto(String username, String fullName, String email, String password,
       Set<UUID> roleIds) {
     this.username = username;
+    this.fullName = fullName;
     this.email = email;
     this.password = password;
     this.roleIds = roleIds;
@@ -81,6 +89,29 @@ public class UserServiceCreationRequestDto {
    */
   public void setUsername(String username) {
     this.username = username;
+  }
+
+  /**
+   *
+   * @return the email address
+   *
+   */
+  /**
+   *
+   * @return the full name
+   *
+   */
+  public String getFullName() {
+    return fullName;
+  }
+
+  /**
+   *
+   * @param fullName the full name
+   *
+   */
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 
   /**

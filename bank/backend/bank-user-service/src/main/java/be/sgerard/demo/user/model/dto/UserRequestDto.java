@@ -30,6 +30,16 @@ public class UserRequestDto {
 
   /**
    *
+   * Full name.
+   *
+   */
+  @NotBlank
+  @Size(max = 200)
+  @Schema(description = "Full name")
+  private String fullName;
+
+  /**
+   *
    * Email address.
    *
    */
@@ -127,5 +137,23 @@ public class UserRequestDto {
    */
   public void setRoleIds(Set<UUID> roleIds) {
     this.roleIds = roleIds;
+  }
+
+  /**
+   *
+   * @return the full name
+   *
+   */
+  public String getFullName() {
+    return fullName;
+  }
+
+  /**
+   *
+   * @param fullName the full name
+   *
+   */
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 }

@@ -64,7 +64,7 @@ class UserControllerTest {
    */
   @Test
   void requiresMatchingPermissions() throws Exception {
-    final String body = "{\"username\":\"u1\",\"email\":\"u1@local.test\",\"password\":\"password1\"}";
+    final String body = "{\"username\":\"u1\",\"fullName\":\"Full u1\",\"email\":\"u1@local.test\",\"password\":\"password1\"}";
     final UUID id = UUID.randomUUID();
 
     mockMvc.perform(get("/users")).andExpect(status().isUnauthorized());
@@ -88,7 +88,7 @@ class UserControllerTest {
   void managesUserLifecycle() throws Exception {
     final String created = mockMvc.perform(post("/users").with(authority("USER_CREATE")).with(csrf())
             .contentType("application/json")
-            .content("{\"username\":\"jane\",\"email\":\"jane@local.test\",\"password\":\"password1\"}"))
+            .content("{\"username\":\"jane\",\"fullName\":\"Full jane\",\"email\":\"jane@local.test\",\"password\":\"password1\"}"))
         .andExpect(status().isCreated()).andExpect(jsonPath("$.username").value("jane"))
         .andExpect(jsonPath("$.password").doesNotExist()).andExpect(jsonPath("$.passwordHash").doesNotExist())
         .andReturn().getResponse().getContentAsString();
@@ -97,7 +97,7 @@ class UserControllerTest {
         .getPasswordHash())).isTrue();
 
     mockMvc.perform(put("/users/" + id).with(authority("USER_UPDATE")).with(csrf()).contentType("application/json")
-        .content("{\"username\":\"jane\",\"email\":\"jane.doe@local.test\"}"))
+        .content("{\"username\":\"jane\",\"fullName\":\"Full jane\",\"email\":\"jane.doe@local.test\"}"))
         .andExpect(status().isOk()).andExpect(jsonPath("$.email").value("jane.doe@local.test"));
     assertThat(passwordEncoder.matches("password1", userAccountRepository.findById(id).orElseThrow()
         .getPasswordHash())).isTrue();
@@ -116,9 +116,9 @@ class UserControllerTest {
   @Test
   void rejectsMissingPasswordAndDuplicates() throws Exception {
     mockMvc.perform(post("/users").with(authority("USER_CREATE")).with(csrf()).contentType("application/json")
-        .content("{\"username\":\"nopass\",\"email\":\"nopass@local.test\"}")).andExpect(status().isBadRequest());
+        .content("{\"username\":\"nopass\",\"fullName\":\"Full nopass\",\"email\":\"nopass@local.test\"}")).andExpect(status().isBadRequest());
     mockMvc.perform(post("/users").with(authority("USER_CREATE")).with(csrf()).contentType("application/json")
-        .content("{\"username\":\"sebastien.gerard\",\"email\":\"other@local.test\",\"password\":\"password1\"}"))
+        .content("{\"username\":\"sebastien.gerard\",\"fullName\":\"Full sebastien.gerard\",\"email\":\"other@local.test\",\"password\":\"password1\"}"))
         .andExpect(status().isConflict());
   }
 

@@ -71,17 +71,17 @@ VALUES ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-0000000
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000029');
 
 -- Password: changeit (BCrypt)
-INSERT INTO user_account (id, username, email, password_hash)
-VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224001', 'sebastien.gerard', 'sebastien.gerard@local.test',
+INSERT INTO user_account (id, username, full_name, email, password_hash)
+VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224001', 'sebastien.gerard', 'Sébastien Gérard', 'sebastien.gerard@local.test',
         '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse');
 
 -- Users referenced by the clients of the client-service local data (same password, no role)
-INSERT INTO user_account (id, username, email, password_hash)
-VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224101', 'alice.martin', 'alice.martin@local.test',
+INSERT INTO user_account (id, username, full_name, email, password_hash)
+VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224101', 'alice.martin', 'Alice Martin', 'alice.martin@local.test',
         '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
-       ('72e91c48-68b6-4de7-9a40-21b9b6224102', 'bob.dupont', 'bob.dupont@local.test',
+       ('72e91c48-68b6-4de7-9a40-21b9b6224102', 'bob.dupont', 'Bob Dupont', 'bob.dupont@local.test',
         '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
-       ('72e91c48-68b6-4de7-9a40-21b9b6224103', 'claire.lambert', 'claire.lambert@local.test',
+       ('72e91c48-68b6-4de7-9a40-21b9b6224103', 'claire.lambert', 'Claire Lambert', 'claire.lambert@local.test',
         '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse');
 
 INSERT INTO user_account_role (user_id, role_id)

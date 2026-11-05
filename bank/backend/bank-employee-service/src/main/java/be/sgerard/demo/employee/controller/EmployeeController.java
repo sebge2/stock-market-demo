@@ -78,15 +78,25 @@ public class EmployeeController {
   @PreAuthorize("hasAuthority('EMPLOYEE_LIST')")
   @GetMapping("/{id}")
   public EmployeeDto findById(@PathVariable UUID id) { return employeeService.findById(id); }
-  /** Creates an employee. */
-  @Operation(summary = "Create an employee", description = "Requires the EMPLOYEE_CREATE permission.")
+  /**
+   *
+   * Creates an employee and automatically creates a corresponding user in the user-service
+   * if userId is not provided. If userId is provided, it is used directly (backward compatibility).
+   *
+   */
+  @Operation(summary = "Create an employee",
+      description = "Requires the EMPLOYEE_CREATE permission. "
+          + "If userId is not provided, a user will be automatically created in the user-service "
+          + "with auto-generated username and password.")
   @ApiResponses({
       @ApiResponse(responseCode = "201", description = "Employee created"),
-      @ApiResponse(responseCode = "400", description = "Invalid request"),
+      @ApiResponse(responseCode = "400", description = "Invalid request or user creation validation failed"),
       @ApiResponse(responseCode = "401", description = "Not authenticated"),
       @ApiResponse(responseCode = "403", description = "Missing the EMPLOYEE_CREATE permission"),
       @ApiResponse(responseCode = "404", description = "Department not found"),
-      @ApiResponse(responseCode = "409", description = "Employee already exists")
+      @ApiResponse(responseCode = "409", description = "Employee or username already exists"),
+      @ApiResponse(responseCode = "502", description = "User service unavailable (transient error)"),
+      @ApiResponse(responseCode = "503", description = "User service unavailable (after retries exhausted)")
   })
   @PreAuthorize("hasAuthority('EMPLOYEE_CREATE')")
   @PostMapping

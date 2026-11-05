@@ -1,13 +1,12 @@
 import { useMemo, useState } from 'react';
 import type { Department } from '../employees/employees.api';
-import { type Employee, initials } from '../employees/employees.data';
+import type { Employee } from '../employees/employees.data';
 
-/** Status tabs; `null` means no filter. */
-const TABS: { label: string; active: boolean | null }[] = [
-  { label: 'Tous', active: null },
-  { label: 'Actifs', active: true },
-  { label: 'Inactifs', active: false },
-];
+/** Sort options of the list. */
+const SORTS = ['Effectif', 'Nom'] as const;
+
+/** Status filter options of the list. */
+const STATUSES = ['Tous', 'Actif', 'Inactif'] as const;
 
 /** Props of the departments screen. */
 interface DepartmentsPageProps {
@@ -19,10 +18,28 @@ interface DepartmentsPageProps {
   loading: boolean;
 }
 
-/** Departments screen: list of departments with manager and headcount. */
+/** Formats a number with the French thousands separator. */
+const fmt = (value: number) => value.toLocaleString('fr-FR');
+
+/** Returns the display code of a department (based on its position in the list). */
+export function departmentCode(departments: Department[], id: string): string {
+  return `DEP-${String(departments.findIndex((d) => d.id === id) + 1).padStart(2, '0')}`;
+}
+
+/** Chevron icon used in selects. */
+function Chevron() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="select-chevron">
+      <path d="M5 7.5l5 5 5-5" />
+    </svg>
+  );
+}
+
+/** Departments screen: summary figures and list of departments with manager and headcount. */
 export function DepartmentsPage({ departments, employees, loading }: DepartmentsPageProps) {
-  const [tab, setTab] = useState<boolean | null>(null);
   const [query, setQuery] = useState('');
+  const [sort, setSort] = useState<(typeof SORTS)[number]>('Effectif');
+  const [status, setStatus] = useState<(typeof STATUSES)[number]>('Tous');
 
   const headcount = useMemo(() => {
     const counts = new Map<string, number>();
@@ -32,44 +49,59 @@ export function DepartmentsPage({ departments, employees, loading }: Departments
 
   const managers = useMemo(() => new Map(employees.map((e) => [e.id, e.name])), [employees]);
 
+  const codes = useMemo(
+    () => new Map(departments.map((d, index) => [d.id, `DEP-${String(index + 1).padStart(2, '0')}`])),
+    [departments],
+  );
+
   const rows = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return departments.filter(
-      (d) =>
-        (tab === null || d.active === tab) &&
-        (needle === '' || [d.name, d.description].some((v) => v.toLowerCase().includes(needle))),
-    );
-  }, [departments, tab, query]);
+    return departments
+      .filter(
+        (d) =>
+          (status === 'Tous' || d.active === (status === 'Actif')) &&
+          (needle === '' || d.name.toLowerCase().includes(needle)),
+      )
+      .sort((a, b) =>
+        sort === 'Effectif' ? (headcount.get(b.id) ?? 0) - (headcount.get(a.id) ?? 0) : a.name.localeCompare(b.name, 'fr'),
+      );
+  }, [departments, query, sort, status, headcount]);
+
+  const activeCount = departments.filter((d) => d.active).length;
 
   return (
     <>
       <header className="page-header">
         <div className="page-title">
-          <div className="eyebrow">Ressources humaines</div>
+          <div className="eyebrow">Organisation</div>
           <h1>Départements</h1>
         </div>
+        <button type="button" className="btn-primary" disabled title="Création indisponible pour le moment">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
+            <path d="M10 4v12M4 10h12" />
+          </svg>
+          Nouveau département
+        </button>
       </header>
 
-      <section aria-label="Liste des départements" className="card" aria-busy={loading}>
-        <div className="tabs">
-          {TABS.map(({ label, active }) => {
-            const count = active === null ? departments.length : departments.filter((d) => d.active === active).length;
-            const current = tab === active;
-            return (
-              <button
-                key={label}
-                type="button"
-                aria-current={current ? 'page' : undefined}
-                className={`tab${current ? ' tab-active' : ''}`}
-                onClick={() => setTab(active)}
-              >
-                {label}
-                <span className="tab-count">{count.toLocaleString('fr-FR')}</span>
-              </button>
-            );
-          })}
+      <section aria-label="Synthèse" className="kpis">
+        <div className="kpi">
+          <div className="field-label">Départements</div>
+          <div className="kpi-value">{fmt(departments.length)}</div>
         </div>
+        <div className="kpi">
+          <div className="field-label">Effectif total</div>
+          <div className="kpi-value">{fmt(employees.length)}</div>
+        </div>
+        <div className="kpi">
+          <div className="field-label">Départements actifs</div>
+          <div className="kpi-value">
+            {fmt(activeCount)} / {fmt(departments.length)}
+          </div>
+        </div>
+      </section>
 
+      <section aria-label="Liste des départements" className="card" aria-busy={loading}>
         <div className="filters">
           <div className="search">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#5B6B82" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true" className="search-icon">
@@ -78,51 +110,58 @@ export function DepartmentsPage({ departments, employees, loading }: Departments
             </svg>
             <input
               type="search"
-              aria-label="Rechercher par nom ou description"
-              placeholder="Nom ou description"
+              aria-label="Rechercher un département"
+              placeholder="Rechercher un département"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
           </div>
-          <div className="total">
-            {rows.length.toLocaleString('fr-FR')} département{rows.length > 1 ? 's' : ''}
-          </div>
+          <label className="select">
+            Trier par :
+            <select value={sort} onChange={(e) => setSort(e.target.value as (typeof SORTS)[number])}>
+              {SORTS.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+            <Chevron />
+          </label>
+          <label className="select">
+            Statut :
+            <select value={status} onChange={(e) => setStatus(e.target.value as (typeof STATUSES)[number])}>
+              {STATUSES.map((s) => (
+                <option key={s}>{s}</option>
+              ))}
+            </select>
+            <Chevron />
+          </label>
         </div>
 
         <div className="table-scroll">
-          <div className="table">
+          <div className="table table-dept">
             <div className="row row-dept row-head">
               <div>Département</div>
               <div>Responsable</div>
               <div className="cell-right">Effectif</div>
               <div>Statut</div>
+              <div />
             </div>
 
-            {rows.map((d) => {
-              const manager = d.managerId ? managers.get(d.managerId) : undefined;
-              return (
-                <div key={d.id} className="row row-dept row-body">
-                  <div>
-                    <div className="person-name">{d.name}</div>
-                    <div className="matricule dept-description">{d.description || '—'}</div>
-                  </div>
-                  <div className="person">
-                    {manager ? (
-                      <>
-                        <div className="avatar">{initials(manager)}</div>
-                        <div className="person-name">{manager}</div>
-                      </>
-                    ) : (
-                      '—'
-                    )}
-                  </div>
-                  <div className="cell-right mono">{(headcount.get(d.id) ?? 0).toLocaleString('fr-FR')}</div>
-                  <div>
-                    <span className={`badge ${d.active ? 'badge-active' : 'badge-inactive'}`}>{d.active ? 'Actif' : 'Inactif'}</span>
-                  </div>
+            {rows.map((d) => (
+              <div key={d.id} className="row row-dept row-body">
+                <div>
+                  <a href={`#department-${d.id}`} className="person-name">{d.name}</a>
+                  <div className="matricule">{codes.get(d.id)}</div>
                 </div>
-              );
-            })}
+                <div>{(d.managerId && managers.get(d.managerId)) || '—'}</div>
+                <div className="cell-right mono">{fmt(headcount.get(d.id) ?? 0)}</div>
+                <div>
+                  <span className={`badge ${d.active ? 'badge-active' : 'badge-inactive'}`}>{d.active ? 'Actif' : 'Inactif'}</span>
+                </div>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#5B6B82" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M7.5 4.5L13 10l-5.5 5.5" />
+                </svg>
+              </div>
+            ))}
 
             {loading && <div className="empty">Chargement…</div>}
             {!loading && rows.length === 0 && <div className="empty">Aucun département ne correspond à ces critères.</div>}

@@ -562,13 +562,11 @@ select:focus-visible {
 }
 
 .row-dept {
-  grid-template-columns: 2.4fr 2fr 1fr 1.2fr;
+  grid-template-columns: 2.4fr 1.8fr 0.9fr 1fr 24px;
 }
 
-.dept-description {
-  font-family: inherit;
-  font-size: 14px;
-  line-height: 20px;
+.table-dept {
+  min-width: 800px;
 }
 
 .breadcrumb {
@@ -720,4 +718,85 @@ select:focus-visible {
   font-size: 15px;
   line-height: 20px;
   overflow-wrap: anywhere;
+}
+
+.kpis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.kpi {
+  flex: 1 1 220px;
+  background: #fff;
+  border: 1px solid #d9dfe8;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kpi-value {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.dept-icon {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  border-radius: 12px;
+  background: #0a1b33;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.code {
+  font-size: 14px;
+  color: #5b6b82;
+}
+
+.strong {
+  font-weight: 600;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.card-link {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #1a56b0;
+  text-decoration: none;
+}
+
+.table-members {
+  min-width: 600px;
+}
+
+.row-members {
+  grid-template-columns: 2.2fr 2fr 1.2fr;
+}
+
+.btn-outline:disabled {
+  background: #fff;
 }

@@ -3,6 +3,7 @@ import './App.css';
 import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './auth/auth';
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
+import { DepartmentDetailPage } from './departments/DepartmentDetailPage';
 import { DepartmentsPage } from './departments/DepartmentsPage';
 import { ApiError, type Department, fetchDepartments, fetchEmployees } from './employees/employees.api';
 import {
@@ -134,7 +135,8 @@ export function App() {
   const rows = filtered.slice(start, start + PAGE_SIZE);
 
   const resetPage = () => setPage(1);
-  const onDepartments = route === '#departments';
+  const onDepartments = route.startsWith('#department');
+  const departmentId = route.startsWith('#department-') ? route.slice('#department-'.length) : null;
   const detailId = route.startsWith('#employee-') ? route.slice('#employee-'.length) : null;
 
   if (!authenticated) {
@@ -222,6 +224,16 @@ export function App() {
             {error && <div role="alert" className="alert">{error}</div>}
             <EmployeeDetailPage
               employee={employees.find((e) => e.id === detailId)}
+              departments={departmentList}
+              employees={employees}
+              loading={loading}
+            />
+          </>
+        ) : departmentId ? (
+          <>
+            {error && <div role="alert" className="alert">{error}</div>}
+            <DepartmentDetailPage
+              department={departmentList.find((d) => d.id === departmentId)}
               departments={departmentList}
               employees={employees}
               loading={loading}

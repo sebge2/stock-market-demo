@@ -33,6 +33,7 @@ interface DepartmentApi {
   description: string | null;
   status: 'ACTIVE' | 'INACTIVE';
   managerId: string | null;
+  updatedAt: string;
 }
 
 /** Department displayed in the directory. */
@@ -47,6 +48,8 @@ export interface Department {
   active: boolean;
   /** Identifier of the managing employee, if any. */
   managerId: string | null;
+  /** Last update date (ISO format). */
+  updatedAt: string;
 }
 
 /** Page of results as returned by the API. */
@@ -82,6 +85,7 @@ export async function fetchDepartments(): Promise<Department[]> {
     description: d.description ?? '',
     active: d.status === 'ACTIVE',
     managerId: d.managerId,
+    updatedAt: d.updatedAt.slice(0, 10),
   }));
 }
 

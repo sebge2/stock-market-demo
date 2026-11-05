@@ -96,7 +96,7 @@ export function EmployeeDetailPage({ employee, departments, employees, loading }
           <div className="field-grid">
             <Field label="Poste">{employee.position}</Field>
             <Field label="Département">
-              {department ? <a href="#departments">{department.name}</a> : '—'}
+              {department ? <a href={`#department-${department.id}`}>{department.name}</a> : '—'}
             </Field>
             <Field label="Responsable hiérarchique">{manager ? `${manager.name} · ${manager.position}` : '—'}</Field>
             <Field label="Ancienneté" mono>

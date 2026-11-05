@@ -106,7 +106,7 @@ public class AuthorizationServerConfiguration {
         http.cors(Customizer.withDefaults());
         http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .anyRequest().authenticated()).formLogin(Customizer.withDefaults())
+                        .anyRequest().authenticated()).formLogin(form -> form.loginPage("/login").permitAll())
                 .oauth2ResourceServer(resourceServer -> resourceServer.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
     }
@@ -124,7 +124,7 @@ public class AuthorizationServerConfiguration {
             @Value("${bank.user-service.cors.allowed-origins:}") List<String> allowedOrigins) {
         final CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(allowedOrigins.stream().filter(origin -> !origin.isBlank()).toList());
-        configuration.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

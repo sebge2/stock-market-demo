@@ -5,8 +5,10 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -139,6 +141,22 @@ class UserControllerTest {
     mockMvc.perform(put("/users/" + id).with(authority("USER_UPDATE")).with(csrf()).contentType("application/json")
         .content("{\"username\":\"avatar1\",\"fullName\":\"Full avatar\",\"email\":\"avatar1@local.test\",\"avatar\":\"bm90IGFuIGltYWdl\"}"))
         .andExpect(status().isBadRequest());
+  }
+
+  /**
+   *
+   * The bank frontend may read and update users from the browser (CORS preflight).
+   *
+   * @throws Exception on failure
+   */
+  @Test
+  void allowsFrontendUserUpdatesThroughCors() throws Exception {
+    final String url = "/users/" + UUID.randomUUID();
+
+    mockMvc.perform(options(url).header("Origin", "http://localhost:3000")
+            .header("Access-Control-Request-Method", "PUT").header("Access-Control-Request-Headers", "authorization,content-type"))
+        .andExpect(status().isOk())
+        .andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:3000"));
   }
 
   /**

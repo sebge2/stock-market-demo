@@ -8,6 +8,8 @@ export interface Profile {
   fullName: string;
   /** Email address. */
   email: string;
+  /** Avatar (PNG encoded in base64), if any. */
+  avatar: string | null;
 }
 
 /** Loads the profile of the connected user. */

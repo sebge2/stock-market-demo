@@ -24,6 +24,7 @@ interface EmployeeApi {
   departmentId: string | null;
   createdAt: string;
   id: string;
+  userId: string | null;
 }
 
 /** Department as returned by the API. */
@@ -146,6 +147,7 @@ function toEmployee(e: EmployeeApi, departmentNames: Map<string, string>): Emplo
     lastName: e.lastName,
     name: `${e.firstName} ${e.lastName}`,
     id: e.id,
+    userId: e.userId,
     departmentId: e.departmentId,
     email: e.email,
     matricule: e.id.slice(0, 8).toUpperCase(),

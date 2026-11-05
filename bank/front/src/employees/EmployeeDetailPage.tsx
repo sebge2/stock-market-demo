@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { AvatarEditor } from '../users/AvatarEditor';
+import { fetchAvatar } from '../users/users.api';
 import { EmployeeForm } from './EmployeeForm';
 import type { Department, EmployeeChanges } from './employees.api';
 import { type Employee, STATUS_CLASS, formatDate, initials } from './employees.data';
@@ -39,6 +41,17 @@ function Field({ label, children, mono }: { label: string; children: React.React
 /** Employee sheet: identity header, professional information and history. */
 export function EmployeeDetailPage({ employee, departments, employees, loading, onUpdate }: EmployeeDetailPageProps) {
   const [editing, setEditing] = useState(false);
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const [editingAvatar, setEditingAvatar] = useState(false);
+  const userId = employee?.userId ?? null;
+
+  useEffect(() => {
+    setAvatar(null);
+    if (userId) {
+      fetchAvatar(userId).then(setAvatar).catch(() => setAvatar(null));
+    }
+  }, [userId]);
+
   if (!employee) {
     return (
       <>
@@ -66,7 +79,19 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
       </nav>
 
       <section className="panel profile-header">
-        <div className="profile-avatar">{initials(employee.name)}</div>
+        <div className="profile-avatar-wrap">
+          <div className="profile-avatar">
+            {avatar ? <img className="avatar-img" src={`data:image/png;base64,${avatar}`} alt="" /> : initials(employee.name)}
+          </div>
+          {editing && userId && (
+            <button type="button" className="avatar-edit" aria-label="Modifier la photo" onClick={() => setEditingAvatar(true)}>
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M13.5 3.5l3 3L7 16H4v-3z" />
+                <path d="M12 5l3 3" />
+              </svg>
+            </button>
+          )}
+        </div>
         <div className="profile-main">
           <div className="profile-title">
             <h1>{employee.name}</h1>
@@ -77,9 +102,6 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
           </div>
           <div className="profile-meta">
             <span>
-              Matricule <span className="mono dark">{employee.matricule}</span>
-            </span>
-            <span>
               Entrée le <span className="mono dark">{formatDate(employee.hireDate)}</span>
             </span>
           </div>
@@ -89,6 +111,15 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
         </button>
       </section>
 
+      {editingAvatar && userId && (
+        <AvatarEditor
+          userId={userId}
+          initials={initials(employee.name)}
+          avatar={avatar}
+          onSaved={setAvatar}
+          onClose={() => setEditingAvatar(false)}
+        />
+      )}
       {editing && (
         <EmployeeForm
           title="Modifier la fiche"

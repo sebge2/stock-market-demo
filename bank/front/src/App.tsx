@@ -204,7 +204,9 @@ export function App() {
         </nav>
 
         <div className="user">
-          <div className="user-avatar">{profile ? initialsOf(profile.fullName) : ''}</div>
+          <div className="user-avatar">
+            {profile?.avatar ? <img className="avatar-img" src={`data:image/png;base64,${profile.avatar}`} alt="" /> : profile ? initialsOf(profile.fullName) : ''}
+          </div>
           <div className="user-info">
             <div className="user-name">{profile?.fullName ?? ''}</div>
             <div className="user-role">{jobTitle ?? profile?.email ?? ''}</div>

@@ -7,6 +7,8 @@ export interface Employee {
   id: string;
   /** Identifier of the department, if any. */
   departmentId: string | null;
+  /** Identifier of the user account of the employee, if any. */
+  userId: string | null;
   /** Employee first name. */
   firstName: string;
   /** Employee last name. */

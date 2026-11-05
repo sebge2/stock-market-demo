@@ -1,6 +1,7 @@
 package be.sgerard.demo.employee.model.dto;
 
 import be.sgerard.demo.employee.model.DepartmentStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.Size;
  * Payload used to create or update a department.
  *
  */
+@Schema(name = "DepartmentRequest")
 public class DepartmentRequestDto {
 
   /**

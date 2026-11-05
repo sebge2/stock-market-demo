@@ -59,4 +59,19 @@ class SwaggerOAuth2ClientTest {
             .value("http://localhost:9000/oauth2/authorize"))
         .andExpect(jsonPath("$.components.securitySchemes.oauth2.flows.authorizationCode.scopes['user.read']").exists());
   }
+
+  /**
+   *
+   * Verifies the token endpoint answers the CORS preflight of the employee Swagger UI origin.
+   *
+   */
+  @Test
+  void allowsCorsPreflightOnTokenEndpoint() throws Exception {
+    mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options("/oauth2/token")
+            .header("Origin", "http://localhost:8083").header("Access-Control-Request-Method", "POST")
+            .header("Access-Control-Request-Headers", "content-type"))
+        .andExpect(status().isOk())
+        .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.header()
+            .string("Access-Control-Allow-Origin", "http://localhost:8083"));
+  }
 }

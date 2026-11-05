@@ -1,7 +1,7 @@
 package be.sgerard.demo.employee.model.dto;
 
 import be.sgerard.demo.employee.model.EmployeeStatus;
-
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -10,6 +10,7 @@ import java.util.UUID;
  * Public representation of an employee without credential data.
  *
  */
+@Schema(name = "Employee")
 public class EmployeeDto {
     private UUID id;
     private UUID userId;

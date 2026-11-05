@@ -20,6 +20,8 @@ spring:
 # Development-only signing key pair, committed on purpose: never use it outside the local profile.
 bank:
   user-service:
+    cors:
+      allowed-origins: http://localhost:8083,http://localhost:4200
     jwt:
       key-id: local-dev-key
       private-key: |

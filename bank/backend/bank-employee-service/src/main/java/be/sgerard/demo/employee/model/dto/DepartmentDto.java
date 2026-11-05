@@ -1,6 +1,7 @@
 package be.sgerard.demo.employee.model.dto;
 
 import be.sgerard.demo.employee.model.DepartmentStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
  * Public representation of a department.
  *
  */
+@Schema(name = "Department")
 public class DepartmentDto {
 
   /**

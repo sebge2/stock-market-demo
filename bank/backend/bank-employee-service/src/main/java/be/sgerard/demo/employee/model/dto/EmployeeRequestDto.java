@@ -1,6 +1,7 @@
 package be.sgerard.demo.employee.model.dto;
 
 import be.sgerard.demo.employee.model.EmployeeStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import java.util.UUID;
  * Payload used to create or replace an employee.
  *
  */
+@Schema(name = "EmployeeRequest")
 public class EmployeeRequestDto {
   @NotBlank @Size(max = 100) private String firstName;
   @NotBlank @Size(max = 100) private String lastName;

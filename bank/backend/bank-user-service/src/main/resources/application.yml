@@ -10,6 +10,8 @@ server:
 bank:
   user-service:
     base-url: ${BANK_USER_SERVICE_BASE_URL:http://localhost:9000}
+    cors:
+      allowed-origins: ${BANK_USER_SERVICE_CORS_ALLOWED_ORIGINS:}
     jwt:
       key-id: ${BANK_USER_SERVICE_JWT_KEY_ID:}
       private-key: ${BANK_USER_SERVICE_JWT_PRIVATE_KEY:}

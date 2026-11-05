@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @ActiveProfiles("local")
 @Transactional
-class LocalDataInitializerTest {
+class LocalDataSqlTest {
 
   /** Employee repository. */
   @Autowired
@@ -38,5 +38,7 @@ class LocalDataInitializerTest {
     assertThat(employee.getLastName()).isEqualTo("Gérard");
     assertThat(employee.getUserId())
         .isEqualTo(UUID.fromString("72e91c48-68b6-4de7-9a40-21b9b6224001"));
+    assertThat(employee.getDepartment().getName()).isEqualTo("IT");
+    assertThat(employee.getDepartment().getDescription()).isEqualTo("IT Support");
   }
 }

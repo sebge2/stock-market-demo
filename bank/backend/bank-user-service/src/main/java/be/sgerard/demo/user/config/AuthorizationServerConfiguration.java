@@ -14,6 +14,7 @@ import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import be.sgerard.demo.user.model.Permission;
@@ -44,6 +45,9 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
@@ -82,6 +86,7 @@ public class AuthorizationServerConfiguration {
         http.getConfigurer(
                         org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer.class)
                 .oidc(Customizer.withDefaults());
+        http.cors(Customizer.withDefaults());
         http.exceptionHandling(exceptions -> exceptions.defaultAuthenticationEntryPointFor(
                 new LoginUrlAuthenticationEntryPoint("/login"), new MediaTypeRequestMatcher(MediaType.TEXT_HTML)));
         return http.build();
@@ -98,11 +103,32 @@ public class AuthorizationServerConfiguration {
     @Bean
     @Order(2)
     public SecurityFilterChain applicationSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(Customizer.withDefaults());
         http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated()).formLogin(Customizer.withDefaults())
                 .oauth2ResourceServer(resourceServer -> resourceServer.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
         return http.build();
+    }
+
+    /**
+     *
+     * Allows browser clients (such as the Swagger UI of other services) served from the configured origins to call
+     * the token, JWK set and user-info endpoints.
+     *
+     * @param allowedOrigins origins allowed to call this server from a browser
+     * @return the CORS configuration source used by the security filter chains
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(
+            @Value("${bank.user-service.cors.allowed-origins:}") List<String> allowedOrigins) {
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(allowedOrigins.stream().filter(origin -> !origin.isBlank()).toList());
+        configuration.setAllowedMethods(List.of("GET", "POST", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     /**

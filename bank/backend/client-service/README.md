@@ -18,21 +18,29 @@ mvn spring-boot:run
 # API: http://localhost:8084/api/client
 ```
 
+## 🔐 Sécurité
+
+Resource server OAuth2 : les JWT sont émis par `bank-user-service` (`bank.user-service.base-url`).
+Permissions requises : `CLIENT_LIST`, `CLIENT_CREATE`, `CLIENT_UPDATE`, `CLIENT_DELETE`.
+`POST /clients` crée automatiquement l'utilisateur dans le user-service (le token de l'appelant est
+transmis, `USER_CREATE` est donc aussi requis). Swagger UI : `/api/client/swagger-ui.html`
+(client OAuth2 `client-swagger-ui`, PKCE).
+
 ## 🏗️ Structure
 
 ```
-client-service/
-├── src/main/
-│   ├── java/com/stockmarket/bank/client/
-│   │   └── ClientServiceApplication.java
-│   └── resources/
-│       └── application.yml
-└── pom.xml
+client-service/src/main/java/be/sgerard/demo/bank/client/
+├── config/       SecurityConfiguration, OpenApiConfiguration, UserServiceConfiguration
+├── controller/   ClientController
+├── mapper/       ClientMapper
+├── model/        Client, dto/ (ClientDto, ClientRequestDto, ...)
+├── repository/   ClientRepository
+├── service/      ClientService
+└── userservice/  UserServiceClient (+ retry)
 ```
 
 ## 📦 Dépendances
 
-- Spring Boot Web
-- Spring Data JPA
-- Spring Validation
+- Spring Boot Web, Data JPA, Validation, OAuth2 Resource Server
+- springdoc-openapi, spring-retry
 - H2 Database

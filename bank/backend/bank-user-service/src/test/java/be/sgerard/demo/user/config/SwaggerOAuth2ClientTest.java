@@ -48,6 +48,24 @@ class SwaggerOAuth2ClientTest {
 
   /**
    *
+   * Verifies the client service Swagger client is a public PKCE client with its own redirect URI.
+   *
+   */
+  @Test
+  void registersPublicPkceClientSwaggerClient() {
+    final RegisteredClient client = clients.findByClientId("client-swagger-ui");
+
+    assertThat(client).isNotNull();
+    assertThat(client.getRedirectUris())
+        .containsExactly("http://localhost:8084/api/client/swagger-ui/oauth2-redirect.html");
+    assertThat(client.getScopes()).containsExactly("client.read");
+    assertThat(client.getAuthorizationGrantTypes()).extracting(type -> type.getValue())
+        .containsExactly("authorization_code");
+    assertThat(client.getClientSettings().isRequireProofKey()).isTrue();
+  }
+
+  /**
+   *
    * Verifies the OpenAPI document declares the OAuth2 flow with the registered scope.
    *
    */

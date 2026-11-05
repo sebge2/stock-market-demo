@@ -21,7 +21,7 @@ spring:
 bank:
   user-service:
     cors:
-      allowed-origins: http://localhost:8083,http://localhost:4200
+      allowed-origins: http://localhost:8083,http://localhost:8084,http://localhost:4200
     jwt:
       key-id: local-dev-key
       private-key: |

@@ -25,7 +25,11 @@ VALUES ('00000000-0000-4000-8000-000000000001', 'ADMIN', 'Administrative access'
   ('00000000-0000-4000-8000-000000000018', 'DEPARTMENT_LIST', 'List and read departments', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('00000000-0000-4000-8000-000000000019', 'DEPARTMENT_CREATE', 'Create departments', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
   ('00000000-0000-4000-8000-000000000020', 'DEPARTMENT_UPDATE', 'Update departments', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('00000000-0000-4000-8000-000000000021', 'DEPARTMENT_DELETE', 'Delete departments', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+  ('00000000-0000-4000-8000-000000000021', 'DEPARTMENT_DELETE', 'Delete departments', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('00000000-0000-4000-8000-000000000022', 'CLIENT_LIST', 'List and read clients', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('00000000-0000-4000-8000-000000000023', 'CLIENT_CREATE', 'Create clients', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('00000000-0000-4000-8000-000000000024', 'CLIENT_UPDATE', 'Update clients', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('00000000-0000-4000-8000-000000000025', 'CLIENT_DELETE', 'Delete clients', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 INSERT INTO role (id, name, description, status, created_at, updated_at)
 VALUES ('00000000-0000-4000-9000-000000000001', 'ADMIN', 'Administrator role', 'ACTIVE', CURRENT_TIMESTAMP,
@@ -52,11 +56,24 @@ VALUES ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-0000000
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000018'),
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000019'),
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000020'),
-  ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000021');
+  ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000021'),
+  ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000022'),
+  ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000023'),
+  ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000024'),
+  ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000025');
 
 -- Password: changeit (BCrypt)
 INSERT INTO user_account (id, username, email, password_hash)
 VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224001', 'sebastien.gerard', 'sebastien.gerard@local.test',
+        '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse');
+
+-- Users referenced by the clients of the client-service local data (same password, no role)
+INSERT INTO user_account (id, username, email, password_hash)
+VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224101', 'alice.martin', 'alice.martin@local.test',
+        '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224102', 'bob.dupont', 'bob.dupont@local.test',
+        '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224103', 'claire.lambert', 'claire.lambert@local.test',
         '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse');
 
 INSERT INTO user_account_role (user_id, role_id)
@@ -70,22 +87,27 @@ VALUES ('00000000-0000-4000-a000-000000000001', 'bank-frontend', NULL, 'none', T
        ('00000000-0000-4000-a000-000000000002', 'swagger-ui', NULL, 'none', TRUE, FALSE, CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP),
        ('00000000-0000-4000-a000-000000000003', 'employee-swagger-ui', NULL, 'none', TRUE, FALSE, CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-a000-000000000004', 'client-swagger-ui', NULL, 'none', TRUE, FALSE, CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP);
 
 INSERT INTO oauth_client_grant_type (oauth_client_id, grant_type)
 VALUES ('00000000-0000-4000-a000-000000000001', 'authorization_code'),
        ('00000000-0000-4000-a000-000000000001', 'refresh_token'),
        ('00000000-0000-4000-a000-000000000002', 'authorization_code'),
-  ('00000000-0000-4000-a000-000000000003', 'authorization_code');
+  ('00000000-0000-4000-a000-000000000003', 'authorization_code'),
+  ('00000000-0000-4000-a000-000000000004', 'authorization_code');
 
 INSERT INTO oauth_client_redirect_uri (oauth_client_id, redirect_uri)
 VALUES ('00000000-0000-4000-a000-000000000001', 'http://localhost:4200/login/oauth2/code/bank'),
        ('00000000-0000-4000-a000-000000000002', 'http://localhost:9000/swagger-ui/oauth2-redirect.html'),
-  ('00000000-0000-4000-a000-000000000003', 'http://localhost:8083/api/employee/swagger-ui/oauth2-redirect.html');
+  ('00000000-0000-4000-a000-000000000003', 'http://localhost:8083/api/employee/swagger-ui/oauth2-redirect.html'),
+  ('00000000-0000-4000-a000-000000000004', 'http://localhost:8084/api/client/swagger-ui/oauth2-redirect.html');
 
 INSERT INTO oauth_client_scope (oauth_client_id, scope)
 VALUES ('00000000-0000-4000-a000-000000000001', 'openid'),
        ('00000000-0000-4000-a000-000000000001', 'profile'),
        ('00000000-0000-4000-a000-000000000001', 'user.read'),
        ('00000000-0000-4000-a000-000000000002', 'user.read'),
-  ('00000000-0000-4000-a000-000000000003', 'employee.read');
+  ('00000000-0000-4000-a000-000000000003', 'employee.read'),
+  ('00000000-0000-4000-a000-000000000004', 'client.read');

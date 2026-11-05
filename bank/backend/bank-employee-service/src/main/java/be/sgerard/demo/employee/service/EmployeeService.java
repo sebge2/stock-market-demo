@@ -20,6 +20,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
@@ -112,15 +114,14 @@ public class EmployeeService {
 
   /**
    *
-   * Creates an employee and automatically creates a corresponding user in the user-service.
-   * If userId is provided in the request, it's used directly (backward compatibility).
-   * Otherwise, a user is created in the user-service with auto-generated credentials.
-   * This operation is atomic: if user creation fails, the employee is not persisted.
+   * Creates an employee and the corresponding user in the user-service (auto-generated username and
+   * temporary password). The user is created before the employee is persisted: if its creation fails
+   * nothing is persisted.
    *
    * @param request the employee creation request
    * @return the created employee DTO
-   * @throws ResponseStatusException if email is already in use or department not found
-   * @throws ResponseStatusException if user creation fails
+   * @throws ResponseStatusException if the email is in use, the department is unknown or the user
+   *     creation fails
    *
    */
   @Transactional
@@ -128,23 +129,38 @@ public class EmployeeService {
     ensureEmailAvailable(request.getEmail(), null);
     final Department department = findDepartment(request.getDepartmentId());
 
-    final UUID userId;
-    if (request.getUserId() != null) {
-      // Backward compatibility: if userId is provided, use it directly
-      LOGGER.info("Creating employee with provided userId: {}", request.getUserId());
-      userId = request.getUserId();
-    } else {
-      // Create user in user-service
-      LOGGER.info("Creating user in user-service for employee with email: {}", request.getEmail());
-      final UserServiceCreationResponseDto userResponse = createUserInUserService(request);
-      userId = userResponse.getId();
-    }
+    LOGGER.info("Creating user in user-service for employee with email: {}", request.getEmail());
+    final UUID userId = createUserInUserService(request);
 
-    // Create employee with the obtained userId
-    Employee employee = employeeMapper.toEntity(request, department, userId);
-    final EmployeeDto result = employeeMapper.toDto(employeeRepository.save(employee));
+    final Employee employee = employeeMapper.toEntity(request, department, userId);
+    final EmployeeDto result;
+    try {
+      result = employeeMapper.toDto(employeeRepository.saveAndFlush(employee));
+    } catch (RuntimeException e) {
+      compensateUserCreation(userId);
+      throw e;
+    }
     LOGGER.info("Employee created successfully with ID: {}", result.getId());
     return result;
+  }
+
+  /**
+   *
+   * Best-effort compensation: deletes the user created in the user-service because the employee
+   * could not be persisted. A failure is only logged so that the original error is not masked.
+   * Failures raised at commit time (after this method returns) are not compensated.
+   *
+   * @param userId the identifier of the user to delete
+   *
+   */
+  private void compensateUserCreation(UUID userId) {
+    try {
+      userServiceClient.deleteUser(userId);
+      LOGGER.warn("Employee persistence failed, user {} deleted from the user-service", userId);
+    } catch (RuntimeException e) {
+      LOGGER.error("Employee persistence failed and user {} could not be deleted (orphan user)",
+          userId, e);
+    }
   }
 
   /**
@@ -158,7 +174,7 @@ public class EmployeeService {
    */
   @Transactional
   public EmployeeDto update(UUID id, EmployeeRequestDto request) {
-    Employee employee = findEntity(id);
+    final Employee employee = findEntity(id);
     ensureEmailAvailable(request.getEmail(), id);
     employeeMapper.updateEntity(request, employee, findDepartment(request.getDepartmentId()));
     return employeeMapper.toDto(employeeRepository.save(employee));
@@ -178,44 +194,60 @@ public class EmployeeService {
 
   /**
    *
-   * Creates a user in the user-service with auto-generated credentials.
-   * Translates user-service errors to appropriate ResponseStatusExceptions.
+   * Creates a user in the user-service with auto-generated credentials and translates the failures
+   * to ResponseStatusExceptions: 409 for a username conflict, 400 for a rejected request, 502 for an
+   * unexpected upstream answer, 503 when the user-service is unreachable and 500 otherwise.
    *
-   * @param request the employee creation request containing email
-   * @return the user service response with created user ID
-   * @throws ResponseStatusException with 502/503 if user creation fails
+   * @param request the employee creation request
+   * @return the identifier of the created user
+   * @throws ResponseStatusException if the user cannot be created
    *
    */
-  private UserServiceCreationResponseDto createUserInUserService(
-      EmployeeRequestDto request) {
+  private UUID createUserInUserService(EmployeeRequestDto request) {
     final String username = UserCreationHelper.generateUsername(request.getEmail());
-    final String password = UserCreationHelper.generateTemporaryPassword();
-
     final UserServiceCreationRequestDto userRequest = new UserServiceCreationRequestDto(
         username,
         request.getEmail(),
-        password,
-        UserCreationHelper.createDefaultRoleIds()
-    );
+        UserCreationHelper.generateTemporaryPassword(),
+        UserCreationHelper.createDefaultRoleIds());
 
+    final UserServiceCreationResponseDto response;
     try {
-      return userServiceClient.createUser(userRequest);
+      response = userServiceClient.createUser(userRequest);
     } catch (HttpClientErrorException e) {
-      // 4xx errors from user-service (validation, conflict, etc.)
-      LOGGER.error("User-service returned 4xx error: {} - {}", e.getStatusCode(),
+      LOGGER.warn("User-service rejected the user creation: {} - {}", e.getStatusCode(),
           e.getResponseBodyAsString());
       if (e.getStatusCode() == HttpStatus.CONFLICT) {
         throw new ResponseStatusException(HttpStatus.CONFLICT,
-            "Username already exists in user-service: " + username);
+            "Failed to create user: username already exists: " + username);
       }
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-          "Failed to create user: " + e.getMessage());
-    } catch (Exception e) {
-      // Transient errors (after retries exhausted)
-      LOGGER.error("User-service call failed after retries: {}", e.getMessage(), e);
+      if (e.getStatusCode() == HttpStatus.BAD_REQUEST
+          || e.getStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+            "Failed to create user: the user-service rejected the request");
+      }
+      // 401/403/...: the caller cannot create users, which is not a client mistake of this request.
+      throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
+          "Failed to create user: the user-service refused the request (" + e.getStatusCode() + ")");
+    } catch (HttpServerErrorException e) {
+      LOGGER.error("User-service kept failing after retries: {}", e.getStatusCode());
+      throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
+          "Failed to create user: the user-service failed. Please retry later.");
+    } catch (ResourceAccessException e) {
+      LOGGER.error("User-service unreachable after retries: {}", e.getMessage());
       throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
-          "User service unavailable. Failed to create user. Please retry.");
+          "Failed to create user: the user-service is unavailable. Please retry later.");
+    } catch (RuntimeException e) {
+      LOGGER.error("Unexpected error while creating the user", e);
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Failed to create user: unexpected error");
     }
+
+    if (response == null || response.getId() == null) {
+      throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
+          "Failed to create user: the user-service returned no user identifier");
+    }
+    return response.getId();
   }
 
   /**

@@ -80,14 +80,14 @@ public class EmployeeController {
   public EmployeeDto findById(@PathVariable UUID id) { return employeeService.findById(id); }
   /**
    *
-   * Creates an employee and automatically creates a corresponding user in the user-service
-   * if userId is not provided. If userId is provided, it is used directly (backward compatibility).
+   * Creates an employee and automatically creates the corresponding user in the user service.
    *
    */
   @Operation(summary = "Create an employee",
-      description = "Requires the EMPLOYEE_CREATE permission. "
-          + "If userId is not provided, a user will be automatically created in the user-service "
-          + "with auto-generated username and password.")
+      description = "Requires the EMPLOYEE_CREATE permission. The caller's token is forwarded to the "
+          + "user service, so the caller also needs the USER_CREATE permission. A user is created "
+          + "automatically (username derived from the email, temporary password) and its identifier "
+          + "is returned as userId. Nothing is persisted if the user cannot be created.")
   @ApiResponses({
       @ApiResponse(responseCode = "201", description = "Employee created"),
       @ApiResponse(responseCode = "400", description = "Invalid request or user creation validation failed"),
@@ -95,8 +95,9 @@ public class EmployeeController {
       @ApiResponse(responseCode = "403", description = "Missing the EMPLOYEE_CREATE permission"),
       @ApiResponse(responseCode = "404", description = "Department not found"),
       @ApiResponse(responseCode = "409", description = "Employee or username already exists"),
-      @ApiResponse(responseCode = "502", description = "User service unavailable (transient error)"),
-      @ApiResponse(responseCode = "503", description = "User service unavailable (after retries exhausted)")
+      @ApiResponse(responseCode = "500", description = "Unexpected error while creating the user"),
+      @ApiResponse(responseCode = "502", description = "User service failed or refused the request"),
+      @ApiResponse(responseCode = "503", description = "User service unreachable after retries")
   })
   @PreAuthorize("hasAuthority('EMPLOYEE_CREATE')")
   @PostMapping

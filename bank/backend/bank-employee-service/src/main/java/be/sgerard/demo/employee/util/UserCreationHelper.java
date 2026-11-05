@@ -1,7 +1,11 @@
 package be.sgerard.demo.employee.util;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.UUID;
 
 /**
  *
@@ -12,11 +16,18 @@ public class UserCreationHelper {
 
   /**
    *
-   * Characters used for password generation.
+   * Character classes a generated password draws from: upper case, lower case, digits and symbols.
    *
    */
-  private static final String PASSWORD_CHARS =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+  private static final String[] CHARACTER_CLASSES = {
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "abcdefghijklmnopqrstuvwxyz", "0123456789", "!@#$%^&*"};
+
+  /**
+   *
+   * Length of the generated passwords.
+   *
+   */
+  private static final int PASSWORD_LENGTH = 12;
 
   /**
    *
@@ -43,22 +54,36 @@ public class UserCreationHelper {
    *
    */
   public static String generateUsername(String email) {
-    final String localPart = email.split("@")[0];
-    return localPart.toLowerCase().substring(0, Math.min(localPart.length(), 100));
+    if (email == null || email.isBlank()) {
+      throw new IllegalArgumentException("Email is required to generate a username");
+    }
+    final String localPart = email.trim().split("@", -1)[0].toLowerCase();
+    if (localPart.isEmpty()) {
+      throw new IllegalArgumentException("Email has an empty local part: " + email);
+    }
+    return localPart.substring(0, Math.min(localPart.length(), 100));
   }
 
   /**
    *
-   * Generates a temporary password of 12 characters with mixed case, digits, and symbols.
+   * Generates a temporary password of 12 characters containing at least one upper case letter, one
+   * lower case letter, one digit and one symbol.
    *
    * @return the generated password
    *
    */
   public static String generateTemporaryPassword() {
-    final StringBuilder password = new StringBuilder(12);
-    for (int i = 0; i < 12; i++) {
-      password.append(PASSWORD_CHARS.charAt(RANDOM.nextInt(PASSWORD_CHARS.length())));
+    final List<Character> chars = new ArrayList<>(PASSWORD_LENGTH);
+    for (final String characterClass : CHARACTER_CLASSES) {
+      chars.add(characterClass.charAt(RANDOM.nextInt(characterClass.length())));
     }
+    final String all = String.join("", CHARACTER_CLASSES);
+    while (chars.size() < PASSWORD_LENGTH) {
+      chars.add(all.charAt(RANDOM.nextInt(all.length())));
+    }
+    Collections.shuffle(chars, RANDOM);
+    final StringBuilder password = new StringBuilder(PASSWORD_LENGTH);
+    chars.forEach(password::append);
     return password.toString();
   }
 
@@ -69,7 +94,7 @@ public class UserCreationHelper {
    * @return an empty LinkedHashSet of role IDs
    *
    */
-  public static LinkedHashSet<java.util.UUID> createDefaultRoleIds() {
+  public static LinkedHashSet<UUID> createDefaultRoleIds() {
     return new LinkedHashSet<>();
   }
 }

@@ -1,65 +1,119 @@
 package be.sgerard.demo.employee.config;
 
+import java.time.Duration;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.support.RetryTemplate;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 /**
  *
- * Configuration for user-service integration including retry logic and URL resolution.
+ * Configuration of the integration with the user service: URL resolution, HTTP timeouts and retry policy.
  *
  */
 @Configuration
-@EnableRetry
 public class UserServiceConfiguration {
 
   /**
    *
-   * Constructs the base URL for the user-service based on configuration.
-   * If BANK_BASE_DOMAIN is set, uses http://bank-user-service.${BANK_BASE_DOMAIN}.
-   * Otherwise falls back to BANK_USER_SERVICE_BASE_URL.
-   *
-   * @param baseDomain the BANK_BASE_DOMAIN environment variable (optional)
-   * @param baseUrl the BANK_USER_SERVICE_BASE_URL environment variable (fallback)
-   * @param port the optional BANK_USER_SERVICE_PORT
-   * @return the resolved base URL for user-service
+   * Maximum number of attempts (initial call included) of a call to the user service.
    *
    */
-  @Bean
-  public String userServiceBaseUrl(
-      @Value("${bank.base-domain:}") String baseDomain,
-      @Value("${bank.user-service.base-url:}") String baseUrl,
-      @Value("${bank.user-service.port:}") String port) {
+  public static final int MAX_ATTEMPTS = 3;
 
+  /**
+   *
+   * Delay in milliseconds before the first retry; it doubles on every further retry (with jitter).
+   *
+   */
+  public static final long INITIAL_BACKOFF_MS = 100;
+
+  /**
+   *
+   * Upper bound in milliseconds of the delay between two attempts.
+   *
+   */
+  public static final long MAX_BACKOFF_MS = 1_000;
+
+  /**
+   *
+   * Timeout applied when connecting to and reading from the user service.
+   *
+   */
+  private static final Duration HTTP_TIMEOUT = Duration.ofSeconds(5);
+
+  /**
+   *
+   * Resolves the base URL of the user service. If the base domain is set the URL is
+   * {@code http://bank-user-service.<domain>[:<port>]}, otherwise the explicit base URL is used.
+   *
+   * @param baseDomain the base domain of the bank services (optional)
+   * @param port the port of the user service, only used with the base domain (optional)
+   * @param baseUrl the explicit base URL of the user service (fallback)
+   * @return the resolved base URL, without trailing slash
+   * @throws IllegalStateException if neither the base domain nor the base URL is configured
+   *
+   */
+  public static String resolveBaseUrl(String baseDomain, String port, String baseUrl) {
+    final String url;
     if (baseDomain != null && !baseDomain.isBlank()) {
-      final String url = "http://bank-user-service." + baseDomain;
-      if (port != null && !port.isBlank()) {
-        return url + ":" + port;
-      }
-      return url;
+      final String hostUrl = "http://bank-user-service." + baseDomain.trim();
+      url = port != null && !port.isBlank() ? hostUrl + ":" + port.trim() : hostUrl;
+    } else if (baseUrl != null && !baseUrl.isBlank()) {
+      url = baseUrl.trim();
+    } else {
+      throw new IllegalStateException(
+          "User service URL not configured: set BANK_BASE_DOMAIN or BANK_USER_SERVICE_BASE_URL");
     }
-
-    if (baseUrl != null && !baseUrl.isBlank()) {
-      return baseUrl;
-    }
-
-    throw new IllegalStateException(
-        "User service base URL not configured. Set either BANK_BASE_DOMAIN or BANK_USER_SERVICE_BASE_URL");
+    return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
   }
 
   /**
    *
-   * Creates a RestTemplate bean for calling the user-service.
+   * Creates the RestTemplate dedicated to the user service, rooted at its resolved base URL.
    *
    * @param builder the RestTemplateBuilder
-   * @return a configured RestTemplate
+   * @param baseDomain the base domain of the bank services (optional)
+   * @param port the port of the user service (optional)
+   * @param baseUrl the explicit base URL of the user service (fallback)
+   * @return the configured RestTemplate
    *
    */
   @Bean
-  public RestTemplate restTemplate(RestTemplateBuilder builder) {
-    return builder.build();
+  @Qualifier("userServiceRestTemplate")
+  public RestTemplate userServiceRestTemplate(RestTemplateBuilder builder,
+      @Value("${bank.base-domain:}") String baseDomain,
+      @Value("${bank.user-service.port:}") String port,
+      @Value("${bank.user-service.base-url:}") String baseUrl) {
+    return builder
+        .rootUri(resolveBaseUrl(baseDomain, port, baseUrl))
+        .setConnectTimeout(HTTP_TIMEOUT)
+        .setReadTimeout(HTTP_TIMEOUT)
+        .build();
+  }
+
+  /**
+   *
+   * Creates the retry template of the user service calls: {@value #MAX_ATTEMPTS} attempts, exponential
+   * backoff (100ms, 200ms, ...) with jitter, retrying only 5xx responses and I/O errors or timeouts.
+   * 4xx responses are never retried.
+   *
+   * @return the retry template
+   *
+   */
+  @Bean
+  @Qualifier("userServiceRetryTemplate")
+  public RetryTemplate userServiceRetryTemplate() {
+    return RetryTemplate.builder()
+        .maxAttempts(MAX_ATTEMPTS)
+        .exponentialBackoff(INITIAL_BACKOFF_MS, 2.0, MAX_BACKOFF_MS, true)
+        .retryOn(HttpServerErrorException.class)
+        .retryOn(ResourceAccessException.class)
+        .build();
   }
 }

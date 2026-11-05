@@ -17,7 +17,7 @@ public class EmployeeMapper {
 
   /**
    *
-   * Creates an employee entity from request data with a provided userId.
+   * Creates an employee entity from request data and the identifier of the user created for it.
    *
    * @param request the employee request DTO
    * @param department the employee's department
@@ -32,24 +32,8 @@ public class EmployeeMapper {
 
   /**
    *
-   * Creates an employee entity from request data (backward compatibility).
-   * Uses the userId from the request if available.
-   *
-   * @param request the employee request DTO
-   * @param department the employee's department
-   * @return the created employee entity
-   *
-
-   */
-  public Employee toEntity(EmployeeRequestDto request, Department department) {
-    return toEntity(request, department, request.getUserId());
-  }
-
-  /**
-   *
    * Updates an employee entity with mutable request data.
    *
-
    * @param request the employee request DTO
    * @param employee the employee entity to update
    * @param department the employee's department

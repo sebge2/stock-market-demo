@@ -2,6 +2,7 @@ package be.sgerard.demo.employee.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.LinkedHashSet;
@@ -69,20 +70,31 @@ class UserCreationHelperTest {
 
   /**
    *
-   * Test generateTemporaryPassword contains mixed characters.
+   * Test generateTemporaryPassword always contains every character class.
    *
 
    */
   @Test
   void testGenerateTemporaryPasswordComplexity() {
-    final String password = UserCreationHelper.generateTemporaryPassword();
+    for (int i = 0; i < 200; i++) {
+      assertComplexPassword(UserCreationHelper.generateTemporaryPassword());
+    }
+  }
+
+  /**
+   *
+   * Asserts that a password contains every character class.
+   *
+   * @param password the password to check
+   *
+   */
+  private void assertComplexPassword(String password) {
 
     assertNotNull(password);
-    assertTrue(password.length() == 12);
-    // Password should contain at least some characters from the set
-    assertTrue(password.chars().anyMatch(Character::isUpperCase)
-        || password.chars().anyMatch(Character::isLowerCase)
-        || password.chars().anyMatch(Character::isDigit));
+    assertTrue(password.chars().anyMatch(Character::isUpperCase));
+    assertTrue(password.chars().anyMatch(Character::isLowerCase));
+    assertTrue(password.chars().anyMatch(Character::isDigit));
+    assertTrue(password.chars().anyMatch(c -> "!@#$%^&*".indexOf(c) >= 0));
   }
 
   /**
@@ -97,5 +109,17 @@ class UserCreationHelperTest {
 
     assertNotNull(result);
     assertTrue(result.isEmpty());
+  }
+
+  /**
+   *
+   * Test generateUsername rejects emails that have no usable local part.
+   *
+   */
+  @Test
+  void testGenerateUsernameRejectsInvalidEmails() {
+    assertThrows(IllegalArgumentException.class, () -> UserCreationHelper.generateUsername("@example.com"));
+    assertThrows(IllegalArgumentException.class, () -> UserCreationHelper.generateUsername(" "));
+    assertThrows(IllegalArgumentException.class, () -> UserCreationHelper.generateUsername(null));
   }
 }

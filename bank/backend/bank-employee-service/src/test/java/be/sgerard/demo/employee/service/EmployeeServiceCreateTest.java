@@ -1,9 +1,9 @@
 package be.sgerard.demo.employee.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -16,6 +16,7 @@ import be.sgerard.demo.employee.model.Employee;
 import be.sgerard.demo.employee.model.EmployeeStatus;
 import be.sgerard.demo.employee.model.dto.EmployeeDto;
 import be.sgerard.demo.employee.model.dto.EmployeeRequestDto;
+import be.sgerard.demo.employee.model.dto.UserServiceCreationRequestDto;
 import be.sgerard.demo.employee.model.dto.UserServiceCreationResponseDto;
 import be.sgerard.demo.employee.repository.DepartmentRepository;
 import be.sgerard.demo.employee.repository.EmployeeRepository;
@@ -24,14 +25,17 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.server.ResponseStatusException;
 
 /**
  *
- * Unit tests for EmployeeService.create() method with user-service integration.
+ * Unit tests of EmployeeService.create() and its integration with the user-service client.
  *
  */
 class EmployeeServiceCreateTest {
@@ -42,20 +46,6 @@ class EmployeeServiceCreateTest {
    *
    */
   private EmployeeRepository employeeRepository;
-
-  /**
-   *
-   * Mock department repository.
-   *
-   */
-  private DepartmentRepository departmentRepository;
-
-  /**
-   *
-   * Real employee mapper (not mocked to avoid Mockito issues).
-   *
-   */
-  private EmployeeMapper employeeMapper;
 
   /**
    *
@@ -73,174 +63,232 @@ class EmployeeServiceCreateTest {
 
   /**
    *
-   * Setup before each test.
+   * Creates the service under test with mocked collaborators.
    *
    */
   @BeforeEach
   void setUp() {
     employeeRepository = mock(EmployeeRepository.class);
-    departmentRepository = mock(DepartmentRepository.class);
-    employeeMapper = new EmployeeMapper();
     userServiceClient = mock(IUserServiceClient.class);
-
-    employeeService =
-        new EmployeeService(employeeRepository, departmentRepository, employeeMapper,
-            userServiceClient);
+    employeeService = new EmployeeService(employeeRepository, mock(DepartmentRepository.class),
+        new EmployeeMapper(), userServiceClient);
+    when(employeeRepository.findByEmail(any())).thenReturn(Optional.empty());
   }
 
   /**
    *
-   * Test happy path: user created in user-service, employee created successfully.
+   * Builds a valid employee request.
+   *
+   * @param email the employee email
+   * @return the request
    *
    */
-  @Test
-  void testCreateEmployeeSuccessfullyCreatesUserAndEmployee() {
-    // Arrange
+  private EmployeeRequestDto request(String email) {
     final EmployeeRequestDto request = new EmployeeRequestDto();
     request.setFirstName("John");
     request.setLastName("Doe");
-    request.setEmail("john.doe@example.com");
+    request.setEmail(email);
     request.setStatus(EmployeeStatus.ACTIVE);
-    request.setDepartmentId(null);
+    return request;
+  }
 
+  /**
+   *
+   * Asserts that the creation fails with the expected status and that nothing is persisted.
+   *
+   * @param expected the expected HTTP status
+   *
+   */
+  private void assertCreationFailsWith(HttpStatus expected) {
+    final ResponseStatusException exception = assertThrows(ResponseStatusException.class,
+        () -> employeeService.create(request("john.doe@example.com")));
+
+    assertEquals(expected, exception.getStatusCode());
+    verify(employeeRepository, never()).saveAndFlush(any());
+  }
+
+  /**
+   *
+   * Happy path: the user is created from the email and its id is stored on the employee.
+   *
+   */
+  @Test
+  void createsUserThenEmployeeWithReturnedUserId() {
     final UUID userId = UUID.randomUUID();
-    final UserServiceCreationResponseDto userResponse = new UserServiceCreationResponseDto(
-        userId, "john.doe", "john.doe@example.com", new LinkedHashSet<>());
+    when(userServiceClient.createUser(any())).thenReturn(
+        new UserServiceCreationResponseDto(userId, "john.doe", "john.doe@example.com",
+            new LinkedHashSet<>()));
+    when(employeeRepository.saveAndFlush(any(Employee.class))).thenAnswer(call -> call.getArgument(0));
 
-    final Employee savedEmployee = new Employee("John", "Doe", "john.doe@example.com", userId,
-        EmployeeStatus.ACTIVE, null);
+    final EmployeeDto result = employeeService.create(request("John.Doe@example.com"));
 
-    when(employeeRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
-    when(userServiceClient.createUser(any())).thenReturn(userResponse);
-    when(employeeRepository.save(any(Employee.class))).thenReturn(savedEmployee);
-
-    // Act
-    EmployeeDto result = employeeService.create(request);
-
-    // Assert
-    assertNotNull(result);
     assertEquals(userId, result.getUserId());
-    verify(userServiceClient, times(1)).createUser(any());
-    verify(employeeRepository, times(1)).save(any(Employee.class));
+    final ArgumentCaptor<UserServiceCreationRequestDto> captor =
+        ArgumentCaptor.forClass(UserServiceCreationRequestDto.class);
+    verify(userServiceClient, times(1)).createUser(captor.capture());
+    assertEquals("john.doe", captor.getValue().getUsername());
+    assertEquals("John.Doe@example.com", captor.getValue().getEmail());
+    assertEquals(12, captor.getValue().getPassword().length());
+    verify(employeeRepository, times(1)).saveAndFlush(any(Employee.class));
   }
 
   /**
    *
-   * Test backward compatibility: userId provided in request, user-service not called.
+   * A 4xx conflict from the user-service is a 409 and nothing is persisted.
    *
    */
   @Test
-  void testCreateEmployeeWithProvidedUserIdSkipsUserServiceCall() {
-    // Arrange
-    final UUID providedUserId = UUID.randomUUID();
-    final EmployeeRequestDto request = new EmployeeRequestDto();
-    request.setFirstName("Jane");
-    request.setLastName("Smith");
-    request.setEmail("jane.smith@example.com");
-    request.setStatus(EmployeeStatus.ACTIVE);
-    request.setUserId(providedUserId);
-    request.setDepartmentId(null);
-
-    final Employee savedEmployee = new Employee("Jane", "Smith", "jane.smith@example.com",
-        providedUserId, EmployeeStatus.ACTIVE, null);
-
-    when(employeeRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
-    when(employeeRepository.save(any(Employee.class))).thenReturn(savedEmployee);
-
-    // Act
-    EmployeeDto result = employeeService.create(request);
-
-    // Assert
-    assertNotNull(result);
-    verify(userServiceClient, never()).createUser(any());
-    verify(employeeRepository, times(1)).save(any(Employee.class));
-  }
-
-  /**
-   *
-   * Test user-service returns 4xx error: should not retry and throw exception.
-   *
-   */
-  @Test
-  void testCreateEmployeeWhen4xxErrorThrownByUserService() {
-    // Arrange
-    final EmployeeRequestDto request = new EmployeeRequestDto();
-    request.setFirstName("Bob");
-    request.setLastName("Johnson");
-    request.setEmail("bob.johnson@example.com");
-    request.setStatus(EmployeeStatus.ACTIVE);
-    request.setDepartmentId(null);
-
-    when(employeeRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
+  void usernameConflictIsReportedAsConflict() {
     when(userServiceClient.createUser(any())).thenThrow(
-        new HttpClientErrorException(HttpStatus.CONFLICT, "Username already exists"));
+        new HttpClientErrorException(HttpStatus.CONFLICT, "Conflict"));
 
-    // Act & Assert
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-        () -> employeeService.create(request));
-
-    assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
+    assertCreationFailsWith(HttpStatus.CONFLICT);
     verify(userServiceClient, times(1)).createUser(any());
-    verify(employeeRepository, never()).save(any());
   }
 
   /**
    *
-   * Test user-service call fails after retries: employee should not be persisted.
+   * A 400 from the user-service is a 400 and nothing is persisted.
    *
    */
   @Test
-  void testCreateEmployeeWhenUserServiceUnavailable() {
-    // Arrange
-    final EmployeeRequestDto request = new EmployeeRequestDto();
-    request.setFirstName("Alice");
-    request.setLastName("Brown");
-    request.setEmail("alice.brown@example.com");
-    request.setStatus(EmployeeStatus.ACTIVE);
-    request.setDepartmentId(null);
+  void validationErrorIsReportedAsBadRequest() {
+    when(userServiceClient.createUser(any())).thenThrow(
+        new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Bad request"));
 
-    when(employeeRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
-    when(userServiceClient.createUser(any()))
-        .thenThrow(new RuntimeException("Service unavailable"));
-
-    // Act & Assert
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-        () -> employeeService.create(request));
-
-    assertEquals(HttpStatus.SERVICE_UNAVAILABLE, exception.getStatusCode());
-    verify(employeeRepository, never()).save(any());
+    assertCreationFailsWith(HttpStatus.BAD_REQUEST);
   }
 
   /**
    *
-   * Test email already in use: should throw conflict exception before calling user-service.
+   * A 403 from the user-service (caller lacks USER_CREATE) is a 502, not a client error of this request.
    *
    */
   @Test
-  void testCreateEmployeeWhenEmailAlreadyInUse() {
-    // Arrange
-    final EmployeeRequestDto request = new EmployeeRequestDto();
-    request.setFirstName("Charlie");
-    request.setLastName("Davis");
-    request.setEmail("charlie.davis@example.com");
-    request.setStatus(EmployeeStatus.ACTIVE);
-    request.setDepartmentId(null);
+  void forbiddenByUserServiceIsReportedAsBadGateway() {
+    when(userServiceClient.createUser(any())).thenThrow(
+        new HttpClientErrorException(HttpStatus.FORBIDDEN, "Forbidden"));
 
-    final UUID existingEmployeeId = UUID.randomUUID();
-    final Employee existingEmployee = new Employee("Charlie", "Davis", request.getEmail(),
-        UUID.randomUUID(), EmployeeStatus.ACTIVE, null);
-    // Use ReflectionTestUtils to set ID since it's JPA managed
-    ReflectionTestUtils.setField(existingEmployee, "id", existingEmployeeId);
+    assertCreationFailsWith(HttpStatus.BAD_GATEWAY);
+  }
 
-    when(employeeRepository.findByEmail(request.getEmail()))
-        .thenReturn(Optional.of(existingEmployee));
+  /**
+   *
+   * A 5xx still failing after the retries is a 502 and nothing is persisted.
+   *
+   */
+  @Test
+  void exhaustedServerErrorsAreReportedAsBadGateway() {
+    when(userServiceClient.createUser(any())).thenThrow(
+        new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR));
 
-    // Act & Assert
-    ResponseStatusException exception = assertThrows(ResponseStatusException.class,
-        () -> employeeService.create(request));
+    assertCreationFailsWith(HttpStatus.BAD_GATEWAY);
+  }
 
-    assertEquals(HttpStatus.CONFLICT, exception.getStatusCode());
+  /**
+   *
+   * An unreachable user-service after the retries is a 503 and nothing is persisted.
+   *
+   */
+  @Test
+  void unreachableUserServiceIsReportedAsServiceUnavailable() {
+    when(userServiceClient.createUser(any())).thenThrow(
+        new ResourceAccessException("Read timed out"));
+
+    assertCreationFailsWith(HttpStatus.SERVICE_UNAVAILABLE);
+  }
+
+  /**
+   *
+   * Any other failure is a 500 and nothing is persisted.
+   *
+   */
+  @Test
+  void unexpectedErrorIsReportedAsInternalServerError() {
+    when(userServiceClient.createUser(any())).thenThrow(new IllegalStateException("no JWT"));
+
+    assertCreationFailsWith(HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+
+  /**
+   *
+   * A user-service answer without identifier is a 502 and nothing is persisted.
+   *
+   */
+  @Test
+  void missingUserIdInResponseIsReportedAsBadGateway() {
+    when(userServiceClient.createUser(any())).thenReturn(new UserServiceCreationResponseDto());
+
+    assertCreationFailsWith(HttpStatus.BAD_GATEWAY);
+  }
+
+  /**
+   *
+   * An email already used by an employee is rejected before any call to the user-service.
+   *
+   */
+  @Test
+  void emailAlreadyInUseDoesNotCallUserService() {
+    final Employee existing = new Employee("Jane", "Doe", "john.doe@example.com", UUID.randomUUID(),
+        EmployeeStatus.ACTIVE, null);
+    ReflectionTestUtils.setField(existing, "id", UUID.randomUUID());
+    when(employeeRepository.findByEmail("john.doe@example.com")).thenReturn(Optional.of(existing));
+
+    assertCreationFailsWith(HttpStatus.CONFLICT);
     verify(userServiceClient, never()).createUser(any());
-    verify(employeeRepository, never()).save(any());
+  }
+
+  /**
+   *
+   * When the employee cannot be persisted the created user is deleted and the original error is kept.
+   *
+   */
+  @Test
+  void persistenceFailureDeletesCreatedUser() {
+    final UUID userId = UUID.randomUUID();
+    when(userServiceClient.createUser(any())).thenReturn(
+        new UserServiceCreationResponseDto(userId, "john.doe", "john.doe@example.com",
+            new LinkedHashSet<>()));
+    when(employeeRepository.saveAndFlush(any(Employee.class)))
+        .thenThrow(new IllegalStateException("constraint violation"));
+
+    final IllegalStateException exception = assertThrows(IllegalStateException.class,
+        () -> employeeService.create(request("john.doe@example.com")));
+
+    assertEquals("constraint violation", exception.getMessage());
+    verify(userServiceClient, times(1)).deleteUser(userId);
+  }
+
+  /**
+   *
+   * A failing compensation does not mask the original persistence error.
+   *
+   */
+  @Test
+  void failedCompensationKeepsOriginalError() {
+    when(userServiceClient.createUser(any())).thenReturn(
+        new UserServiceCreationResponseDto(UUID.randomUUID(), "john.doe", "john.doe@example.com",
+            new LinkedHashSet<>()));
+    when(employeeRepository.saveAndFlush(any(Employee.class)))
+        .thenThrow(new IllegalStateException("constraint violation"));
+    doThrow(new ResourceAccessException("down")).when(userServiceClient).deleteUser(any());
+
+    final IllegalStateException exception = assertThrows(IllegalStateException.class,
+        () -> employeeService.create(request("john.doe@example.com")));
+
+    assertEquals("constraint violation", exception.getMessage());
+  }
+
+  /**
+   *
+   * An upstream 401/403 is not a client error of this request: it must not be reported as 400.
+   *
+   */
+  @Test
+  void upstreamForbiddenIsReportedAsBadGateway() {
+    when(userServiceClient.createUser(any())).thenThrow(
+        HttpClientErrorException.create(HttpStatus.FORBIDDEN, "Forbidden", null, null, null));
+
+    assertCreationFailsWith(HttpStatus.BAD_GATEWAY);
   }
 }

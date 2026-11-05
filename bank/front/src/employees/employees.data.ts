@@ -5,6 +5,8 @@ export type EmployeeStatus = 'Actif' | 'Inactif' | 'Suspendu' | 'En congé';
 export interface Employee {
   /** Employee display name. */
   name: string;
+  /** Email address. */
+  email: string;
   /** Employee registration number. */
   matricule: string;
   /** Job title. */

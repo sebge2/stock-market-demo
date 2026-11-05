@@ -70,6 +70,7 @@ export async function fetchEmployees(): Promise<Employee[]> {
   }
   return employees.map((e) => ({
     name: `${e.firstName} ${e.lastName}`,
+    email: e.email,
     matricule: e.id.slice(0, 8).toUpperCase(),
     position: e.jobTitle ?? '—',
     department: (e.departmentId && names.get(e.departmentId)) || '—',

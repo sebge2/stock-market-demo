@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './auth/auth';
+import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { ApiError, fetchEmployees } from './employees/employees.api';
 import {
   type Employee,
@@ -61,6 +62,7 @@ export function App() {
   const [page, setPage] = useState(1);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [authenticated, setAuthenticated] = useState(getAccessToken() !== null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,6 +75,14 @@ export function App() {
       .catch((e: Error) => setError(e.message))
       .finally(() => window.history.replaceState(null, '', '/'));
   }, []);
+
+  useEffect(() => {
+    if (!authenticated) {
+      setProfile(null);
+      return;
+    }
+    fetchProfile().then(setProfile).catch(() => setProfile(null));
+  }, [authenticated]);
 
   useEffect(() => {
     if (!authenticated) {
@@ -109,6 +119,8 @@ export function App() {
           [e.name, e.matricule, e.position].some((v) => v.toLowerCase().includes(needle))),
     );
   }, [employees, tab, query, department, seniority]);
+
+  const jobTitle = profile ? employees.find((e) => e.email === profile.email)?.position : undefined;
 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
@@ -177,6 +189,11 @@ export function App() {
         </nav>
 
         <div className="user">
+          <div className="user-avatar">{profile ? initialsOf(profile.fullName) : ''}</div>
+          <div className="user-info">
+            <div className="user-name">{profile?.fullName ?? ''}</div>
+            <div className="user-role">{jobTitle ?? profile?.email ?? ''}</div>
+          </div>
           <button
             type="button"
             className="logout"

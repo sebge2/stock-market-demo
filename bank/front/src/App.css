@@ -84,6 +84,7 @@
   margin-top: auto;
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 12px;
   padding: 16px 8px 0;
   border-top: 1px solid #1d3b66;
@@ -551,7 +552,7 @@ select:focus-visible {
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 14px;
-  width: 100%;
+  flex: 1 1 100%;
 }
 
 .logout:hover {

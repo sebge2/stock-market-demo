@@ -1,9 +1,9 @@
 /** Base URL of the OAuth2 authorization server (bank user service). */
-const AUTH_URL = import.meta.env.VITE_AUTH_URL ?? 'http://localhost:9000';
+export const AUTH_URL = import.meta.env.VITE_AUTH_URL ?? 'http://localhost:9000';
 /** Public OAuth2 client identifier of this frontend. */
 const CLIENT_ID = 'bank-frontend';
 /** Scopes requested at login. */
-const SCOPES = 'openid profile employee.read';
+const SCOPES = 'openid profile user.read employee.read';
 /** Path on which the authorization server redirects back after login. */
 export const CALLBACK_PATH = '/auth/callback';
 

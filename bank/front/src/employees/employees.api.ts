@@ -30,6 +30,23 @@ interface EmployeeApi {
 interface DepartmentApi {
   id: string;
   name: string;
+  description: string | null;
+  status: 'ACTIVE' | 'INACTIVE';
+  managerId: string | null;
+}
+
+/** Department displayed in the directory. */
+export interface Department {
+  /** Department identifier. */
+  id: string;
+  /** Department name. */
+  name: string;
+  /** Short description. */
+  description: string;
+  /** Whether the department is active. */
+  active: boolean;
+  /** Identifier of the managing employee, if any. */
+  managerId: string | null;
 }
 
 /** Page of results as returned by the API. */
@@ -56,9 +73,20 @@ async function get<T>(path: string): Promise<T> {
   return (await response.json()) as T;
 }
 
-/** Loads all employees, with their department name resolved. */
-export async function fetchEmployees(): Promise<Employee[]> {
+/** Loads all departments. */
+export async function fetchDepartments(): Promise<Department[]> {
   const departments = await get<DepartmentApi[]>('/departments');
+  return departments.map((d) => ({
+    id: d.id,
+    name: d.name,
+    description: d.description ?? '',
+    active: d.status === 'ACTIVE',
+    managerId: d.managerId,
+  }));
+}
+
+/** Loads all employees, with their department name resolved from the given departments. */
+export async function fetchEmployees(departments: Department[]): Promise<Employee[]> {
   const names = new Map(departments.map((d) => [d.id, d.name]));
   const employees: EmployeeApi[] = [];
   for (let page = 0; ; page++) {
@@ -70,6 +98,8 @@ export async function fetchEmployees(): Promise<Employee[]> {
   }
   return employees.map((e) => ({
     name: `${e.firstName} ${e.lastName}`,
+    id: e.id,
+    departmentId: e.departmentId,
     email: e.email,
     matricule: e.id.slice(0, 8).toUpperCase(),
     position: e.jobTitle ?? '—',

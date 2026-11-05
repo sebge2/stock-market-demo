@@ -2,11 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './auth/auth';
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
-import { ApiError, fetchEmployees } from './employees/employees.api';
+import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
+import { DepartmentsPage } from './departments/DepartmentsPage';
+import { ApiError, type Department, fetchDepartments, fetchEmployees } from './employees/employees.api';
 import {
   type Employee,
   type EmployeeStatus,
   SENIORITY_FILTERS,
+  STATUS_CLASS,
   formatDate,
   initials,
   yearsSince,
@@ -23,14 +26,6 @@ const TABS: { label: string; status: EmployeeStatus | null }[] = [
   { label: 'Suspendus', status: 'Suspendu' },
   { label: 'En congé', status: 'En congé' },
 ];
-
-/** CSS modifier of each status badge. */
-const STATUS_CLASS: Record<EmployeeStatus, string> = {
-  Actif: 'badge-active',
-  Inactif: 'badge-inactive',
-  Suspendu: 'badge-suspended',
-  'En congé': 'badge-leave',
-};
 
 /** Icon used in the sidebar navigation. */
 function NavIcon({ children }: { children: React.ReactNode }) {
@@ -61,6 +56,8 @@ export function App() {
   const [seniority, setSeniority] = useState('Toutes');
   const [page, setPage] = useState(1);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [departmentList, setDepartmentList] = useState<Department[]>([]);
+  const [route, setRoute] = useState(window.location.hash);
   const [authenticated, setAuthenticated] = useState(getAccessToken() !== null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(false);
@@ -77,6 +74,12 @@ export function App() {
   }, []);
 
   useEffect(() => {
+    const onHashChange = () => setRoute(window.location.hash);
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  useEffect(() => {
     if (!authenticated) {
       setProfile(null);
       return;
@@ -90,8 +93,11 @@ export function App() {
     }
     setLoading(true);
     setError(null);
-    fetchEmployees()
-      .then(setEmployees)
+    fetchDepartments()
+      .then(async (loaded) => {
+        setDepartmentList(loaded);
+        setEmployees(await fetchEmployees(loaded));
+      })
       .catch((e: Error) => {
         if (e instanceof ApiError && e.status === 401) {
           logout();
@@ -128,6 +134,8 @@ export function App() {
   const rows = filtered.slice(start, start + PAGE_SIZE);
 
   const resetPage = () => setPage(1);
+  const onDepartments = route === '#departments';
+  const detailId = route.startsWith('#employee-') ? route.slice('#employee-'.length) : null;
 
   if (!authenticated) {
     return (
@@ -168,7 +176,7 @@ export function App() {
             </NavIcon>
             Tableau de bord
           </a>
-          <a href="#employees" aria-current="page" className="nav-link nav-link-active">
+          <a href="#employees" aria-current={onDepartments ? undefined : 'page'} className={`nav-link${onDepartments ? '' : ' nav-link-active'}`}>
             <NavIcon>
               <circle cx="8" cy="7" r="3" />
               <path d="M2.5 16.5c.6-2.8 2.8-4.5 5.5-4.5s4.9 1.7 5.5 4.5" />
@@ -177,7 +185,7 @@ export function App() {
             </NavIcon>
             Employés
           </a>
-          <a href="#departments" className="nav-link">
+          <a href="#departments" aria-current={onDepartments ? 'page' : undefined} className={`nav-link${onDepartments ? ' nav-link-active' : ''}`}>
             <NavIcon>
               <path d="M4 17V4.5A1.5 1.5 0 0 1 5.5 3h6A1.5 1.5 0 0 1 13 4.5V17" />
               <path d="M13 8h1.5A1.5 1.5 0 0 1 16 9.5V17" />
@@ -209,6 +217,23 @@ export function App() {
       </aside>
 
       <main className="main">
+        {detailId ? (
+          <>
+            {error && <div role="alert" className="alert">{error}</div>}
+            <EmployeeDetailPage
+              employee={employees.find((e) => e.id === detailId)}
+              departments={departmentList}
+              employees={employees}
+              loading={loading}
+            />
+          </>
+        ) : onDepartments ? (
+          <>
+            {error && <div role="alert" className="alert">{error}</div>}
+            <DepartmentsPage departments={departmentList} employees={employees} loading={loading} />
+          </>
+        ) : (
+          <>
         <header className="page-header">
           <div className="page-title">
             <div className="eyebrow">Ressources humaines</div>
@@ -315,7 +340,7 @@ export function App() {
                   <div className="person">
                     <div className="avatar">{initials(e.name)}</div>
                     <div>
-                      <a href={`#employee-${e.matricule}`} className="person-name">{e.name}</a>
+                      <a href={`#employee-${e.id}`} className="person-name">{e.name}</a>
                       <div className="matricule">{e.matricule}</div>
                     </div>
                   </div>
@@ -361,6 +386,8 @@ export function App() {
             </div>
           </div>
         </section>
+          </>
+        )}
       </main>
     </div>
   );

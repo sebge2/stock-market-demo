@@ -3,6 +3,10 @@ export type EmployeeStatus = 'Actif' | 'Inactif' | 'Suspendu' | 'En congé';
 
 /** Employee row displayed in the directory. */
 export interface Employee {
+  /** Employee identifier. */
+  id: string;
+  /** Identifier of the department, if any. */
+  departmentId: string | null;
   /** Employee display name. */
   name: string;
   /** Email address. */
@@ -18,6 +22,14 @@ export interface Employee {
   /** Employment status. */
   status: EmployeeStatus;
 }
+
+/** CSS modifier of each status badge. */
+export const STATUS_CLASS: Record<EmployeeStatus, string> = {
+  Actif: 'badge-active',
+  Inactif: 'badge-inactive',
+  Suspendu: 'badge-suspended',
+  'En congé': 'badge-leave',
+};
 
 /** Seniority filter options, keyed by label with the matching predicate on years of service. */
 export const SENIORITY_FILTERS: Record<string, (years: number) => boolean> = {

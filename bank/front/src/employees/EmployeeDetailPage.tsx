@@ -1,4 +1,6 @@
-import type { Department } from './employees.api';
+import { useState } from 'react';
+import { EmployeeForm } from './EmployeeForm';
+import type { Department, EmployeeChanges } from './employees.api';
 import { type Employee, STATUS_CLASS, formatDate, initials } from './employees.data';
 
 /** Props of the employee sheet. */
@@ -11,6 +13,8 @@ interface EmployeeDetailPageProps {
   employees: Employee[];
   /** Whether data is being loaded. */
   loading: boolean;
+  /** Saves the changes of the employee; rejects when the update fails. */
+  onUpdate: (id: string, changes: EmployeeChanges) => Promise<void>;
 }
 
 /** Formats the time elapsed since the given ISO date as "X ans Y mois". */
@@ -33,7 +37,8 @@ function Field({ label, children, mono }: { label: string; children: React.React
 }
 
 /** Employee sheet: identity header, professional information and history. */
-export function EmployeeDetailPage({ employee, departments, employees, loading }: EmployeeDetailPageProps) {
+export function EmployeeDetailPage({ employee, departments, employees, loading, onUpdate }: EmployeeDetailPageProps) {
+  const [editing, setEditing] = useState(false);
   if (!employee) {
     return (
       <>
@@ -79,10 +84,29 @@ export function EmployeeDetailPage({ employee, departments, employees, loading }
             </span>
           </div>
         </div>
-        <button type="button" className="btn-primary" disabled title="Modification indisponible pour le moment">
+        <button type="button" className="btn-primary" disabled={editing} onClick={() => setEditing(true)}>
           Modifier la fiche
         </button>
       </section>
+
+      {editing && (
+        <EmployeeForm
+          initial={{
+            firstName: employee.firstName,
+            lastName: employee.lastName,
+            email: employee.email,
+            jobTitle: employee.jobTitle,
+            status: employee.status,
+            departmentId: employee.departmentId,
+          }}
+          departments={departments}
+          onSubmit={async (changes) => {
+            await onUpdate(employee.id, changes);
+            setEditing(false);
+          }}
+          onCancel={() => setEditing(false)}
+        />
+      )}
 
       <div className="tabs tabs-flush">
         <button type="button" aria-current="page" className="tab tab-active tab-short">

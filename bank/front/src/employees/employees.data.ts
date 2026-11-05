@@ -7,14 +7,20 @@ export interface Employee {
   id: string;
   /** Identifier of the department, if any. */
   departmentId: string | null;
+  /** Employee first name. */
+  firstName: string;
+  /** Employee last name. */
+  lastName: string;
   /** Employee display name. */
   name: string;
   /** Email address. */
   email: string;
   /** Employee registration number. */
   matricule: string;
-  /** Job title. */
+  /** Job title ('—' when none). */
   position: string;
+  /** Job title as stored (empty when none). */
+  jobTitle: string;
   /** Department name. */
   department: string;
   /** Hiring date (ISO format). */

@@ -139,6 +139,53 @@ export async function fetchDepartments(): Promise<Department[]> {
   return departments.map(toDepartment);
 }
 
+/** Maps an employee returned by the API to the displayed model. */
+function toEmployee(e: EmployeeApi, departmentNames: Map<string, string>): Employee {
+  return {
+    firstName: e.firstName,
+    lastName: e.lastName,
+    name: `${e.firstName} ${e.lastName}`,
+    id: e.id,
+    departmentId: e.departmentId,
+    email: e.email,
+    matricule: e.id.slice(0, 8).toUpperCase(),
+    position: e.jobTitle ?? '—',
+    jobTitle: e.jobTitle ?? '',
+    department: (e.departmentId && departmentNames.get(e.departmentId)) || '—',
+    hireDate: e.createdAt.slice(0, 10),
+    status: STATUS_LABELS[e.status],
+  };
+}
+
+/** Data entered to edit an employee. */
+export interface EmployeeChanges {
+  /** First name. */
+  firstName: string;
+  /** Last name. */
+  lastName: string;
+  /** Email address. */
+  email: string;
+  /** Job title (may be empty). */
+  jobTitle: string;
+  /** Employment status. */
+  status: EmployeeStatus;
+  /** Identifier of the department, if any. */
+  departmentId: string | null;
+}
+
+/** Updates an employee and returns it, with its department name resolved from the given departments. */
+export async function updateEmployee(id: string, changes: EmployeeChanges, departments: Department[]): Promise<Employee> {
+  const updated = await send<EmployeeApi>('PUT', `/employees/${id}`, {
+    firstName: changes.firstName,
+    lastName: changes.lastName,
+    email: changes.email,
+    jobTitle: changes.jobTitle || null,
+    status: (Object.keys(STATUS_LABELS) as EmployeeApi['status'][]).find((k) => STATUS_LABELS[k] === changes.status),
+    departmentId: changes.departmentId,
+  });
+  return toEmployee(updated, new Map(departments.map((d) => [d.id, d.name])));
+}
+
 /** Loads all employees, with their department name resolved from the given departments. */
 export async function fetchEmployees(departments: Department[]): Promise<Employee[]> {
   const names = new Map(departments.map((d) => [d.id, d.name]));
@@ -150,15 +197,5 @@ export async function fetchEmployees(departments: Department[]): Promise<Employe
       break;
     }
   }
-  return employees.map((e) => ({
-    name: `${e.firstName} ${e.lastName}`,
-    id: e.id,
-    departmentId: e.departmentId,
-    email: e.email,
-    matricule: e.id.slice(0, 8).toUpperCase(),
-    position: e.jobTitle ?? '—',
-    department: (e.departmentId && names.get(e.departmentId)) || '—',
-    hireDate: e.createdAt.slice(0, 10),
-    status: STATUS_LABELS[e.status],
-  }));
+  return employees.map((e) => toEmployee(e, names));
 }

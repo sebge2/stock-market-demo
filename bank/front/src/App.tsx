@@ -6,7 +6,7 @@ import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
 import { DashboardPage } from './dashboard/DashboardPage';
 import { DepartmentDetailPage } from './departments/DepartmentDetailPage';
 import { DepartmentsPage } from './departments/DepartmentsPage';
-import { ApiError, type Department, createDepartment, fetchDepartments, updateDepartment, fetchEmployees } from './employees/employees.api';
+import { ApiError, type Department, createDepartment, fetchDepartments, updateDepartment, updateEmployee, fetchEmployees } from './employees/employees.api';
 import {
   type Employee,
   type EmployeeStatus,
@@ -235,6 +235,10 @@ export function App() {
               departments={departmentList}
               employees={employees}
               loading={loading}
+              onUpdate={async (id, changes) => {
+                const updated = await updateEmployee(id, changes, departmentList);
+                setEmployees((current) => current.map((e) => (e.id === id ? updated : e)));
+              }}
             />
           </>
         ) : departmentId ? (
@@ -383,9 +387,11 @@ export function App() {
                   <div>
                     <span className={`badge ${STATUS_CLASS[e.status]}`}>{e.status}</span>
                   </div>
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#5B6B82" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M7.5 4.5L13 10l-5.5 5.5" />
-                  </svg>
+                  <a href={`#employee-${e.id}`} aria-label={`Ouvrir la fiche de ${e.name}`} className="row-link">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#5B6B82" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M7.5 4.5L13 10l-5.5 5.5" />
+                    </svg>
+                  </a>
                 </div>
               ))}
 

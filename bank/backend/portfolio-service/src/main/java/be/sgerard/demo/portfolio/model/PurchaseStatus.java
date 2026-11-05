@@ -1,7 +1,9 @@
-package be.sgerard.demo.portfolio.domain;
+package be.sgerard.demo.portfolio.model;
 
 /**
+ *
  * Lifecycle status of a {@link Purchase}.
+ *
  */
 public enum PurchaseStatus {
     /** Waiting for execution. */

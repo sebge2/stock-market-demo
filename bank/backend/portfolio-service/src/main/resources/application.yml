@@ -1,6 +1,12 @@
 spring:
   application:
     name: portfolio-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${bank.user-service.base-url}
+          jwk-set-uri: ${bank.user-service.base-url}/oauth2/jwks
   jpa:
     open-in-view: false
 
@@ -8,6 +14,19 @@ server:
   port: 8085
   servlet:
     context-path: /api/portfolio
+
+bank:
+  base-domain: ${BANK_BASE_DOMAIN:}
+  user-service:
+    base-url: ${BANK_USER_SERVICE_BASE_URL:}
+    port: ${BANK_USER_SERVICE_PORT:}
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: portfolio-swagger-ui
+      use-pkce-with-authorization-code-grant: true
+      scopes: portfolio.read
 
 eureka:
   client:
@@ -20,10 +39,7 @@ logging:
     be.sgerard.demo: DEBUG
 
 management:
-  endpoint:
-    loggers:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,env,loggers,threaddump
+        include: health,info,metrics,env,threaddump

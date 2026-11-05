@@ -800,3 +800,96 @@ select:focus-visible {
 .btn-outline:disabled {
   background: #fff;
 }
+
+.kpi-foot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.muted {
+  font-size: 14px;
+  line-height: 20px;
+  color: #5b6b82;
+}
+
+.small {
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.dashboard-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.dashboard-wide {
+  flex: 2 1 480px;
+  min-width: 0;
+}
+
+.dashboard-side {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.card-header-flush {
+  padding: 0;
+}
+
+.bars {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bars-loose {
+  gap: 20px;
+}
+
+.bar-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) minmax(0, 1fr) 56px;
+  align-items: center;
+  gap: 16px;
+}
+
+.status-row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 56px 72px;
+  align-items: center;
+  gap: 16px;
+}
+
+.bar-label {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #0a1b33;
+  text-decoration: none;
+}
+
+.bar-label:hover {
+  color: #1a56b0;
+}
+
+.bar-track {
+  height: 8px;
+  border-radius: 4px;
+  background: #eef1f5;
+}
+
+.bar-fill {
+  height: 8px;
+  border-radius: 4px;
+}
+
+.panel-foot {
+  padding-top: 16px;
+  border-top: 1px solid #d9dfe8;
+  font-size: 14px;
+  line-height: 20px;
+  color: #5b6b82;
+}

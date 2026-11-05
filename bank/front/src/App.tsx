@@ -3,6 +3,7 @@ import './App.css';
 import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './auth/auth';
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
+import { DashboardPage } from './dashboard/DashboardPage';
 import { DepartmentDetailPage } from './departments/DepartmentDetailPage';
 import { DepartmentsPage } from './departments/DepartmentsPage';
 import { ApiError, type Department, fetchDepartments, fetchEmployees } from './employees/employees.api';
@@ -135,7 +136,9 @@ export function App() {
   const rows = filtered.slice(start, start + PAGE_SIZE);
 
   const resetPage = () => setPage(1);
+  const onDashboard = route === '' || route === '#dashboard';
   const onDepartments = route.startsWith('#department');
+  const onEmployees = !onDashboard && !onDepartments;
   const departmentId = route.startsWith('#department-') ? route.slice('#department-'.length) : null;
   const detailId = route.startsWith('#employee-') ? route.slice('#employee-'.length) : null;
 
@@ -169,7 +172,7 @@ export function App() {
         </div>
 
         <nav aria-label="Navigation principale" className="nav">
-          <a href="#dashboard" className="nav-link">
+          <a href="#dashboard" aria-current={onDashboard ? 'page' : undefined} className={`nav-link${onDashboard ? ' nav-link-active' : ''}`}>
             <NavIcon>
               <rect x="3" y="3" width="6" height="6" rx="1.5" />
               <rect x="11" y="3" width="6" height="6" rx="1.5" />
@@ -178,7 +181,7 @@ export function App() {
             </NavIcon>
             Tableau de bord
           </a>
-          <a href="#employees" aria-current={onDepartments ? undefined : 'page'} className={`nav-link${onDepartments ? '' : ' nav-link-active'}`}>
+          <a href="#employees" aria-current={onEmployees ? 'page' : undefined} className={`nav-link${onEmployees ? ' nav-link-active' : ''}`}>
             <NavIcon>
               <circle cx="8" cy="7" r="3" />
               <path d="M2.5 16.5c.6-2.8 2.8-4.5 5.5-4.5s4.9 1.7 5.5 4.5" />
@@ -219,7 +222,12 @@ export function App() {
       </aside>
 
       <main className="main">
-        {detailId ? (
+        {onDashboard ? (
+          <>
+            {error && <div role="alert" className="alert">{error}</div>}
+            <DashboardPage employees={employees} departments={departmentList} />
+          </>
+        ) : detailId ? (
           <>
             {error && <div role="alert" className="alert">{error}</div>}
             <EmployeeDetailPage

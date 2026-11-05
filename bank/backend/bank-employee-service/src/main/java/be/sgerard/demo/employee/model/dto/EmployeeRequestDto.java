@@ -10,7 +10,8 @@ import java.util.UUID;
 
 /**
  *
- * Payload used to create or replace an employee.
+ * Payload used to create or replace an employee. The linked user identifier is never provided by the
+ * client: on creation the user is created in the user service and its identifier is stored.
  *
  */
 @Schema(name = "EmployeeRequest")
@@ -18,7 +19,6 @@ public class EmployeeRequestDto {
   @NotBlank @Size(max = 100) private String firstName;
   @NotBlank @Size(max = 100) private String lastName;
   @NotBlank @Email @Size(max = 255) private String email;
-  @NotNull private UUID userId;
   @NotNull private EmployeeStatus status;
   private UUID departmentId;
   /** @return the first name */ public String getFirstName() { return firstName; }
@@ -27,8 +27,6 @@ public class EmployeeRequestDto {
   /** @param lastName the last name */ public void setLastName(String lastName) { this.lastName = lastName; }
   /** @return the email address */ public String getEmail() { return email; }
   /** @param email the email address */ public void setEmail(String email) { this.email = email; }
-  /** @return the user-service identifier */ public UUID getUserId() { return userId; }
-  /** @param userId the user-service identifier */ public void setUserId(UUID userId) { this.userId = userId; }
   /** @return the status */ public EmployeeStatus getStatus() { return status; }
   /** @param status the status */ public void setStatus(EmployeeStatus status) { this.status = status; }
   /** @return the department identifier */ public UUID getDepartmentId() { return departmentId; }

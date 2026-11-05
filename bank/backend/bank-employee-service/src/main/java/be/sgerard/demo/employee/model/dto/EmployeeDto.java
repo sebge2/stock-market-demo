@@ -13,6 +13,7 @@ import java.util.UUID;
 @Schema(name = "Employee")
 public class EmployeeDto {
     private UUID id;
+    @Schema(description = "Identifier of the user automatically created in the user service")
     private UUID userId;
     private String firstName;
     private String lastName;

@@ -61,8 +61,7 @@ class EndpointsSecurityTest {
     mockMvc.perform(get("/employees").with(authority("DEPARTMENT_LIST"))).andExpect(status().isForbidden());
     mockMvc.perform(get("/employees/" + id).with(authority("EMPLOYEE_CREATE"))).andExpect(status().isForbidden());
     mockMvc.perform(post("/employees").with(authority("EMPLOYEE_LIST")).contentType("application/json")
-        .content("{\"firstName\":\"A\",\"lastName\":\"B\",\"email\":\"a@b.c\",\"userId\":\"" + id
-            + "\",\"status\":\"ACTIVE\"}")).andExpect(status().isForbidden());
+        .content("{\"firstName\":\"A\",\"lastName\":\"B\",\"email\":\"a@b.c\",\"status\":\"ACTIVE\"}")).andExpect(status().isForbidden());
     mockMvc.perform(delete("/employees/" + id).with(authority("EMPLOYEE_LIST"))).andExpect(status().isForbidden());
     mockMvc.perform(get("/departments").with(authority("EMPLOYEE_LIST"))).andExpect(status().isForbidden());
     mockMvc.perform(delete("/departments/" + id).with(authority("DEPARTMENT_LIST")))

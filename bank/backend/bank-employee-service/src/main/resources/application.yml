@@ -16,8 +16,10 @@ server:
     context-path: /api/employee
 
 bank:
+  base-domain: ${BANK_BASE_DOMAIN:}
   user-service:
-    base-url: ${BANK_USER_SERVICE_BASE_URL}
+    base-url: ${BANK_USER_SERVICE_BASE_URL:}
+    port: ${BANK_USER_SERVICE_PORT:}
 
 springdoc:
   swagger-ui:

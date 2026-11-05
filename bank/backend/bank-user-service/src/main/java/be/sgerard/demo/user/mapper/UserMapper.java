@@ -61,6 +61,7 @@ public class UserMapper {
         dto.setUsername(account.getUsername());
         dto.setFullName(account.getFullName());
         dto.setEmail(account.getEmail());
+        dto.setAvatar(account.getAvatar());
         dto.setRoleIds(account.getRoles().stream().map(Role::getId)
                 .collect(Collectors.toCollection(LinkedHashSet::new)));
         return dto;

@@ -26,6 +26,14 @@ public class CurrentUserDto {
   /** Email address. */
   @Schema(description = "Email address")
   private String email;
+  /**
+   *
+   * Avatar, a PNG of at most 128x128 pixels encoded in base64.
+   *
+   */
+  @Schema(description = "Avatar, a PNG of at most 128x128 pixels encoded in base64")
+  private String avatar;
+
   /** Names (codes) of the permissions granted to the user through its roles. */
   @Schema(description = "Names of the permissions granted to the user through its roles")
   private Set<String> permissions = new LinkedHashSet<>();
@@ -59,5 +67,23 @@ public class CurrentUserDto {
    */
   public void setFullName(String fullName) {
     this.fullName = fullName;
+  }
+
+  /**
+   *
+   * @return the base64 encoded PNG avatar, or {@code null} when there is none
+   *
+   */
+  public String getAvatar() {
+    return avatar;
+  }
+
+  /**
+   *
+   * @param avatar the base64 encoded PNG avatar
+   *
+   */
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
   }
 }

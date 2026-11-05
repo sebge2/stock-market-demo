@@ -47,6 +47,14 @@ public class UserDto {
 
   /**
    *
+   * Avatar, a PNG of at most 128x128 pixels encoded in base64.
+   *
+   */
+  @Schema(description = "Avatar, a PNG of at most 128x128 pixels encoded in base64")
+  private String avatar;
+
+  /**
+   *
    * Identifiers of the roles granted to the user.
    *
    */
@@ -141,5 +149,23 @@ public class UserDto {
    */
   public void setFullName(String fullName) {
     this.fullName = fullName;
+  }
+
+  /**
+   *
+   * @return the base64 encoded PNG avatar, or {@code null} when there is none
+   *
+   */
+  public String getAvatar() {
+    return avatar;
+  }
+
+  /**
+   *
+   * @param avatar the base64 encoded PNG avatar
+   *
+   */
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
   }
 }

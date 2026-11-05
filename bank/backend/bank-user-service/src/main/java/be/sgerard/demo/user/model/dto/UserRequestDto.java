@@ -69,6 +69,17 @@ public class UserRequestDto {
 
   /**
    *
+   * Source image of the avatar, encoded in base64 (a {@code data:} URI is accepted). It is reduced to
+   * 128x128 pixels at most and stored as a base64 PNG. Absent means unchanged, an empty value removes the avatar.
+   *
+   */
+  @Size(max = 7_000_000)
+  @Schema(description = "Avatar image encoded in base64 (data URI accepted), reduced to 128x128 pixels at most. "
+      + "Absent keeps the current avatar, empty removes it")
+  private String avatar;
+
+  /**
+   *
    * @return the login name
    *
    */
@@ -155,5 +166,23 @@ public class UserRequestDto {
    */
   public void setFullName(String fullName) {
     this.fullName = fullName;
+  }
+
+  /**
+   *
+   * @return the source avatar image encoded in base64, or {@code null} when unchanged
+   *
+   */
+  public String getAvatar() {
+    return avatar;
+  }
+
+  /**
+   *
+   * @param avatar the source avatar image encoded in base64
+   *
+   */
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
   }
 }

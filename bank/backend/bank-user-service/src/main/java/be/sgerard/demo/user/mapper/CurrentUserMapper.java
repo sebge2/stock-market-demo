@@ -28,6 +28,7 @@ public class CurrentUserMapper {
     dto.setUsername(account.getUsername());
     dto.setFullName(account.getFullName());
     dto.setEmail(account.getEmail());
+    dto.setAvatar(account.getAvatar());
     dto.setPermissions(account.getRoles().stream().flatMap(role -> role.getPermissions().stream())
         .map(Permission::getCode).sorted(Comparator.naturalOrder())
         .collect(Collectors.toCollection(LinkedHashSet::new)));

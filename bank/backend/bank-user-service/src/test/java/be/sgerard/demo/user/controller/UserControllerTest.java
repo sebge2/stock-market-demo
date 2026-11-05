@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import be.sgerard.demo.user.repository.UserAccountRepository;
+import be.sgerard.demo.user.service.AvatarProcessorTestSupport;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,39 @@ class UserControllerTest {
     mockMvc.perform(delete("/users/" + id).with(authority("USER_DELETE")).with(csrf()))
         .andExpect(status().isNoContent());
     mockMvc.perform(get("/users/" + id).with(authority("USER_LIST"))).andExpect(status().isNotFound());
+  }
+
+  /**
+   *
+   * The avatar is reduced to 128x128 pixels at most, kept when absent on update, and removed when empty.
+   *
+   * @throws Exception on failure
+   */
+  @Test
+  void storesReducedAvatar() throws Exception {
+    final String image = AvatarProcessorTestSupport.image(800, 400);
+    final String created = mockMvc.perform(post("/users").with(authority("USER_CREATE")).with(csrf())
+            .contentType("application/json")
+            .content("{\"username\":\"avatar1\",\"fullName\":\"Full avatar\",\"email\":\"avatar1@local.test\","
+                + "\"password\":\"password1\",\"avatar\":\"" + image + "\"}"))
+        .andExpect(status().isCreated()).andExpect(jsonPath("$.avatar").isNotEmpty())
+        .andReturn().getResponse().getContentAsString();
+    final UUID id = UUID.fromString(created.replaceAll(".*\"id\":\"([^\"]+)\".*", "$1"));
+    final String stored = userAccountRepository.findById(id).orElseThrow().getAvatar();
+    assertThat(AvatarProcessorTestSupport.width(stored)).isEqualTo(128);
+    assertThat(AvatarProcessorTestSupport.height(stored)).isEqualTo(64);
+
+    mockMvc.perform(put("/users/" + id).with(authority("USER_UPDATE")).with(csrf()).contentType("application/json")
+        .content("{\"username\":\"avatar1\",\"fullName\":\"Full avatar\",\"email\":\"avatar1@local.test\"}"))
+        .andExpect(status().isOk()).andExpect(jsonPath("$.avatar").value(stored));
+
+    mockMvc.perform(put("/users/" + id).with(authority("USER_UPDATE")).with(csrf()).contentType("application/json")
+        .content("{\"username\":\"avatar1\",\"fullName\":\"Full avatar\",\"email\":\"avatar1@local.test\",\"avatar\":\"\"}"))
+        .andExpect(status().isOk()).andExpect(jsonPath("$.avatar").doesNotExist());
+
+    mockMvc.perform(put("/users/" + id).with(authority("USER_UPDATE")).with(csrf()).contentType("application/json")
+        .content("{\"username\":\"avatar1\",\"fullName\":\"Full avatar\",\"email\":\"avatar1@local.test\",\"avatar\":\"bm90IGFuIGltYWdl\"}"))
+        .andExpect(status().isBadRequest());
   }
 
   /**

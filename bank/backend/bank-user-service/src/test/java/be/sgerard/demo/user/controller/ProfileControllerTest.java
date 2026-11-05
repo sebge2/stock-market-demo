@@ -41,7 +41,8 @@ class ProfileControllerTest {
         .andExpect(jsonPath("$.email").value("sebastien.gerard@local.test"))
         .andExpect(jsonPath("$.permissions", hasItems("ADMIN", "ROLE_LIST", "EMPLOYEE_LIST")))
         .andExpect(jsonPath("$.permissions[?(@ =~ /[0-9a-f]{8}-.*/)]").isEmpty())
-        .andExpect(jsonPath("$.length()").value(4));
+        .andExpect(jsonPath("$.avatar").value(org.hamcrest.Matchers.nullValue()))
+        .andExpect(jsonPath("$.length()").value(5));
   }
 
   /**

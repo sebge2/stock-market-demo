@@ -6,6 +6,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -51,6 +52,15 @@ public class UserAccount {
   @Column(name = "password_hash", nullable = false)
   private String passwordHash;
   /** Roles granted to this account. */
+  /**
+   *
+   * Avatar, a PNG of at most 128x128 pixels encoded in base64.
+   *
+   */
+  @Lob
+  @Column(name = "avatar")
+  private String avatar;
+
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(name = "user_account_role", joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -89,6 +99,20 @@ public class UserAccount {
   /** @return the password hash */
   public String getPasswordHash() { return passwordHash; }
   /** @return assigned roles */
+  /**
+   *
+   * @return the base64 encoded PNG avatar, or {@code null} when there is none
+   *
+   */
+  public String getAvatar() { return avatar; }
+
+  /**
+   *
+   * @param avatar the base64 encoded PNG avatar, or {@code null} to remove it
+   *
+   */
+  public void setAvatar(String avatar) { this.avatar = avatar; }
+
   public Set<Role> getRoles() { return Collections.unmodifiableSet(roles); }
   /** @param role role to grant */
   public void addRole(Role role) { roles.add(role); }

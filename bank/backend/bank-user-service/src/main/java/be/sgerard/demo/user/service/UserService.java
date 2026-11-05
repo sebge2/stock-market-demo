@@ -56,16 +56,25 @@ public class UserService {
 
   /**
    *
+   * Avatar reduction.
+   *
+   */
+  private final AvatarProcessor avatarProcessor;
+
+  /**
+   *
    * Creates the service.
    *
    * @param userAccountRepository user account persistence
    * @param roleRepository role persistence
    * @param userMapper API mapper
    * @param passwordEncoder password encoder
+   * @param avatarProcessor avatar reduction
    *
    */
   public UserService(UserAccountRepository userAccountRepository, RoleRepository roleRepository,
-      UserMapper userMapper, PasswordEncoder passwordEncoder) {
+      UserMapper userMapper, PasswordEncoder passwordEncoder, AvatarProcessor avatarProcessor) {
+    this.avatarProcessor = avatarProcessor;
     this.userAccountRepository = userAccountRepository;
     this.roleRepository = roleRepository;
     this.userMapper = userMapper;
@@ -107,6 +116,7 @@ public class UserService {
     checkUnique(request, null);
     UserAccount account = userMapper.toEntity(request, passwordEncoder.encode(request.getPassword()));
     replaceRoles(account, request.getRoleIds());
+    applyAvatar(account, request.getAvatar());
     return userMapper.toDto(userAccountRepository.save(account));
   }
 
@@ -128,6 +138,7 @@ public class UserService {
       account.setPasswordHash(passwordEncoder.encode(request.getPassword()));
     }
     replaceRoles(account, request.getRoleIds());
+    applyAvatar(account, request.getAvatar());
     return userMapper.toDto(userAccountRepository.save(account));
   }
 
@@ -141,6 +152,18 @@ public class UserService {
   @Transactional
   public void delete(UUID id) {
     userAccountRepository.delete(findEntity(id));
+  }
+
+  /**
+   *
+   * Stores the reduced avatar; a {@code null} request keeps the current one and a blank request removes it.
+   *
+   */
+  private void applyAvatar(UserAccount account, String avatar) {
+    if (avatar == null) {
+      return;
+    }
+    account.setAvatar(avatar.isBlank() ? null : avatarProcessor.process(avatar));
   }
 
   /**

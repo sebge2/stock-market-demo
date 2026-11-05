@@ -10,7 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import be.sgerard.demo.employee.client.IUserServiceClient;
+import be.sgerard.demo.employee.client.UserServiceClient;
 import be.sgerard.demo.employee.mapper.EmployeeMapper;
 import be.sgerard.demo.employee.model.Employee;
 import be.sgerard.demo.employee.model.EmployeeStatus;
@@ -52,7 +52,7 @@ class EmployeeServiceCreateTest {
    * Mock user-service client.
    *
    */
-  private IUserServiceClient userServiceClient;
+  private UserServiceClient userServiceClient;
 
   /**
    *
@@ -69,7 +69,7 @@ class EmployeeServiceCreateTest {
   @BeforeEach
   void setUp() {
     employeeRepository = mock(EmployeeRepository.class);
-    userServiceClient = mock(IUserServiceClient.class);
+    userServiceClient = mock(UserServiceClient.class);
     employeeService = new EmployeeService(employeeRepository, mock(DepartmentRepository.class),
         new EmployeeMapper(), userServiceClient);
     when(employeeRepository.findByEmail(any())).thenReturn(Optional.empty());

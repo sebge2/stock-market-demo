@@ -137,6 +137,7 @@ Description des agents (rôles/acteurs) qui composent l'écosystème financier.
 12. Check that every endpoint is documented.
 13. Don't user "var" keyword, but use "final" keyword if possible.
 14. Remove the suffix "DTO" from objects declared in Open API.
+15. N'utilise pas de suffixe ou préfixe "I" sur les interfaces. Pour l'implémentation privilégie le suffixe "Impl".
 
 ---
 

@@ -42,7 +42,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
  * Tests of UserServiceClient against a mocked HTTP server: JWT propagation and selective retry.
  *
  */
-class UserServiceClientTest {
+class UserServiceRestClientTest {
 
   /**
    *
@@ -70,7 +70,7 @@ class UserServiceClientTest {
    * Client under test.
    *
    */
-  private UserServiceClient client;
+  private UserServiceRestClient client;
 
   /**
    *
@@ -85,7 +85,7 @@ class UserServiceClientTest {
 
     final RetryTemplate retryTemplate = new UserServiceConfiguration().userServiceRetryTemplate();
     retryTemplate.setBackOffPolicy(new NoBackOffPolicy());
-    client = new UserServiceClient(restTemplate, retryTemplate);
+    client = new UserServiceRestClient(restTemplate, retryTemplate);
 
     final Jwt jwt = new Jwt(TOKEN, Instant.now(), Instant.now().plusSeconds(60),
         Map.of("alg", "none"), Map.of("sub", "caller"));

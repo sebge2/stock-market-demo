@@ -3,116 +3,39 @@ package be.sgerard.demo.employee.client;
 import be.sgerard.demo.employee.model.dto.UserServiceCreationRequestDto;
 import be.sgerard.demo.employee.model.dto.UserServiceCreationResponseDto;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.retry.support.RetryTemplate;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 
 /**
  *
- * REST client of the user-service. The JWT of the current request is propagated so that the user
- * creation is performed (and audited) on behalf of the caller.
+ * Interface for communicating with the user-service to create users.
  *
  */
-@Component
-public class UserServiceClient implements IUserServiceClient {
+public interface UserServiceClient {
 
   /**
    *
-   * Logger.
+   * Creates a user in the user-service on behalf of the current caller (the bearer token of the
+   * current request is forwarded). Transient failures (5xx, I/O errors, timeouts) are retried, 4xx
+   * responses are not.
+   *
+   * @param request the user creation request
+   * @return the created user response
+   * @throws HttpClientErrorException if the user-service rejected the request (4xx)
+   * @throws HttpServerErrorException if the user-service kept failing (5xx) after all attempts
+   * @throws ResourceAccessException if the user-service stayed unreachable after all attempts
    *
    */
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceClient.class);
+  UserServiceCreationResponseDto createUser(UserServiceCreationRequestDto request);
 
   /**
    *
-   * Path of the user creation endpoint, relative to the user-service base URL.
+   * Deletes a user of the user-service on behalf of the current caller. Used to compensate a user
+   * creation when the employee cannot be persisted afterwards.
+   *
+   * @param userId the identifier of the user to delete
    *
    */
-  private static final String USERS_PATH = "/users";
-
-  /**
-   *
-   * RestTemplate rooted at the user-service base URL.
-   *
-   */
-  private final RestTemplate restTemplate;
-
-  /**
-   *
-   * Retry policy applied to the user creation call.
-   *
-   */
-  private final RetryTemplate retryTemplate;
-
-  /**
-   *
-   * Creates a new instance.
-   *
-   * @param restTemplate the RestTemplate rooted at the user-service base URL
-   * @param retryTemplate the retry template of the user-service calls
-   *
-   */
-  public UserServiceClient(@Qualifier("userServiceRestTemplate") RestTemplate restTemplate,
-      @Qualifier("userServiceRetryTemplate") RetryTemplate retryTemplate) {
-    this.restTemplate = restTemplate;
-    this.retryTemplate = retryTemplate;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public UserServiceCreationResponseDto createUser(UserServiceCreationRequestDto request) {
-    final HttpHeaders headers = new HttpHeaders();
-    headers.setBearerAuth(currentBearerToken());
-    final HttpEntity<UserServiceCreationRequestDto> entity = new HttpEntity<>(request, headers);
-
-    return retryTemplate.execute(context -> {
-      if (context.getRetryCount() > 0) {
-        LOGGER.warn("Retrying user creation (attempt {}) after: {}", context.getRetryCount() + 1,
-            context.getLastThrowable().toString());
-      }
-      return restTemplate.postForObject(USERS_PATH, entity, UserServiceCreationResponseDto.class);
-    });
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void deleteUser(UUID userId) {
-    final HttpHeaders headers = new HttpHeaders();
-    headers.setBearerAuth(currentBearerToken());
-    final HttpEntity<Void> entity = new HttpEntity<>(headers);
-
-    retryTemplate.execute(context -> {
-      restTemplate.exchange(USERS_PATH + "/{id}", HttpMethod.DELETE, entity, Void.class, userId);
-      return null;
-    });
-  }
-
-  /**
-   *
-   * Extracts the bearer token of the authenticated caller of the current request.
-   *
-   * @return the raw JWT value
-   * @throws IllegalStateException if the current caller is not authenticated with a JWT
-   *
-   */
-  private String currentBearerToken() {
-    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication instanceof JwtAuthenticationToken jwtAuthentication) {
-      return jwtAuthentication.getToken().getTokenValue();
-    }
-    throw new IllegalStateException("Cannot call the user-service: no JWT in the security context");
-  }
+  void deleteUser(UUID userId);
 }

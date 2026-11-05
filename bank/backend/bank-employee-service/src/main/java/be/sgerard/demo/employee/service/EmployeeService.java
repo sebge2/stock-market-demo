@@ -1,6 +1,6 @@
 package be.sgerard.demo.employee.service;
 
-import be.sgerard.demo.employee.client.IUserServiceClient;
+import be.sgerard.demo.employee.client.UserServiceClient;
 import be.sgerard.demo.employee.mapper.EmployeeMapper;
 import be.sgerard.demo.employee.model.Department;
 import be.sgerard.demo.employee.model.Employee;
@@ -66,7 +66,7 @@ public class EmployeeService {
    * Client for user-service integration.
    *
    */
-  private final IUserServiceClient userServiceClient;
+  private final UserServiceClient userServiceClient;
 
   /**
    *
@@ -81,7 +81,7 @@ public class EmployeeService {
   public EmployeeService(EmployeeRepository employeeRepository,
       DepartmentRepository departmentRepository,
       EmployeeMapper employeeMapper,
-      IUserServiceClient userServiceClient) {
+      UserServiceClient userServiceClient) {
     this.employeeRepository = employeeRepository;
     this.departmentRepository = departmentRepository;
     this.employeeMapper = employeeMapper;

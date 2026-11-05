@@ -16,6 +16,7 @@ Service responsable de:
 mvn spring-boot:run
 # Port: 8084
 # API: http://localhost:8084/api/client
+# Swagger: http://localhost:8084/api/client/swagger-ui/index.html
 ```
 
 ## 🔐 Sécurité

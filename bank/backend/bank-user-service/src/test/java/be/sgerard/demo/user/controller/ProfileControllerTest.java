@@ -1,5 +1,6 @@
 package be.sgerard.demo.user.controller;
 
+import static org.hamcrest.Matchers.hasItems;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,7 +29,7 @@ class ProfileControllerTest {
 
   /**
    *
-   * Verifies the connected user is returned with username and email only.
+   * Verifies the connected user is returned with its username, email and permission names (not identifiers).
    *
    */
   @Test
@@ -37,7 +38,9 @@ class ProfileControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.username").value("sebastien.gerard"))
         .andExpect(jsonPath("$.email").value("sebastien.gerard@local.test"))
-        .andExpect(jsonPath("$.length()").value(2));
+        .andExpect(jsonPath("$.permissions", hasItems("ADMIN", "ROLE_LIST", "EMPLOYEE_LIST")))
+        .andExpect(jsonPath("$.permissions[?(@ =~ /[0-9a-f]{8}-.*/)]").isEmpty())
+        .andExpect(jsonPath("$.length()").value(3));
   }
 
   /**

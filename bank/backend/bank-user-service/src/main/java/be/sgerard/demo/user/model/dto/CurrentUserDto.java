@@ -1,6 +1,9 @@
 package be.sgerard.demo.user.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 /**
  *
  * Representation of the currently authenticated user.
@@ -15,6 +18,9 @@ public class CurrentUserDto {
   /** Email address. */
   @Schema(description = "Email address")
   private String email;
+  /** Names (codes) of the permissions granted to the user through its roles. */
+  @Schema(description = "Names of the permissions granted to the user through its roles")
+  private Set<String> permissions = new LinkedHashSet<>();
 
   /** @return the login name */
   public String getUsername() { return username; }
@@ -24,4 +30,8 @@ public class CurrentUserDto {
   public String getEmail() { return email; }
   /** @param email the email address */
   public void setEmail(String email) { this.email = email; }
+  /** @return the permission names */
+  public Set<String> getPermissions() { return permissions; }
+  /** @param permissions the permission names */
+  public void setPermissions(Set<String> permissions) { this.permissions = permissions; }
 }

@@ -17,6 +17,9 @@ server:
 
 bank:
   base-domain: ${BANK_BASE_DOMAIN:}
+  client-service:
+    cors:
+      allowed-origins: ${BANK_CLIENT_SERVICE_CORS_ALLOWED_ORIGINS:}
   user-service:
     base-url: ${BANK_USER_SERVICE_BASE_URL:}
     port: ${BANK_USER_SERVICE_PORT:}

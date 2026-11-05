@@ -2,6 +2,8 @@ package be.sgerard.demo.bank.client.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -56,7 +58,27 @@ public class Client {
 
   /**
    *
-   * Identifier of the user managed by the user service.
+   * Type of the client (individual or company).
+   *
+   */
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  @Column(name = "type", nullable = false, length = 20)
+  private ClientType type;
+
+  /**
+   *
+   * Status of the client.
+   *
+   */
+  @NotNull
+  @Enumerated(EnumType.STRING)
+  @Column(name = "status", nullable = false, length = 20)
+  private ClientStatus status;
+
+  /**
+   *
+   * Identifier of the user in the user service.
    *
    */
   @NotNull
@@ -94,12 +116,16 @@ public class Client {
    * @param firstName the first name
    * @param lastName the last name
    * @param userId the user-service identifier
+   * @param type the type of client
+   * @param status the status of the client
    *
    */
-  public Client(String firstName, String lastName, UUID userId) {
+  public Client(String firstName, String lastName, UUID userId, ClientType type, ClientStatus status) {
     this.firstName = firstName;
     this.lastName = lastName;
     this.userId = userId;
+    this.type = type;
+    this.status = status;
   }
 
   /**
@@ -194,5 +220,41 @@ public class Client {
    */
   public LocalDateTime getUpdatedAt() {
     return updatedAt;
+  }
+
+  /**
+   *
+   * @return the type of client
+   *
+   */
+  public ClientType getType() {
+    return type;
+  }
+
+  /**
+   *
+   * @param type the new type of client
+   *
+   */
+  public void setType(ClientType type) {
+    this.type = type;
+  }
+
+  /**
+   *
+   * @return the status
+   *
+   */
+  public ClientStatus getStatus() {
+    return status;
+  }
+
+  /**
+   *
+   * @param status the new status
+   *
+   */
+  public void setStatus(ClientStatus status) {
+    this.status = status;
   }
 }

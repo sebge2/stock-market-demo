@@ -1,5 +1,9 @@
 package be.sgerard.demo.bank.client.model.dto;
 
+import be.sgerard.demo.bank.client.model.ClientType;
+
+import be.sgerard.demo.bank.client.model.ClientStatus;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -11,6 +15,22 @@ import java.util.UUID;
  */
 @Schema(name = "Client")
 public class ClientDto {
+
+  /**
+   *
+   * Type of the client.
+   *
+   */
+  @Schema(description = "Type of the client")
+  private ClientType type;
+
+  /**
+   *
+   * Status of the client.
+   *
+   */
+  @Schema(description = "Status of the client")
+  private ClientStatus status;
 
   /**
    *
@@ -161,5 +181,41 @@ public class ClientDto {
    */
   public void setUpdatedAt(LocalDateTime updatedAt) {
     this.updatedAt = updatedAt;
+  }
+
+  /**
+   *
+   * @return the type
+   *
+   */
+  public ClientType getType() {
+    return type;
+  }
+
+  /**
+   *
+   * @param type the type
+   *
+   */
+  public void setType(ClientType type) {
+    this.type = type;
+  }
+
+  /**
+   *
+   * @return the status
+   *
+   */
+  public ClientStatus getStatus() {
+    return status;
+  }
+
+  /**
+   *
+   * @param status the status
+   *
+   */
+  public void setStatus(ClientStatus status) {
+    this.status = status;
   }
 }

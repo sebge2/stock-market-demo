@@ -33,7 +33,7 @@ class EndpointsSecurityTest {
    * Valid request body.
    *
    */
-  private static final String BODY = "{\"firstName\":\"A\",\"lastName\":\"B\",\"email\":\"a@b.c\"}";
+  private static final String BODY = "{\"firstName\":\"A\",\"lastName\":\"B\",\"type\":\"INDIVIDUAL\",\"status\":\"ACTIVE\",\"email\":\"a@b.c\"}";
 
   /**
    *
@@ -100,7 +100,7 @@ class EndpointsSecurityTest {
     mockMvc.perform(get("/clients/" + UUID.randomUUID()).with(authority("CLIENT_LIST")))
         .andExpect(status().isNotFound());
     mockMvc.perform(put("/clients/00000000-0000-4000-d000-000000000001").with(authority("CLIENT_UPDATE"))
-        .contentType("application/json").content("{\"firstName\":\"Alicia\",\"lastName\":\"Martin\"}"))
+        .contentType("application/json").content("{\"firstName\":\"Alicia\",\"lastName\":\"Martin\",\"type\":\"INDIVIDUAL\",\"status\":\"ACTIVE\"}"))
         .andExpect(status().isOk()).andExpect(jsonPath("$.firstName").value("Alicia"));
     mockMvc.perform(delete("/clients/00000000-0000-4000-d000-000000000003").with(authority("CLIENT_DELETE")))
         .andExpect(status().isNoContent());
@@ -116,9 +116,9 @@ class EndpointsSecurityTest {
   @Test
   void invalidInputIsRejected() throws Exception {
     mockMvc.perform(post("/clients").with(authority("CLIENT_CREATE")).contentType("application/json")
-        .content("{\"firstName\":\"\",\"lastName\":\"B\",\"email\":\"a@b.c\"}")).andExpect(status().isBadRequest());
+        .content("{\"firstName\":\"\",\"lastName\":\"B\",\"type\":\"INDIVIDUAL\",\"status\":\"ACTIVE\",\"email\":\"a@b.c\"}")).andExpect(status().isBadRequest());
     mockMvc.perform(post("/clients").with(authority("CLIENT_CREATE")).contentType("application/json")
-        .content("{\"firstName\":\"A\",\"lastName\":\"B\"}")).andExpect(status().isBadRequest());
+        .content("{\"firstName\":\"A\",\"lastName\":\"B\",\"type\":\"INDIVIDUAL\",\"status\":\"ACTIVE\"}")).andExpect(status().isBadRequest());
     mockMvc.perform(get("/clients?size=0").with(authority("CLIENT_LIST"))).andExpect(status().isBadRequest());
   }
 

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import be.sgerard.demo.bank.client.model.Client;
+import be.sgerard.demo.bank.client.model.ClientStatus;
+import be.sgerard.demo.bank.client.model.ClientType;
 import jakarta.validation.ConstraintViolationException;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -36,7 +38,7 @@ class ClientPersistenceTest {
   void savingGeneratesIdAndAuditFields() {
     final UUID userId = UUID.randomUUID();
 
-    final Client saved = clientRepository.saveAndFlush(new Client("John", "Doe", userId));
+    final Client saved = clientRepository.saveAndFlush(new Client("John", "Doe", userId, ClientType.INDIVIDUAL, ClientStatus.ACTIVE));
 
     assertThat(saved.getId()).isNotNull();
     assertThat(saved.getCreatedAt()).isNotNull();
@@ -55,7 +57,7 @@ class ClientPersistenceTest {
    */
   @Test
   void updateRefreshesUpdatedAt() {
-    final Client saved = clientRepository.saveAndFlush(new Client("John", "Doe", UUID.randomUUID()));
+    final Client saved = clientRepository.saveAndFlush(new Client("John", "Doe", UUID.randomUUID(), ClientType.INDIVIDUAL, ClientStatus.ACTIVE));
     final java.time.LocalDateTime createdAt = saved.getCreatedAt();
 
     saved.setFirstName("Jane");
@@ -73,9 +75,9 @@ class ClientPersistenceTest {
   @Test
   void userIdMustBeUnique() {
     final UUID userId = UUID.randomUUID();
-    clientRepository.saveAndFlush(new Client("A", "B", userId));
+    clientRepository.saveAndFlush(new Client("A", "B", userId, ClientType.INDIVIDUAL, ClientStatus.ACTIVE));
 
-    assertThatThrownBy(() -> clientRepository.saveAndFlush(new Client("C", "D", userId)))
+    assertThatThrownBy(() -> clientRepository.saveAndFlush(new Client("C", "D", userId, ClientType.INDIVIDUAL, ClientStatus.ACTIVE)))
         .isInstanceOf(DataIntegrityViolationException.class);
   }
 
@@ -86,9 +88,9 @@ class ClientPersistenceTest {
    */
   @Test
   void mandatoryFieldsAreValidated() {
-    assertThatThrownBy(() -> clientRepository.saveAndFlush(new Client("A", "B", null)))
+    assertThatThrownBy(() -> clientRepository.saveAndFlush(new Client("A", "B", null, ClientType.INDIVIDUAL, ClientStatus.ACTIVE)))
         .isInstanceOf(ConstraintViolationException.class);
-    assertThatThrownBy(() -> clientRepository.saveAndFlush(new Client(" ", "B", UUID.randomUUID())))
+    assertThatThrownBy(() -> clientRepository.saveAndFlush(new Client(" ", "B", UUID.randomUUID(), ClientType.INDIVIDUAL, ClientStatus.ACTIVE)))
         .isInstanceOf(ConstraintViolationException.class);
   }
 }

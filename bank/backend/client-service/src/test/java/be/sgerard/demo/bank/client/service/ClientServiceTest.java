@@ -11,6 +11,8 @@ import static org.mockito.Mockito.when;
 
 import be.sgerard.demo.bank.client.mapper.ClientMapper;
 import be.sgerard.demo.bank.client.model.Client;
+import be.sgerard.demo.bank.client.model.ClientStatus;
+import be.sgerard.demo.bank.client.model.ClientType;
 import be.sgerard.demo.bank.client.model.dto.ClientDto;
 import be.sgerard.demo.bank.client.model.dto.ClientRequestDto;
 import be.sgerard.demo.bank.client.model.dto.UserServiceCreationRequestDto;
@@ -80,6 +82,8 @@ class ClientServiceTest {
   private static ClientRequestDto request() {
     final ClientRequestDto request = new ClientRequestDto();
     request.setFirstName("John");
+    request.setType(ClientType.INDIVIDUAL);
+    request.setStatus(ClientStatus.ACTIVE);
     request.setLastName("Doe");
     request.setEmail("John.Doe@example.com");
     return request;
@@ -212,7 +216,7 @@ class ClientServiceTest {
   @Test
   void updateChangesNamesOnly() {
     final UUID userId = UUID.randomUUID();
-    final Client client = new Client("Old", "Name", userId);
+    final Client client = new Client("Old", "Name", userId, ClientType.INDIVIDUAL, ClientStatus.ACTIVE);
     when(clientRepository.findById(any())).thenReturn(Optional.of(client));
 
     final ClientDto result = clientService.update(UUID.randomUUID(), request());

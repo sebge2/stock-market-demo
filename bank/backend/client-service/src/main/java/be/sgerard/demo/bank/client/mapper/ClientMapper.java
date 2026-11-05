@@ -24,7 +24,8 @@ public class ClientMapper {
    *
    */
   public Client toEntity(ClientRequestDto request, UUID userId) {
-    return new Client(request.getFirstName(), request.getLastName(), userId);
+    return new Client(request.getFirstName(), request.getLastName(), userId, request.getType(),
+        request.getStatus());
   }
 
   /**
@@ -38,6 +39,8 @@ public class ClientMapper {
   public void updateEntity(ClientRequestDto request, Client client) {
     client.setFirstName(request.getFirstName());
     client.setLastName(request.getLastName());
+    client.setType(request.getType());
+    client.setStatus(request.getStatus());
   }
 
   /**
@@ -54,6 +57,8 @@ public class ClientMapper {
     dto.setUserId(client.getUserId());
     dto.setFirstName(client.getFirstName());
     dto.setLastName(client.getLastName());
+    dto.setType(client.getType());
+    dto.setStatus(client.getStatus());
     dto.setCreatedAt(client.getCreatedAt());
     dto.setUpdatedAt(client.getUpdatedAt());
     return dto;

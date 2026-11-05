@@ -1,5 +1,11 @@
 package be.sgerard.demo.bank.client.model.dto;
 
+import jakarta.validation.constraints.NotNull;
+
+import be.sgerard.demo.bank.client.model.ClientType;
+
+import be.sgerard.demo.bank.client.model.ClientStatus;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +19,24 @@ import jakarta.validation.constraints.Size;
  */
 @Schema(name = "ClientRequest")
 public class ClientRequestDto {
+
+  /**
+   *
+   * Type of the client.
+   *
+   */
+  @NotNull
+  @Schema(description = "Type of the client")
+  private ClientType type;
+
+  /**
+   *
+   * Status of the client.
+   *
+   */
+  @NotNull
+  @Schema(description = "Status of the client")
+  private ClientStatus status;
 
   /**
    *
@@ -95,5 +119,41 @@ public class ClientRequestDto {
    */
   public void setEmail(String email) {
     this.email = email;
+  }
+
+  /**
+   *
+   * @return the type
+   *
+   */
+  public ClientType getType() {
+    return type;
+  }
+
+  /**
+   *
+   * @param type the type
+   *
+   */
+  public void setType(ClientType type) {
+    this.type = type;
+  }
+
+  /**
+   *
+   * @return the status
+   *
+   */
+  public ClientStatus getStatus() {
+    return status;
+  }
+
+  /**
+   *
+   * @param status the status
+   *
+   */
+  public void setStatus(ClientStatus status) {
+    this.status = status;
   }
 }

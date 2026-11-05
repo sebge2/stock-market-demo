@@ -4,6 +4,8 @@ import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './a
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
 import { EmployeeForm } from './employees/EmployeeForm';
+import { type Client, fetchClients } from './clients/clients.api';
+import { ClientsPage } from './clients/ClientsPage';
 import { DashboardPage } from './dashboard/DashboardPage';
 import { DepartmentDetailPage } from './departments/DepartmentDetailPage';
 import { DepartmentsPage } from './departments/DepartmentsPage';
@@ -60,6 +62,9 @@ export function App() {
   const [page, setPage] = useState(1);
   const [creatingEmployee, setCreatingEmployee] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [clientsLoading, setClientsLoading] = useState(false);
+  const [clientsError, setClientsError] = useState<string | null>(null);
   const [departmentList, setDepartmentList] = useState<Department[]>([]);
   const [route, setRoute] = useState(window.location.hash);
   const [authenticated, setAuthenticated] = useState(getAccessToken() !== null);
@@ -112,6 +117,26 @@ export function App() {
       .finally(() => setLoading(false));
   }, [authenticated]);
 
+  const onClients = route === '#clients';
+
+  useEffect(() => {
+    if (!authenticated || !onClients) {
+      return;
+    }
+    setClientsLoading(true);
+    setClientsError(null);
+    fetchClients()
+      .then(setClients)
+      .catch((e: Error) => {
+        if (e instanceof ApiError && e.status === 401) {
+          logout();
+          setAuthenticated(false);
+        }
+        setClientsError(e instanceof ApiError && e.status === 403 ? "Vous n'avez pas la permission de consulter les clients." : e.message);
+      })
+      .finally(() => setClientsLoading(false));
+  }, [authenticated, onClients]);
+
   const departments = useMemo(
     () => ['Tous', ...Array.from(new Set(employees.map((e) => e.department))).sort()],
     [employees],
@@ -140,7 +165,7 @@ export function App() {
   const resetPage = () => setPage(1);
   const onDashboard = route === '' || route === '#dashboard';
   const onDepartments = route.startsWith('#department');
-  const onEmployees = !onDashboard && !onDepartments;
+  const onEmployees = !onDashboard && !onDepartments && !onClients;
   const departmentId = route.startsWith('#department-') ? route.slice('#department-'.length) : null;
   const detailId = route.startsWith('#employee-') ? route.slice('#employee-'.length) : null;
 
@@ -201,6 +226,15 @@ export function App() {
             </NavIcon>
             Départements
           </a>
+          <a href="#clients" aria-current={onClients ? 'page' : undefined} className={`nav-link${onClients ? ' nav-link-active' : ''}`}>
+            <NavIcon>
+              <rect x="2.5" y="4.5" width="15" height="11" rx="2" />
+              <circle cx="7.5" cy="9.5" r="1.75" />
+              <path d="M5 13.5c.4-1.2 1.4-1.9 2.5-1.9s2.1.7 2.5 1.9" />
+              <path d="M12 8.5h3.5M12 11.5h3.5" />
+            </NavIcon>
+            Clients
+          </a>
         </nav>
 
         <div className="user">
@@ -217,6 +251,7 @@ export function App() {
             onClick={() => {
               logout();
               setEmployees([]);
+              setClients([]);
               setAuthenticated(false);
             }}
           >
@@ -226,7 +261,12 @@ export function App() {
       </aside>
 
       <main className="main">
-        {onDashboard ? (
+        {onClients ? (
+          <>
+            {clientsError && <div role="alert" className="alert">{clientsError}</div>}
+            <ClientsPage clients={clients} loading={clientsLoading} />
+          </>
+        ) : onDashboard ? (
           <>
             {error && <div role="alert" className="alert">{error}</div>}
             <DashboardPage employees={employees} departments={departmentList} />

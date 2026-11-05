@@ -1020,3 +1020,15 @@ select:focus-visible {
   line-height: 24px;
   font-weight: 600;
 }
+
+.row-clients {
+  grid-template-columns: 3fr 1.2fr 1.2fr 1.2fr 24px;
+}
+
+.table-clients {
+  min-width: 720px;
+}
+
+.avatar-square {
+  border-radius: 8px;
+}

@@ -1,10 +1,10 @@
 package be.sgerard.demo.portfolio.repository;
 
-import be.sgerard.demo.portfolio.domain.Portfolio;
-import be.sgerard.demo.portfolio.domain.Position;
-import be.sgerard.demo.portfolio.domain.Purchase;
-import be.sgerard.demo.portfolio.domain.PurchaseReceipt;
-import be.sgerard.demo.portfolio.domain.PurchaseStatus;
+import be.sgerard.demo.portfolio.model.Portfolio;
+import be.sgerard.demo.portfolio.model.Position;
+import be.sgerard.demo.portfolio.model.Purchase;
+import be.sgerard.demo.portfolio.model.PurchaseReceipt;
+import be.sgerard.demo.portfolio.model.PurchaseStatus;
 import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -17,8 +17,6 @@ export interface Employee {
   name: string;
   /** Email address. */
   email: string;
-  /** Employee registration number. */
-  matricule: string;
   /** Job title ('—' when none). */
   position: string;
   /** Job title as stored (empty when none). */

@@ -24,11 +24,6 @@ interface DepartmentsPageProps {
 /** Formats a number with the French thousands separator. */
 const fmt = (value: number) => value.toLocaleString('fr-FR');
 
-/** Returns the display code of a department (based on its position in the list). */
-export function departmentCode(departments: Department[], id: string): string {
-  return `DEP-${String(departments.findIndex((d) => d.id === id) + 1).padStart(2, '0')}`;
-}
-
 /** Chevron icon used in selects. */
 function Chevron() {
   return (
@@ -51,11 +46,6 @@ export function DepartmentsPage({ departments, employees, loading, onCreate }: D
   }, [employees]);
 
   const managers = useMemo(() => new Map(employees.map((e) => [e.id, e.name])), [employees]);
-
-  const codes = useMemo(
-    () => new Map(departments.map((d, index) => [d.id, `DEP-${String(index + 1).padStart(2, '0')}`])),
-    [departments],
-  );
 
   const rows = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -165,7 +155,6 @@ export function DepartmentsPage({ departments, employees, loading, onCreate }: D
               <div key={d.id} className="row row-dept row-body">
                 <div>
                   <a href={`#department-${d.id}`} className="person-name">{d.name}</a>
-                  <div className="matricule">{codes.get(d.id)}</div>
                 </div>
                 <div>{(d.managerId && managers.get(d.managerId)) || '—'}</div>
                 <div className="cell-right mono">{fmt(headcount.get(d.id) ?? 0)}</div>

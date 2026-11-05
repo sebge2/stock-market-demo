@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import type { Department, NewDepartment } from '../employees/employees.api';
 import { type Employee, STATUS_CLASS, formatDate, initials } from '../employees/employees.data';
 import { DepartmentForm } from './DepartmentForm';
-import { departmentCode } from './DepartmentsPage';
 
 /** Props of the department sheet. */
 interface DepartmentDetailPageProps {
@@ -61,7 +60,6 @@ export function DepartmentDetailPage({ department, departments, employees, loadi
         <div className="profile-main">
           <div className="profile-title">
             <h1>{department.name}</h1>
-            <span className="mono code">{departmentCode(departments, department.id)}</span>
             <span className={`badge ${department.active ? 'badge-active' : 'badge-inactive'}`}>
               {department.active ? 'Actif' : 'Inactif'}
             </span>
@@ -127,7 +125,6 @@ export function DepartmentDetailPage({ department, departments, employees, loadi
                   <div className="avatar">{initials(e.name)}</div>
                   <div>
                     <a href={`#employee-${e.id}`} className="person-name">{e.name}</a>
-                    <div className="matricule">{e.matricule}</div>
                   </div>
                 </div>
                 <div>{e.position}</div>

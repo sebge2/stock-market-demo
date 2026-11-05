@@ -4,7 +4,8 @@ import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './a
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
 import { EmployeeForm } from './employees/EmployeeForm';
-import { type Client, fetchClients } from './clients/clients.api';
+import { type Client, fetchClients, updateClient } from './clients/clients.api';
+import { ClientDetailPage } from './clients/ClientDetailPage';
 import { ClientsPage } from './clients/ClientsPage';
 import { DashboardPage } from './dashboard/DashboardPage';
 import { DepartmentDetailPage } from './departments/DepartmentDetailPage';
@@ -117,7 +118,8 @@ export function App() {
       .finally(() => setLoading(false));
   }, [authenticated]);
 
-  const onClients = route === '#clients';
+  const onClients = route === '#clients' || route.startsWith('#client-');
+  const [clientRoute, clientSection] = route.startsWith('#client-') ? route.slice('#client-'.length).split('/') : [null, null];
 
   useEffect(() => {
     if (!authenticated || !onClients) {
@@ -151,7 +153,7 @@ export function App() {
         (department === 'Tous' || e.department === department) &&
         matchesSeniority(yearsSince(e.hireDate)) &&
         (needle === '' ||
-          [e.name, e.matricule, e.position].some((v) => v.toLowerCase().includes(needle))),
+          [e.name, e.position].some((v) => v.toLowerCase().includes(needle))),
     );
   }, [employees, tab, query, department, seniority]);
 
@@ -264,7 +266,19 @@ export function App() {
         {onClients ? (
           <>
             {clientsError && <div role="alert" className="alert">{clientsError}</div>}
-            <ClientsPage clients={clients} loading={clientsLoading} />
+            {clientRoute ? (
+              <ClientDetailPage
+                client={clients.find((c) => c.id === clientRoute)}
+                tab={clientSection === 'portfolio' ? 'portfolio' : 'info'}
+                loading={clientsLoading}
+                onUpdate={async (id, changes) => {
+                  const updated = await updateClient(id, changes);
+                  setClients((current) => current.map((c) => (c.id === id ? updated : c)));
+                }}
+              />
+            ) : (
+              <ClientsPage clients={clients} loading={clientsLoading} />
+            )}
           </>
         ) : onDashboard ? (
           <>
@@ -378,8 +392,8 @@ export function App() {
               </svg>
               <input
                 type="search"
-                aria-label="Rechercher par nom, matricule ou poste"
-                placeholder="Nom, matricule ou poste"
+                aria-label="Rechercher par nom ou poste"
+                placeholder="Nom ou poste"
                 value={query}
                 onChange={(e) => {
                   setQuery(e.target.value);
@@ -434,12 +448,11 @@ export function App() {
               </div>
 
               {rows.map((e) => (
-                <div key={e.matricule} className="row row-body">
+                <div key={e.id} className="row row-body">
                   <div className="person">
                     <div className="avatar">{initials(e.name)}</div>
                     <div>
                       <a href={`#employee-${e.id}`} className="person-name">{e.name}</a>
-                      <div className="matricule">{e.matricule}</div>
                     </div>
                   </div>
                   <div>{e.position}</div>

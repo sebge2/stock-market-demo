@@ -415,13 +415,6 @@ button:disabled {
   color: #1a56b0;
 }
 
-.matricule {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  line-height: 16px;
-  color: #5b6b82;
-}
-
 .badge {
   display: inline-flex;
   align-items: center;
@@ -757,11 +750,6 @@ select:focus-visible {
   justify-content: center;
 }
 
-.code {
-  font-size: 14px;
-  color: #5b6b82;
-}
-
 .strong {
   font-weight: 600;
 }
@@ -1031,4 +1019,23 @@ select:focus-visible {
 
 .avatar-square {
   border-radius: 8px;
+}
+
+.profile-avatar-square {
+  border-radius: 20px;
+}
+
+a.tab {
+  text-decoration: none;
+}
+
+.row-chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #5b6b82;
+}
+
+.row-chevron:hover {
+  color: #1a56b0;
 }

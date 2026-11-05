@@ -150,7 +150,6 @@ function toEmployee(e: EmployeeApi, departmentNames: Map<string, string>): Emplo
     userId: e.userId,
     departmentId: e.departmentId,
     email: e.email,
-    matricule: e.id.slice(0, 8).toUpperCase(),
     position: e.jobTitle ?? '—',
     jobTitle: e.jobTitle ?? '',
     department: (e.departmentId && departmentNames.get(e.departmentId)) || '—',

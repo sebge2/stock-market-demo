@@ -7,15 +7,19 @@ import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
-import java.util.UUID;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Value;
 import be.sgerard.demo.user.model.Permission;
+
 import java.util.stream.Stream;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
@@ -23,6 +27,7 @@ import org.springframework.security.oauth2.server.authorization.token.JwtEncodin
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.context.annotation.Configuration;
@@ -35,16 +40,9 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.oidc.OidcScopes;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
-import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
@@ -56,6 +54,7 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
  */
 @Configuration
 @EnableMethodSecurity
+@EnableConfigurationProperties(JwtSigningProperties.class)
 public class AuthorizationServerConfiguration {
 
     /**
@@ -63,7 +62,9 @@ public class AuthorizationServerConfiguration {
      */
     public static final String SWAGGER_CLIENT_ID = "swagger-ui";
 
-    /** Name of the access-token claim holding the user authorities. */
+    /**
+     * Name of the access-token claim holding the user authorities.
+     */
     public static final String AUTHORITIES_CLAIM = "authorities";
 
     /**
@@ -106,47 +107,15 @@ public class AuthorizationServerConfiguration {
 
     /**
      *
-     * Registers local OAuth2 clients.
+     * Creates the JWK source from the signing keys configured in the service properties.
      *
-     * @param baseUrl public base URL of this service
-     * @return registered client repository
-     */
-    @Bean
-    public RegisteredClientRepository registeredClientRepository(
-            @Value("${bank.user-service.base-url}") String baseUrl) {
-        RegisteredClient frontend = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("bank-frontend")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://localhost:4200/login/oauth2/code/bank")
-                .scope(OidcScopes.OPENID)
-                .scope(OidcScopes.PROFILE)
-                .scope("user.read")
-                .clientSettings(ClientSettings.builder().requireProofKey(true).build())
-                .build();
-        RegisteredClient swagger = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId(SWAGGER_CLIENT_ID)
-                .clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .redirectUri(baseUrl + "/swagger-ui/oauth2-redirect.html")
-                .scope("user.read")
-                .clientSettings(ClientSettings.builder().requireProofKey(true).requireAuthorizationConsent(false).build())
-                .build();
-        return new InMemoryRegisteredClientRepository(frontend, swagger);
-    }
-
-    /**
-     *
-     * Creates local signing keys for JWT access and ID tokens.
-     *
+     * @param properties configured signing keys
      * @return JWK source
      */
     @Bean
-    public JWKSource<SecurityContext> jwkSource() {
-        KeyPair keyPair = generateRsaKey();
-        RSAKey rsaKey = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
-                .privateKey((RSAPrivateKey) keyPair.getPrivate()).keyID(UUID.randomUUID().toString()).build();
+    public JWKSource<SecurityContext> jwkSource(JwtSigningProperties properties) {
+        final RSAKey rsaKey = new RSAKey.Builder(parsePublicKey(properties.publicKey()))
+                .privateKey(parsePrivateKey(properties.privateKey())).keyID(properties.keyId()).build();
         return new ImmutableJWKSet<>(new JWKSet(rsaKey));
     }
 
@@ -241,17 +210,44 @@ public class AuthorizationServerConfiguration {
 
     /**
      *
-     * Generates an RSA key pair for local JWT signing.
+     * Parses a PEM encoded PKCS#8 RSA private key.
      *
-     * @return RSA key pair
+     * @param pem PEM content
+     * @return the private key
      */
-    private static KeyPair generateRsaKey() {
+    private static RSAPrivateKey parsePrivateKey(String pem) {
         try {
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-            generator.initialize(2048);
-            return generator.generateKeyPair();
-        } catch (Exception exception) {
-            throw new IllegalStateException("Unable to generate the authorization-server signing key", exception);
+            return (RSAPrivateKey) KeyFactory.getInstance("RSA")
+                    .generatePrivate(new PKCS8EncodedKeySpec(decodePem(pem)));
+        } catch (GeneralSecurityException exception) {
+            throw new IllegalStateException("Invalid JWT signing private key (expected PKCS#8 PEM)", exception);
         }
+    }
+
+    /**
+     *
+     * Parses a PEM encoded X.509 RSA public key.
+     *
+     * @param pem PEM content
+     * @return the public key
+     */
+    private static RSAPublicKey parsePublicKey(String pem) {
+        try {
+            return (RSAPublicKey) KeyFactory.getInstance("RSA")
+                    .generatePublic(new X509EncodedKeySpec(decodePem(pem)));
+        } catch (GeneralSecurityException exception) {
+            throw new IllegalStateException("Invalid JWT signing public key (expected X.509 PEM)", exception);
+        }
+    }
+
+    /**
+     *
+     * Extracts the binary content of a PEM block.
+     *
+     * @param pem PEM content
+     * @return the decoded bytes
+     */
+    private static byte[] decodePem(String pem) {
+        return Base64.getMimeDecoder().decode(pem.replaceAll("-----(BEGIN|END) [A-Z ]+-----", "").trim());
     }
 }

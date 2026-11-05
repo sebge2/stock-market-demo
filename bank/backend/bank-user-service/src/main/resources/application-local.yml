@@ -1,4 +1,8 @@
 spring:
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:db/local/data.sql
   datasource:
     url: jdbc:h2:mem:bank-user-db
     driver-class-name: org.h2.Driver
@@ -8,6 +12,52 @@ spring:
     console:
       enabled: true
   jpa:
+    defer-datasource-initialization: true
     hibernate:
       ddl-auto: create-drop
     show-sql: false
+
+# Development-only signing key pair, committed on purpose: never use it outside the local profile.
+bank:
+  user-service:
+    jwt:
+      key-id: local-dev-key
+      private-key: |
+        -----BEGIN PRIVATE KEY-----
+        MIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDw994cePjvKqT1
+        McGZmp7fGVQVw3pCeL302gAlBHBL2WWNBYL3jV/cpN6X8ISUOFC44BoOhJpGOgZY
+        D2ekF93YZzDLiO+l6C1f1lLkYZQnmKczIhog8CKPFRsCrrLtYlGIq3Cyq+HwoPlK
+        X6kxjpPe1XFh/WbytdEV/wcsEzMR/6UF9qVysxdvYwU35sY80I8tXCbCA/wCyLpa
+        2+8i/UKg/tcBDlV7ZhsGsGXrSVAI3C8m4cFF05x4fSRzQEOheqCvPeEir3LMzyao
+        ZxHxKgJLgJ/QztHO6OLP1HRXwJCg9yZuvidrRju5+70wFLeU7MMLVeRyuDvZm16v
+        ijPNKJiHAgMBAAECggEBAMx9jMAc6SQNzG9ICkOQM8Kge/r8KITAcnOXjQfc/G9h
+        zgwe4UWzc+aLA1ttgRVHtTku9O3dGg7+ruOMLyfSGTHMYFxZmQXyQo9SEoY9SL1R
+        jpKWHhZVsv45qvJbzvwks4yH8Nuvgc3yzZuQEsU7ecFg4ReHNBZEtWs1QaDlqjFa
+        W9+V7e6+efDcpchDb5IcPfSjHni9Jf8ZrOtXllk0pSH6yXTFhSkf0rRWUafHWwIx
+        VcR7TJl9F0yilQMy6X7PKvNkWoze0dX0mYLnEK/Nrt2oTfSJ0+OsciRRb0lebMHT
+        Kfe9sGpWq4hKjC84/RAzjc16RMU9LB7QPVNtoYTCzgECgYEA+qC0b5z6c4PGut/Y
+        nBunvZcotpFbGVosGlcJ0E4Yc9F6LcWQUYKUt7iKSDfOUmf/7oTeUDBE3A1etngc
+        RpmHYIPk4BrBkAqLhDnnDZox2wbxPEb11MjVFbi/QSF4mjlgp5ag0XuVXjSM51dV
+        YKeTzSUkCdNeYsxf1tmPxNbGgMMCgYEA9iIoOVkzAMsZ+guRADLH0vtjXmLoYCwA
+        SfibBifrAH4QZF+odvFIbAza97UiAuMWLTyYbSipVbtGoj6QyBIABT0/T3XXpmtU
+        gJe9fxRAe1JMnEMJQzi+274Zh1eBv3ZRXAg+u/mso+7xPr/6WT3XfyyQoOKCRjdg
+        OZrcuweYzO0CgYEAwxHL/sdexAP/7LmHfdGkmFMLtDWkgzIE+6ddEw2FyLd1ciTA
+        NED/gZOXxafx5X/e2oX+Bsna/q9FVZ5c27JphPyDas5Ic9VRS+RJavPl9AUORA0z
+        D6AVAegerBHiLZ+VFDuQBhw7YOxj8zetUyJ7ToOm7iLe5uUNf0sstFc6f0MCgYA3
+        UCXJ/YnAu+PylXbYnJDbkTMbmw6tzjWiagQstfvR+IKmi/jIAiFMZvcug75I98+c
+        CuoWXfTwF04gV/8hdyoaA1GfAdScybIL1A356Qs0q6Ib29TRDoeVynriN4ApDuXp
+        0NCIXeu2S5RbjbktJQCwy8sU3NJ6BSfSykKgpWxpYQKBgQCh3BAtUM+P6Hyzv1t+
+        veAze/nisOHZKdzdqBM5jm2dilI7acavsDtVwIQLKUbgJokdbgzgm4bqWOs6lfNS
+        9HpbP2P3F0J3uAYXJc9ZpSEOL1/YRnJOLuJICtXaX3ISUe6vAsaXc+6WTbwLyEPR
+        OM+CrumeEqBqOCySW1HLE2T6qw==
+        -----END PRIVATE KEY-----
+      public-key: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8PfeHHj47yqk9THBmZqe
+        3xlUFcN6Qni99NoAJQRwS9lljQWC941f3KTel/CElDhQuOAaDoSaRjoGWA9npBfd
+        2Gcwy4jvpegtX9ZS5GGUJ5inMyIaIPAijxUbAq6y7WJRiKtwsqvh8KD5Sl+pMY6T
+        3tVxYf1m8rXRFf8HLBMzEf+lBfalcrMXb2MFN+bGPNCPLVwmwgP8Asi6WtvvIv1C
+        oP7XAQ5Ve2YbBrBl60lQCNwvJuHBRdOceH0kc0BDoXqgrz3hIq9yzM8mqGcR8SoC
+        S4Cf0M7Rzujiz9R0V8CQoPcmbr4na0Y7ufu9MBS3lOzDC1Xkcrg72Zter4ozzSiY
+        hwIDAQAB
+        -----END PUBLIC KEY-----

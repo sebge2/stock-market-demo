@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
- * Verifies authorization reference data for the local profile.
+ * Verifies the authorization reference data loaded from the local SQL script.
  *
  */
 @SpringBootTest
 @ActiveProfiles("local")
 @Transactional
-class LocalDataInitializerTest {
+class LocalDataSqlTest {
 
   /** Role repository. */
   @Autowired

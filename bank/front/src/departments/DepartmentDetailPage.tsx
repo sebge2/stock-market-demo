@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
-import type { Department } from '../employees/employees.api';
+import { useMemo, useState } from 'react';
+import type { Department, NewDepartment } from '../employees/employees.api';
 import { type Employee, STATUS_CLASS, formatDate, initials } from '../employees/employees.data';
+import { DepartmentForm } from './DepartmentForm';
 import { departmentCode } from './DepartmentsPage';
 
 /** Props of the department sheet. */
@@ -13,10 +14,13 @@ interface DepartmentDetailPageProps {
   employees: Employee[];
   /** Whether data is being loaded. */
   loading: boolean;
+  /** Saves the changes of the department; rejects when the update fails. */
+  onUpdate: (id: string, department: NewDepartment) => Promise<void>;
 }
 
 /** Department sheet: identity header, headcount and list of the department employees. */
-export function DepartmentDetailPage({ department, departments, employees, loading }: DepartmentDetailPageProps) {
+export function DepartmentDetailPage({ department, departments, employees, loading, onUpdate }: DepartmentDetailPageProps) {
+  const [editing, setEditing] = useState(false);
   const members = useMemo(
     () => employees.filter((e) => e.departmentId === department?.id),
     [employees, department],
@@ -71,10 +75,30 @@ export function DepartmentDetailPage({ department, departments, employees, loadi
             </span>
           </div>
         </div>
-        <button type="button" className="btn-outline" disabled title="Modification indisponible pour le moment">
+        <button type="button" className="btn-outline" disabled={editing} onClick={() => setEditing(true)}>
           Modifier
         </button>
       </section>
+
+      {editing && (
+        <DepartmentForm
+          title="Modifier le département"
+          submitLabel="Enregistrer"
+          forbiddenMessage="Vous n'avez pas la permission de modifier ce département."
+          initial={{
+            name: department.name,
+            description: department.description,
+            active: department.active,
+            managerId: department.managerId,
+          }}
+          employees={employees}
+          onSubmit={async (changes) => {
+            await onUpdate(department.id, changes);
+            setEditing(false);
+          }}
+          onCancel={() => setEditing(false)}
+        />
+      )}
 
       <section aria-label="Indicateurs du département" className="kpis">
         <div className="kpi">

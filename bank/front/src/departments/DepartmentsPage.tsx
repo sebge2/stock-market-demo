@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
-import type { Department } from '../employees/employees.api';
+import type { Department, NewDepartment } from '../employees/employees.api';
 import type { Employee } from '../employees/employees.data';
+import { DepartmentForm } from './DepartmentForm';
 
 /** Sort options of the list. */
 const SORTS = ['Effectif', 'Nom'] as const;
@@ -16,6 +17,8 @@ interface DepartmentsPageProps {
   employees: Employee[];
   /** Whether data is being loaded. */
   loading: boolean;
+  /** Creates a department; rejects when the creation fails. */
+  onCreate: (department: NewDepartment) => Promise<void>;
 }
 
 /** Formats a number with the French thousands separator. */
@@ -36,11 +39,11 @@ function Chevron() {
 }
 
 /** Departments screen: summary figures and list of departments with manager and headcount. */
-export function DepartmentsPage({ departments, employees, loading }: DepartmentsPageProps) {
+export function DepartmentsPage({ departments, employees, loading, onCreate }: DepartmentsPageProps) {
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<(typeof SORTS)[number]>('Effectif');
   const [status, setStatus] = useState<(typeof STATUSES)[number]>('Tous');
-
+  const [creating, setCreating] = useState(false);
   const headcount = useMemo(() => {
     const counts = new Map<string, number>();
     employees.forEach((e) => e.departmentId && counts.set(e.departmentId, (counts.get(e.departmentId) ?? 0) + 1));
@@ -76,13 +79,25 @@ export function DepartmentsPage({ departments, employees, loading }: Departments
           <div className="eyebrow">Organisation</div>
           <h1>Départements</h1>
         </div>
-        <button type="button" className="btn-primary" disabled title="Création indisponible pour le moment">
+        <button type="button" className="btn-primary" disabled={creating} onClick={() => setCreating(true)}>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
             <path d="M10 4v12M4 10h12" />
           </svg>
           Nouveau département
         </button>
       </header>
+
+      {creating && (
+        <DepartmentForm
+          title="Nouveau département"
+          submitLabel="Créer"
+          forbiddenMessage="Vous n'avez pas la permission de créer un département."
+          initial={{ name: '', description: '', active: true, managerId: null }}
+          employees={employees}
+          onSubmit={onCreate}
+          onCancel={() => setCreating(false)}
+        />
+      )}
 
       <section aria-label="Synthèse" className="kpis">
         <div className="kpi">
@@ -157,9 +172,11 @@ export function DepartmentsPage({ departments, employees, loading }: Departments
                 <div>
                   <span className={`badge ${d.active ? 'badge-active' : 'badge-inactive'}`}>{d.active ? 'Actif' : 'Inactif'}</span>
                 </div>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#5B6B82" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M7.5 4.5L13 10l-5.5 5.5" />
-                </svg>
+                <a href={`#department-${d.id}`} aria-label={`Ouvrir le département ${d.name}`} className="row-link">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#5B6B82" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M7.5 4.5L13 10l-5.5 5.5" />
+                  </svg>
+                </a>
               </div>
             ))}
 

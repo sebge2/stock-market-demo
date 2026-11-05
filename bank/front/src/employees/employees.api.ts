@@ -76,17 +76,67 @@ async function get<T>(path: string): Promise<T> {
   return (await response.json()) as T;
 }
 
-/** Loads all departments. */
-export async function fetchDepartments(): Promise<Department[]> {
-  const departments = await get<DepartmentApi[]>('/departments');
-  return departments.map((d) => ({
+/** Sends a JSON body to the employee service with the current access token. */
+async function send<T>(method: 'POST' | 'PUT', path: string, body: unknown): Promise<T> {
+  const response = await fetch(`${EMPLOYEE_API_URL}${path}`, {
+    method,
+    headers: { Authorization: `Bearer ${getAccessToken() ?? ''}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    throw new ApiError(response.status, `Erreur ${response.status} lors de l'appel à ${path}`);
+  }
+  return (await response.json()) as T;
+}
+
+/** Maps a department returned by the API to the displayed model. */
+function toDepartment(d: DepartmentApi): Department {
+  return {
     id: d.id,
     name: d.name,
     description: d.description ?? '',
     active: d.status === 'ACTIVE',
     managerId: d.managerId,
     updatedAt: d.updatedAt.slice(0, 10),
-  }));
+  };
+}
+
+/** Data entered to create a department. */
+export interface NewDepartment {
+  /** Department name. */
+  name: string;
+  /** Short description. */
+  description: string;
+  /** Whether the department is active. */
+  active: boolean;
+  /** Identifier of the managing employee, if any. */
+  managerId: string | null;
+}
+
+/** Converts the entered department data to the API payload. */
+function toDepartmentRequest(department: NewDepartment) {
+  return {
+    name: department.name,
+    description: department.description || null,
+    status: department.active ? 'ACTIVE' : 'INACTIVE',
+    managerId: department.managerId,
+  };
+}
+
+/** Creates a department and returns it. */
+export async function createDepartment(department: NewDepartment): Promise<Department> {
+  return toDepartment(await send<DepartmentApi>('POST', '/departments', toDepartmentRequest(department)));
+}
+
+/** Updates a department and returns it. */
+export async function updateDepartment(id: string, department: NewDepartment): Promise<Department> {
+  return toDepartment(await send<DepartmentApi>('PUT', `/departments/${id}`, toDepartmentRequest(department)));
+}
+
+/** Loads all departments. */
+export async function fetchDepartments(): Promise<Department[]> {
+  const departments = await get<DepartmentApi[]>('/departments');
+  return departments.map(toDepartment);
 }
 
 /** Loads all employees, with their department name resolved from the given departments. */

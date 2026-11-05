@@ -6,7 +6,7 @@ import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
 import { DashboardPage } from './dashboard/DashboardPage';
 import { DepartmentDetailPage } from './departments/DepartmentDetailPage';
 import { DepartmentsPage } from './departments/DepartmentsPage';
-import { ApiError, type Department, fetchDepartments, fetchEmployees } from './employees/employees.api';
+import { ApiError, type Department, createDepartment, fetchDepartments, updateDepartment, fetchEmployees } from './employees/employees.api';
 import {
   type Employee,
   type EmployeeStatus,
@@ -245,12 +245,25 @@ export function App() {
               departments={departmentList}
               employees={employees}
               loading={loading}
+              onUpdate={async (id, changes) => {
+                const updated = await updateDepartment(id, changes);
+                setDepartmentList((current) => current.map((d) => (d.id === id ? updated : d)));
+              }}
             />
           </>
         ) : onDepartments ? (
           <>
             {error && <div role="alert" className="alert">{error}</div>}
-            <DepartmentsPage departments={departmentList} employees={employees} loading={loading} />
+            <DepartmentsPage
+              departments={departmentList}
+              employees={employees}
+              loading={loading}
+              onCreate={async (input) => {
+                const created = await createDepartment(input);
+                setDepartmentList((current) => [...current, created]);
+                window.location.hash = `#department-${created.id}`;
+              }}
+            />
           </>
         ) : (
           <>

@@ -1,0 +1,171 @@
+package be.sgerard.demo.exchange.user.model.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
+
+/**
+ *
+ * Public representation of a user account (never exposes the password hash).
+ *
+ */
+@Schema(name = "User")
+public class UserDto {
+
+  /**
+   *
+   * User identifier.
+   *
+   */
+  @Schema(description = "User identifier")
+  private UUID id;
+
+  /**
+   *
+   * Login name.
+   *
+   */
+  @Schema(description = "Login name")
+  private String username;
+
+  /**
+   *
+   * Full name.
+   *
+   */
+  @Schema(description = "Full name")
+  private String fullName;
+
+  /**
+   *
+   * Email address.
+   *
+   */
+  @Schema(description = "Email address")
+  private String email;
+
+  /**
+   *
+   * Avatar, a PNG of at most 128x128 pixels encoded in base64.
+   *
+   */
+  @Schema(description = "Avatar, a PNG of at most 128x128 pixels encoded in base64")
+  private String avatar;
+
+  /**
+   *
+   * Identifiers of the roles granted to the user.
+   *
+   */
+  @Schema(description = "Identifiers of the roles granted to the user")
+  private Set<UUID> roleIds = new LinkedHashSet<>();
+
+  /**
+   *
+   * @return the identifier
+   *
+   */
+  public UUID getId() {
+    return id;
+  }
+
+  /**
+   *
+   * @param id the identifier
+   *
+   */
+  public void setId(UUID id) {
+    this.id = id;
+  }
+
+  /**
+   *
+   * @return the login name
+   *
+   */
+  public String getUsername() {
+    return username;
+  }
+
+  /**
+   *
+   * @param username the login name
+   *
+   */
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  /**
+   *
+   * @return the email address
+   *
+   */
+  public String getEmail() {
+    return email;
+  }
+
+  /**
+   *
+   * @param email the email address
+   *
+   */
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  /**
+   *
+   * @return the role identifiers
+   *
+   */
+  public Set<UUID> getRoleIds() {
+    return roleIds;
+  }
+
+  /**
+   *
+   * @param roleIds the role identifiers
+   *
+   */
+  public void setRoleIds(Set<UUID> roleIds) {
+    this.roleIds = roleIds;
+  }
+
+  /**
+   *
+   * @return the full name
+   *
+   */
+  public String getFullName() {
+    return fullName;
+  }
+
+  /**
+   *
+   * @param fullName the full name
+   *
+   */
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
+  }
+
+  /**
+   *
+   * @return the base64 encoded PNG avatar, or {@code null} when there is none
+   *
+   */
+  public String getAvatar() {
+    return avatar;
+  }
+
+  /**
+   *
+   * @param avatar the base64 encoded PNG avatar
+   *
+   */
+  public void setAvatar(String avatar) {
+    this.avatar = avatar;
+  }
+}

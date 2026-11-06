@@ -1,5 +1,6 @@
 package be.sgerard.demo.company.repository;
 
+import be.sgerard.demo.company.mapper.ListingMapper;
 import be.sgerard.demo.company.model.Company;
 import be.sgerard.demo.company.model.CompanyStatus;
 import be.sgerard.demo.company.model.Exchange;
@@ -281,7 +282,7 @@ class CompanyPersistenceTest {
     entityManager.clear();
 
     assertThat(listings.findBySecurityId(security.getId())).hasSize(2);
-    ListingDto dto = ListingDto.from(listings.findById(nasdaq.getId()).orElseThrow());
+    ListingDto dto = new ListingMapper().toDto(listings.findById(nasdaq.getId()).orElseThrow());
     assertThat(dto.securityId()).isEqualTo(security.getId());
     assertThat(dto.exchangeId()).isEqualTo(nasdaq.getExchange().getId());
     assertThat(dto.isPrimary()).isTrue();

@@ -12,7 +12,7 @@
   </parent>
 
   <groupId>be.sgerard.demo</groupId>
-  <artifactId>company-service</artifactId>
+  <artifactId>exchange-company-service</artifactId>
   <version>1.0.0</version>
   <name>Company Service (Exchange)</name>
   <description>Company and listing management microservice for Stock Exchange</description>

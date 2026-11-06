@@ -1,20 +1,20 @@
 {
   "name": "exchange-company-service",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "stock-exchange/backend/company-service",
+  "sourceRoot": "stock-exchange/backend/exchange-company-service",
   "targets": {
     "serve": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn spring-boot:run",
-        "cwd": "stock-exchange/backend/company-service"
+        "cwd": "stock-exchange/backend/exchange-company-service"
       }
     },
     "build": {
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn clean package",
-        "cwd": "stock-exchange/backend/company-service"
+        "cwd": "stock-exchange/backend/exchange-company-service"
       }
     }
   },

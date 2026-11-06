@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 /**
- * Receipt proving a purchase, referencing the bank transaction and the exchange order.
+ * Receipt proving a purchase, referencing the exchange order.
  */
 @Entity
 @Table(name = "purchase_receipt", uniqueConstraints = @UniqueConstraint(
@@ -42,15 +42,6 @@ public class PurchaseReceipt {
     @Size(max = 50)
     @Column(name = "receipt_number", nullable = false, length = 50)
     private String receiptNumber;
-
-    /**
-     *
-     * Field bank transaction id.
-     *
-     */
-    @NotNull
-    @Column(name = "bank_transaction_id", nullable = false)
-    private UUID bankTransactionId;
 
     /**
      *
@@ -100,10 +91,9 @@ public class PurchaseReceipt {
      * Creates the entity.
      *
      */
-    public PurchaseReceipt(String receiptNumber, UUID bankTransactionId, UUID exchangeOrderId,
+    public PurchaseReceipt(String receiptNumber, UUID exchangeOrderId,
                            LocalDateTime transactionDate, String notes) {
         this.receiptNumber = receiptNumber;
-        this.bankTransactionId = bankTransactionId;
         this.exchangeOrderId = exchangeOrderId;
         this.transactionDate = transactionDate;
         this.notes = notes;
@@ -137,15 +127,6 @@ public class PurchaseReceipt {
      */
     public String getReceiptNumber() {
         return receiptNumber;
-    }
-
-    /**
-     *
-     * @return the bank transaction id
-     *
-     */
-    public UUID getBankTransactionId() {
-        return bankTransactionId;
     }
 
     /**
@@ -196,6 +177,6 @@ public class PurchaseReceipt {
     @Override
     public String toString() {
         return "PurchaseReceipt{id=" + id + ", receiptNumber='" + receiptNumber
-                + "', bankTransactionId=" + bankTransactionId + ", exchangeOrderId=" + exchangeOrderId + "}";
+                + "', exchangeOrderId=" + exchangeOrderId + "}";
     }
 }

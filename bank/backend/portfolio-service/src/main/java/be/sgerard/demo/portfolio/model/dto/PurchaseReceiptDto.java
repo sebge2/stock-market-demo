@@ -28,13 +28,6 @@ public class PurchaseReceiptDto {
 
   /**
    *
-   * Identifier of the bank transaction.
-   *
-   */
-  private UUID bankTransactionId;
-
-  /**
-   *
    * Identifier of the exchange order.
    *
    */
@@ -88,24 +81,6 @@ public class PurchaseReceiptDto {
    */
   public void setReceiptNumber(String receiptNumber) {
     this.receiptNumber = receiptNumber;
-  }
-
-  /**
-   *
-   * @return the identifier of the bank transaction
-   *
-   */
-  public UUID getBankTransactionId() {
-    return bankTransactionId;
-  }
-
-  /**
-   *
-   * @param bankTransactionId the identifier of the bank transaction
-   *
-   */
-  public void setBankTransactionId(UUID bankTransactionId) {
-    this.bankTransactionId = bankTransactionId;
   }
 
   /**

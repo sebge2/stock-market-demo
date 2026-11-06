@@ -1,0 +1,30 @@
+{
+  "name": "exchange-user-service",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "stock-exchange/backend/exchange-user-service/src",
+  "projectType": "application",
+  "tags": ["type:backend", "scope:exchange", "type:microservice"],
+  "implicitDependencies": ["stocket-market-bom"],
+  "targets": {
+    "build": {
+      "executor": "@nx/maven:build",
+      "options": {},
+      "configurations": {
+        "production": {
+          "args": "-DskipTests"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mvn spring-boot:run -Dspring-boot.run.profiles=local",
+        "cwd": "stock-exchange/backend/exchange-user-service"
+      }
+    },
+    "test": {
+      "executor": "@nx/maven:test",
+      "options": {}
+    }
+  }
+}

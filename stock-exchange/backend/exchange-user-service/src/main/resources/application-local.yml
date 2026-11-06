@@ -1,0 +1,71 @@
+spring:
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:db/local/data.sql
+  datasource:
+    url: jdbc:h2:mem:exchange-user-db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+
+# Development-only signing key pair, committed on purpose: never use it outside the local profile.
+exchange:
+  user-service:
+    base-url: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}
+    cors:
+      allowed-origins: http://localhost:8086,http://localhost:8087,http://localhost:3001
+    jwt:
+      key-id: exchange-local-dev-key
+      private-key: |
+        -----BEGIN PRIVATE KEY-----
+        MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDObxLOt0F5gQ8W
+        F6TxKogy+Y7wcYGFK8jbrEqznIWZw0X3zDVCYIVbX1BLVL3gb5AW3iQgSsrA+VwZ
+        C0E5C9xnOScbvbWoejQmyAt4RVUkwR1KCWqal4wfhHxgeXR9ckH8tD03gduw7d+m
+        phxEf+ckezFey6aIctk8HriphzJHBhOXrVY57ICeWMYEB0nQdH60rAZttUagwwJM
+        7bRBk7QLcOMAfC770SxOBeV1aGWtaFiHlQIM+mIKn6dgJeD3ArPkAGHQz9IL9SrS
+        Ds6vfJ0pSn1SzkA3XWJH+kb+UFpLarinZ7xS7hP/AfIPCABixYmk/GCF338WY5IM
+        P18ofauPAgMBAAECggEAFZh5FzcEmnlt4pnGn5Qbe3mwAmddbVkPQivcBL4zG8rZ
+        3vp19+OxD8YA2GCdHIWPRVUn4ljwrQ9pGxWaVSVwgTvxY22NO3rNSeFTkdlu9tFd
+        BwnFJTcFaaaqfE04aocxcAZLASuMmA3Kf9yQyHm47JAWshwL5+pb33Y3S0ThdZx0
+        yxo9pUeCRKw9CRB1Pl4yS2NpPQwZkBEHuov/a9UxgOWW+PDzPSdQvRzAFsMD1nKO
+        jFzGkNawMbrUSrMwz0hqhJrKK2zTkRZdluHW/mOQKaf2zGhDIeIJk8mPt095Whn2
+        IcpZVXu9TjcWb6WTlMv+8U+ZMm2YcqED7nkIJ95swQKBgQD9twBjpkeGLXymftPA
+        b1RPMmWcd+kFZFj6GSDv0JiafoQaLF/mS+Hpz6Sve5j11ragRET2U/zFGFUPKpHm
+        /2D8S6hrYmozYAYarWGC4HtAvCi0t7AO4CMTG2d4k+KnGU7lYMOTBWg0l0EIvA2D
+        5xklsZQiclRQd2/XSQXyUDt6WwKBgQDQSw4AomNHDgpcQq5fTeEhtXD1JRguQuOe
+        BkF981j/CTmPOyupPlO1CRPyoiukqCeGt2Om2HVcG/+wy9oLM1RISPxNbKRjThCR
+        lxtNl6W1jDGZPtmBUQ92r5fA8OGTxY0Htb7t3VCY1dDeUaI+j2eLx9lcxLpFnRrq
+        RxJYMx8R3QKBgE6InOg7ihwwbEslKuqAC3rQQL+kJk7y9s/Dg3x39ySrULzBS5X/
+        mxhCm9ltyrUeFz2YpDgTW0Su+XVOWgdEuYKe8Kz8s57fdERBstNOJRiupXL7ANY5
+        7uF1NBwQurG6lb9OqnsRy2WsBAduHkjb+d6/DvlypkKaFdZv1hVhXGfNAoGAGDsi
+        /d/mPLXdbq4zKtMchZdd9KbEEV2mrRN9OvG8QK8KCyePBLlDc6QCtg83lIgbUQi0
+        hwxXWsfHDwIn83WdMGuNLlSdKxBBzS4O9w/VLzGH85PkKa8MZXo35TIgi9hHd8Yk
+        1/cPETiOe85zWWPFX/V3y9r28HI+V1K9R5Vq3+ECgYEA+sIxgOjtmr1sVEUqG6fQ
+        lGvEPBbYV78g3/QNKTd/05BAUb7PVEKI7v29m1TI1O9pMIVerNihL6qdNz68Sjkt
+        LCqZ4tXkgWxG5mt/l6IL/Bb8awyAVV0iELylRG6cHPpYm6K/XI6esttu3wjn6Gs8
+        ieI7dRiwHLi7M+AMBBj4/G4=
+        -----END PRIVATE KEY-----
+      public-key: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzm8SzrdBeYEPFhek8SqI
+        MvmO8HGBhSvI26xKs5yFmcNF98w1QmCFW19QS1S94G+QFt4kIErKwPlcGQtBOQvc
+        ZzknG721qHo0JsgLeEVVJMEdSglqmpeMH4R8YHl0fXJB/LQ9N4HbsO3fpqYcRH/n
+        JHsxXsumiHLZPB64qYcyRwYTl61WOeyAnljGBAdJ0HR+tKwGbbVGoMMCTO20QZO0
+        C3DjAHwu+9EsTgXldWhlrWhYh5UCDPpiCp+nYCXg9wKz5ABh0M/SC/Uq0g7Or3yd
+        KUp9Us5AN11iR/pG/lBaS2q4p2e8Uu4T/wHyDwgAYsWJpPxghd9/FmOSDD9fKH2r
+        jwIDAQAB
+        -----END PUBLIC KEY-----
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

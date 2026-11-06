@@ -1,0 +1,32 @@
+package be.sgerard.demo.exchange.user.repository;
+
+import be.sgerard.demo.exchange.user.model.Role;
+import java.util.Optional;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+/**
+ *
+ * Repository of {@link Role} entities.
+ *
+ */
+public interface RoleRepository extends JpaRepository<Role, UUID> {
+
+  /**
+   *
+   * Finds an entity by its name.
+   *
+   * @param name the name
+   * @return the matching entity, if any
+   */
+  Optional<Role> findByName(String name);
+
+  /**
+   *
+   * Reports whether a permission is assigned to at least one role.
+   *
+   * @param permissionId permission identifier
+   * @return {@code true} when the permission is assigned
+   */
+  boolean existsByPermissionsId(UUID permissionId);
+}

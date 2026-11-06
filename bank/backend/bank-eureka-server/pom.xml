@@ -9,9 +9,7 @@
         <version>0.1.0</version>
         <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
-    <groupId>be.sgerard.demo</groupId>
     <artifactId>bank-eureka-server</artifactId>
-    <version>0.1.0</version>
     <name>Bank Eureka Server</name>
 
     <dependencies>

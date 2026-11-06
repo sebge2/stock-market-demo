@@ -1,22 +1,20 @@
 package be.sgerard.demo.bank.stock.service;
 
 import be.sgerard.demo.bank.stock.client.ExchangeServiceClient;
-import be.sgerard.demo.bank.stock.client.PortfolioServiceClient;
 import be.sgerard.demo.bank.stock.exception.QuotationNotFoundException;
 import be.sgerard.demo.bank.stock.exception.ValuationFailedException;
 import be.sgerard.demo.bank.stock.mapper.PortfolioValuationMapper;
 import be.sgerard.demo.bank.stock.model.dto.PortfolioValuationDto;
 import be.sgerard.demo.bank.stock.model.dto.PositionValuationDto;
 import be.sgerard.demo.bank.stock.model.dto.QuotationDto;
-import be.sgerard.demo.bank.stock.model.dto.RemotePortfolioDto;
-import be.sgerard.demo.bank.stock.model.dto.RemotePositionDto;
+import be.sgerard.demo.bank.stock.model.external.PortfolioDto;
+import be.sgerard.demo.bank.stock.model.external.PositionDto;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -28,13 +26,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ValuationService {
-
-  /**
-   *
-   * Client of the portfolio service.
-   *
-   */
-  private final PortfolioServiceClient portfolioClient;
 
   /**
    *
@@ -68,17 +59,14 @@ public class ValuationService {
    *
    * Creates a new instance.
    *
-   * @param portfolioClient client of the portfolio service
    * @param exchangeClient client of the stock exchange
    * @param mapper mapper building the valuation DTOs
    * @param clock clock of the application
    * @param quotationMaxAge maximum accepted age of a quotation
    *
    */
-  public ValuationService(PortfolioServiceClient portfolioClient, ExchangeServiceClient exchangeClient,
-      PortfolioValuationMapper mapper, Clock clock,
+  public ValuationService(ExchangeServiceClient exchangeClient, PortfolioValuationMapper mapper, Clock clock,
       @Value("${bank.stock-service.quotation-max-age:PT24H}") Duration quotationMaxAge) {
-    this.portfolioClient = portfolioClient;
     this.exchangeClient = exchangeClient;
     this.mapper = mapper;
     this.clock = clock;
@@ -89,15 +77,14 @@ public class ValuationService {
    *
    * Values a portfolio with the latest quotation of each of its positions.
    *
-   * @param portfolioId identifier of the portfolio
+   * @param portfolio the portfolio to value
    * @return the valuation
    * @throws ValuationFailedException if a quotation is missing or older than the accepted age
    *
    */
-  public PortfolioValuationDto valuate(UUID portfolioId) {
-    final RemotePortfolioDto portfolio = portfolioClient.findPortfolio(portfolioId);
+  public PortfolioValuationDto valuate(PortfolioDto portfolio) {
     final LocalDateTime valuedAt = LocalDateTime.now(clock);
-    final List<RemotePositionDto> holdings = portfolio.positions() == null ? List.of() : portfolio.positions();
+    final List<PositionDto> holdings = portfolio.positions() == null ? List.of() : portfolio.positions();
     final Map<String, QuotationDto> quotations = new HashMap<>();
 
     final List<PositionValuationDto> positions = holdings.stream()
@@ -105,7 +92,7 @@ public class ValuationService {
             quotations.computeIfAbsent(position.stockSymbol(), symbol -> loadFreshQuotation(symbol, valuedAt))))
         .toList();
 
-    return mapper.toPortfolioValuation(portfolioId, positions, valuedAt);
+    return mapper.toPortfolioValuation(portfolio.id(), positions, valuedAt);
   }
 
   /**

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: portfolio-service
+    name: bank-portfolio-service
   security:
     oauth2:
       resourceserver:
@@ -16,10 +16,9 @@ server:
     context-path: /api/portfolio
 
 bank:
-  base-domain: ${BANK_BASE_DOMAIN:}
+  base-domain: ${BANK_BASE_DOMAIN:gerardson.local}
   user-service:
-    base-url: ${BANK_USER_SERVICE_BASE_URL:}
-    port: ${BANK_USER_SERVICE_PORT:}
+    base-url: user-service.${bank.base-domain}
 
 springdoc:
   swagger-ui:
@@ -31,7 +30,7 @@ springdoc:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      defaultZone: eureka-service.${bank.base-domain}
 
 logging:
   level:

@@ -11,7 +11,7 @@ Sous `bank/backend/` :
 | `bank-user-service` | Authentification, émission des JWT |
 | `bank-employee-service` | Gestion des employés |
 | `bank-client-service` | Clients de la banque (anciennement `client-service`) |
-| `portfolio-service` | Portefeuilles et ordres d'achat |
+| `bank-portfolio-service` | Portefeuilles et ordres d'achat |
 | `bank-stock-service` | Valorisation de portefeuille et cotations (port 8088) |
 
 Lancement : `npm run dev:microservices` ou `npm run dev:<module>`.

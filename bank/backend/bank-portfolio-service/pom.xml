@@ -12,10 +12,8 @@
         <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
 
-    <groupId>be.sgerard.demo</groupId>
-    <artifactId>portfolio-service</artifactId>
-    <version>0.1.0</version>
-    <name>Portfolio Service</name>
+    <artifactId>bank-portfolio-service</artifactId>
+    <name>Bank Portfolio Service</name>
     <description>Portfolio management microservice for Bank</description>
 
     <dependencies>

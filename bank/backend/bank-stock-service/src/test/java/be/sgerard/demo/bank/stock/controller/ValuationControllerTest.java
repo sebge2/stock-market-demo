@@ -4,23 +4,20 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import be.sgerard.demo.bank.stock.client.ExchangeServiceClient;
-import be.sgerard.demo.bank.stock.client.PortfolioServiceClient;
 import be.sgerard.demo.bank.stock.exception.DependencyUnavailableException;
-import be.sgerard.demo.bank.stock.exception.PortfolioNotFoundException;
 import be.sgerard.demo.bank.stock.exception.QuotationNotFoundException;
 import be.sgerard.demo.bank.stock.model.dto.QuotationDto;
-import be.sgerard.demo.bank.stock.model.dto.RemotePortfolioDto;
-import be.sgerard.demo.bank.stock.model.dto.RemotePositionDto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -47,14 +44,6 @@ class ValuationControllerTest {
    */
   @Autowired
   private MockMvc mockMvc;
-
-  /**
-   *
-   * Mock portfolio client.
-   *
-   */
-  @MockBean
-  private PortfolioServiceClient portfolioClient;
 
   /**
    *
@@ -85,7 +74,7 @@ class ValuationControllerTest {
    */
   @Test
   void anonymousIsUnauthorized() throws Exception {
-    mockMvc.perform(get("/portfolios/" + UUID.randomUUID() + "/value")).andExpect(status().isUnauthorized());
+    mockMvc.perform(post("/portfolios/value").contentType(MediaType.APPLICATION_JSON).content(body(UUID.randomUUID(), "AAPL", "1"))).andExpect(status().isUnauthorized());
     mockMvc.perform(get("/quotations/AAPL")).andExpect(status().isUnauthorized());
   }
 
@@ -98,7 +87,7 @@ class ValuationControllerTest {
    */
   @Test
   void withoutMatchingPermissionIsForbidden() throws Exception {
-    mockMvc.perform(get("/portfolios/" + UUID.randomUUID() + "/value").with(authority("QUOTATION_READ")))
+    mockMvc.perform(post("/portfolios/value").contentType(MediaType.APPLICATION_JSON).content(body(UUID.randomUUID(), "AAPL", "1")).with(authority("QUOTATION_READ")))
         .andExpect(status().isForbidden());
     mockMvc.perform(get("/quotations/AAPL").with(authority("PORTFOLIO_VALUATION_READ")))
         .andExpect(status().isForbidden());
@@ -114,11 +103,10 @@ class ValuationControllerTest {
   @Test
   void returnsValuation() throws Exception {
     final UUID id = UUID.randomUUID();
-    when(portfolioClient.findPortfolio(id)).thenReturn(new RemotePortfolioDto(id,
-        List.of(new RemotePositionDto(UUID.randomUUID(), "AAPL", new BigDecimal("2")))));
     when(exchangeClient.findLatestQuotation("AAPL")).thenReturn(quotation());
 
-    mockMvc.perform(get("/portfolios/" + id + "/value").with(authority("PORTFOLIO_VALUATION_READ")))
+    mockMvc.perform(post("/portfolios/value").contentType(MediaType.APPLICATION_JSON)
+            .content(body(id, "AAPL", "2")).with(authority("PORTFOLIO_VALUATION_READ")))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.portfolioId").value(id.toString()))
         .andExpect(jsonPath("$.currency").value("EUR"))
@@ -128,27 +116,22 @@ class ValuationControllerTest {
 
   /**
    *
-   * Failures are mapped to 404, 422 and 500.
+   * Failures are mapped to 422 and 500.
    *
    * @throws Exception on failure
    *
    */
   @Test
   void mapsFailures() throws Exception {
-    final UUID unknown = UUID.randomUUID();
-    when(portfolioClient.findPortfolio(unknown)).thenThrow(new PortfolioNotFoundException("none"));
-    mockMvc.perform(get("/portfolios/" + unknown + "/value").with(authority("PORTFOLIO_VALUATION_READ")))
-        .andExpect(status().isNotFound());
-
-    final UUID id = UUID.randomUUID();
-    when(portfolioClient.findPortfolio(id)).thenReturn(new RemotePortfolioDto(id,
-        List.of(new RemotePositionDto(UUID.randomUUID(), "AAPL", BigDecimal.ONE))));
+    final String content = body(UUID.randomUUID(), "AAPL", "1");
     when(exchangeClient.findLatestQuotation("AAPL")).thenThrow(new QuotationNotFoundException("none"));
-    mockMvc.perform(get("/portfolios/" + id + "/value").with(authority("PORTFOLIO_VALUATION_READ")))
+    mockMvc.perform(post("/portfolios/value").contentType(MediaType.APPLICATION_JSON).content(content)
+            .with(authority("PORTFOLIO_VALUATION_READ")))
         .andExpect(status().isUnprocessableEntity());
 
     doThrow(new DependencyUnavailableException("down")).when(exchangeClient).findLatestQuotation("AAPL");
-    mockMvc.perform(get("/portfolios/" + id + "/value").with(authority("PORTFOLIO_VALUATION_READ")))
+    mockMvc.perform(post("/portfolios/value").contentType(MediaType.APPLICATION_JSON).content(content)
+            .with(authority("PORTFOLIO_VALUATION_READ")))
         .andExpect(status().isInternalServerError());
   }
 
@@ -170,6 +153,21 @@ class ValuationControllerTest {
     mockMvc.perform(get("/quotations/NONE").with(authority("QUOTATION_READ"))).andExpect(status().isNotFound());
     mockMvc.perform(get("/quotations/BAD$SYMBOL").with(authority("QUOTATION_READ")))
         .andExpect(status().isBadRequest());
+  }
+
+  /**
+   *
+   * Builds the JSON body of a portfolio holding a single position.
+   *
+   * @param id identifier of the portfolio
+   * @param symbol stock symbol of the position
+   * @param quantity quantity of the position
+   * @return the JSON body
+   *
+   */
+  private static String body(UUID id, String symbol, String quantity) {
+    return "{\"id\":\"" + id + "\",\"positions\":[{\"id\":\"" + UUID.randomUUID() + "\",\"stockSymbol\":\""
+        + symbol + "\",\"quantity\":" + quantity + "}]}";
   }
 
   /**

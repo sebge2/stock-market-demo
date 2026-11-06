@@ -11,9 +11,7 @@
         <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
 
-    <groupId>be.sgerard.demo</groupId>
     <artifactId>bank-service-console</artifactId>
-    <version>0.1.0</version>
     <name>Bank Service Console</name>
     <description>Spring Boot Admin console for the bank services.</description>
 

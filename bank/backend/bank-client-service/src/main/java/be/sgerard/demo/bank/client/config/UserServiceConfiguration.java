@@ -49,37 +49,9 @@ public class UserServiceConfiguration {
 
   /**
    *
-   * Resolves the base URL of the user service. If the base domain is set the URL is
-   * {@code http://bank-user-service.<domain>[:<port>]}, otherwise the explicit base URL is used.
-   *
-   * @param baseDomain the base domain of the bank services (optional)
-   * @param port the port of the user service, only used with the base domain (optional)
-   * @param baseUrl the explicit base URL of the user service (fallback)
-   * @return the resolved base URL, without trailing slash
-   * @throws IllegalStateException if neither the base domain nor the base URL is configured
-   *
-   */
-  public static String resolveBaseUrl(String baseDomain, String port, String baseUrl) {
-    final String url;
-    if (baseDomain != null && !baseDomain.isBlank()) {
-      final String hostUrl = "http://bank-user-service." + baseDomain.trim();
-      url = port != null && !port.isBlank() ? hostUrl + ":" + port.trim() : hostUrl;
-    } else if (baseUrl != null && !baseUrl.isBlank()) {
-      url = baseUrl.trim();
-    } else {
-      throw new IllegalStateException(
-          "User service URL not configured: set BANK_BASE_DOMAIN or BANK_USER_SERVICE_BASE_URL");
-    }
-    return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
-  }
-
-  /**
-   *
    * Creates the RestTemplate dedicated to the user service, rooted at its resolved base URL.
    *
    * @param builder the RestTemplateBuilder
-   * @param baseDomain the base domain of the bank services (optional)
-   * @param port the port of the user service (optional)
    * @param baseUrl the explicit base URL of the user service (fallback)
    * @return the configured RestTemplate
    *
@@ -87,11 +59,9 @@ public class UserServiceConfiguration {
   @Bean
   @Qualifier("userServiceRestTemplate")
   public RestTemplate userServiceRestTemplate(RestTemplateBuilder builder,
-      @Value("${bank.base-domain:}") String baseDomain,
-      @Value("${bank.user-service.port:}") String port,
       @Value("${bank.user-service.base-url:}") String baseUrl) {
     return builder
-        .rootUri(resolveBaseUrl(baseDomain, port, baseUrl))
+        .rootUri(baseUrl)
         .setConnectTimeout(HTTP_TIMEOUT)
         .setReadTimeout(HTTP_TIMEOUT)
         .build();

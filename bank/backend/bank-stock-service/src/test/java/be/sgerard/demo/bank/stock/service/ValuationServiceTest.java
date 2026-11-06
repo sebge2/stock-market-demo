@@ -6,16 +6,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import be.sgerard.demo.bank.stock.client.ExchangeServiceClient;
-import be.sgerard.demo.bank.stock.client.PortfolioServiceClient;
 import be.sgerard.demo.bank.stock.exception.DependencyUnavailableException;
-import be.sgerard.demo.bank.stock.exception.PortfolioNotFoundException;
 import be.sgerard.demo.bank.stock.exception.QuotationNotFoundException;
 import be.sgerard.demo.bank.stock.exception.ValuationFailedException;
 import be.sgerard.demo.bank.stock.mapper.PortfolioValuationMapper;
 import be.sgerard.demo.bank.stock.model.dto.PortfolioValuationDto;
 import be.sgerard.demo.bank.stock.model.dto.QuotationDto;
-import be.sgerard.demo.bank.stock.model.dto.RemotePortfolioDto;
-import be.sgerard.demo.bank.stock.model.dto.RemotePositionDto;
+import be.sgerard.demo.bank.stock.model.external.PortfolioDto;
+import be.sgerard.demo.bank.stock.model.external.PositionDto;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Duration;
@@ -43,13 +41,6 @@ class ValuationServiceTest {
 
   /**
    *
-   * Mock portfolio client.
-   *
-   */
-  private PortfolioServiceClient portfolioClient;
-
-  /**
-   *
    * Mock exchange client.
    *
    */
@@ -69,9 +60,8 @@ class ValuationServiceTest {
    */
   @BeforeEach
   void setUp() {
-    portfolioClient = mock(PortfolioServiceClient.class);
     exchangeClient = mock(ExchangeServiceClient.class);
-    service = new ValuationService(portfolioClient, exchangeClient, new PortfolioValuationMapper(), CLOCK,
+    service = new ValuationService(exchangeClient, new PortfolioValuationMapper(), CLOCK,
         Duration.ofHours(24));
   }
 
@@ -99,8 +89,8 @@ class ValuationServiceTest {
    * @return the portfolio
    *
    */
-  private static RemotePortfolioDto portfolio(UUID id, RemotePositionDto... positions) {
-    return new RemotePortfolioDto(id, List.of(positions));
+  private static PortfolioDto portfolio(UUID id, PositionDto... positions) {
+    return new PortfolioDto(id, List.of(positions));
   }
 
   /**
@@ -112,14 +102,14 @@ class ValuationServiceTest {
   void valuatesPortfolioWithRounding() {
     final UUID id = UUID.randomUUID();
     final LocalDateTime recent = LocalDateTime.now(CLOCK).minusMinutes(5);
-    when(portfolioClient.findPortfolio(id)).thenReturn(portfolio(id,
-        new RemotePositionDto(UUID.randomUUID(), "APPLE", new BigDecimal("10")),
-        new RemotePositionDto(UUID.randomUUID(), "MICROSOFT", new BigDecimal("0.00005")),
-        new RemotePositionDto(UUID.randomUUID(), "APPLE", new BigDecimal("2"))));
+    final PortfolioDto portfolio = portfolio(id,
+        new PositionDto(UUID.randomUUID(), "APPLE", new BigDecimal("10")),
+        new PositionDto(UUID.randomUUID(), "MICROSOFT", new BigDecimal("0.00005")),
+        new PositionDto(UUID.randomUUID(), "APPLE", new BigDecimal("2")));
     when(exchangeClient.findLatestQuotation("APPLE")).thenReturn(quotation("APPLE", "150.5", recent));
     when(exchangeClient.findLatestQuotation("MICROSOFT")).thenReturn(quotation("MICROSOFT", "1", recent));
 
-    final PortfolioValuationDto result = service.valuate(id);
+    final PortfolioValuationDto result = service.valuate(portfolio);
 
     assertThat(result.portfolioId()).isEqualTo(id);
     assertThat(result.currency()).isEqualTo("EUR");
@@ -140,9 +130,9 @@ class ValuationServiceTest {
   @Test
   void valuatesEmptyPortfolioToZero() {
     final UUID id = UUID.randomUUID();
-    when(portfolioClient.findPortfolio(id)).thenReturn(portfolio(id));
+    final PortfolioDto portfolio = portfolio(id);
 
-    final PortfolioValuationDto result = service.valuate(id);
+    final PortfolioValuationDto result = service.valuate(portfolio);
 
     assertThat(result.totalValue()).isEqualByComparingTo("0");
     assertThat(result.positions()).isEmpty();
@@ -156,11 +146,10 @@ class ValuationServiceTest {
   @Test
   void failsWhenQuotationIsMissing() {
     final UUID id = UUID.randomUUID();
-    when(portfolioClient.findPortfolio(id))
-        .thenReturn(portfolio(id, new RemotePositionDto(UUID.randomUUID(), "APPLE", BigDecimal.ONE)));
+    final PortfolioDto portfolio = portfolio(id, new PositionDto(UUID.randomUUID(), "APPLE", BigDecimal.ONE));
     when(exchangeClient.findLatestQuotation("APPLE")).thenThrow(new QuotationNotFoundException("none"));
 
-    assertThatThrownBy(() -> service.valuate(id)).isInstanceOf(ValuationFailedException.class)
+    assertThatThrownBy(() -> service.valuate(portfolio)).isInstanceOf(ValuationFailedException.class)
         .hasMessageContaining("APPLE");
   }
 
@@ -172,34 +161,28 @@ class ValuationServiceTest {
   @Test
   void failsWhenQuotationIsStale() {
     final UUID id = UUID.randomUUID();
-    when(portfolioClient.findPortfolio(id))
-        .thenReturn(portfolio(id, new RemotePositionDto(UUID.randomUUID(), "APPLE", BigDecimal.ONE)));
+    final PortfolioDto portfolio = portfolio(id, new PositionDto(UUID.randomUUID(), "APPLE", BigDecimal.ONE));
 
     when(exchangeClient.findLatestQuotation("APPLE"))
         .thenReturn(quotation("APPLE", "10", LocalDateTime.now(CLOCK).minusHours(24)));
-    assertThat(service.valuate(id).totalValue()).isEqualByComparingTo("10");
+    assertThat(service.valuate(portfolio).totalValue()).isEqualByComparingTo("10");
 
     when(exchangeClient.findLatestQuotation("APPLE"))
         .thenReturn(quotation("APPLE", "10", LocalDateTime.now(CLOCK).minusHours(24).minusSeconds(1)));
-    assertThatThrownBy(() -> service.valuate(id)).isInstanceOf(ValuationFailedException.class)
+    assertThatThrownBy(() -> service.valuate(portfolio)).isInstanceOf(ValuationFailedException.class)
         .hasMessageContaining("too old");
   }
 
   /**
    *
-   * Portfolio lookup and dependency failures are propagated unchanged.
+   * Dependency failures are propagated unchanged.
    *
    */
   @Test
-  void propagatesPortfolioAndDependencyFailures() {
-    final UUID unknown = UUID.randomUUID();
-    when(portfolioClient.findPortfolio(unknown)).thenThrow(new PortfolioNotFoundException("none"));
-    assertThatThrownBy(() -> service.valuate(unknown)).isInstanceOf(PortfolioNotFoundException.class);
-
-    final UUID id = UUID.randomUUID();
-    when(portfolioClient.findPortfolio(id))
-        .thenReturn(portfolio(id, new RemotePositionDto(UUID.randomUUID(), "APPLE", BigDecimal.ONE)));
+  void propagatesDependencyFailures() {
+    final PortfolioDto portfolio = portfolio(UUID.randomUUID(),
+        new PositionDto(UUID.randomUUID(), "APPLE", BigDecimal.ONE));
     when(exchangeClient.findLatestQuotation("APPLE")).thenThrow(new DependencyUnavailableException("down"));
-    assertThatThrownBy(() -> service.valuate(id)).isInstanceOf(DependencyUnavailableException.class);
+    assertThatThrownBy(() -> service.valuate(portfolio)).isInstanceOf(DependencyUnavailableException.class);
   }
 }

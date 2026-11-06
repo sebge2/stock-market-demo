@@ -1,4 +1,4 @@
-# Portfolio Service 📊
+# Bank Portfolio Service 📊
 
 Microservice de gestion des portefeuilles pour le service Bank.
 
@@ -50,7 +50,7 @@ curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/jso
 ## 🏗️ Structure
 
 ```
-portfolio-service/src/main/java/be/sgerard/demo/portfolio/
+bank-portfolio-service/src/main/java/be/sgerard/demo/portfolio/
 ├── config/      SecurityConfiguration, OpenApiConfiguration
 ├── controller/  PortfolioController, RestExceptionHandler
 ├── mapper/      PortfolioMapper

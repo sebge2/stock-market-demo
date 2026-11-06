@@ -12,9 +12,7 @@
         <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
 
-    <groupId>be.sgerard.demo</groupId>
     <artifactId>bank-employee-service</artifactId>
-    <version>0.1.0</version>
     <name>Bank Employee Service</name>
     <description>Employee management microservice for Bank</description>
 

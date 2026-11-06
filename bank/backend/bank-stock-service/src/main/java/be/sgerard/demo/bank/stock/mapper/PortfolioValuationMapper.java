@@ -3,7 +3,7 @@ package be.sgerard.demo.bank.stock.mapper;
 import be.sgerard.demo.bank.stock.model.dto.PortfolioValuationDto;
 import be.sgerard.demo.bank.stock.model.dto.PositionValuationDto;
 import be.sgerard.demo.bank.stock.model.dto.QuotationDto;
-import be.sgerard.demo.bank.stock.model.dto.RemotePositionDto;
+import be.sgerard.demo.bank.stock.model.external.PositionDto;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
@@ -43,7 +43,7 @@ public class PortfolioValuationMapper {
    * @return the valuation of the position
    *
    */
-  public PositionValuationDto toPositionValuation(RemotePositionDto position, QuotationDto quotation) {
+  public PositionValuationDto toPositionValuation(PositionDto position, QuotationDto quotation) {
     final BigDecimal price = quotation.currentPrice().setScale(SCALE, RoundingMode.HALF_EVEN);
     final BigDecimal value = position.quantity().multiply(quotation.currentPrice()).setScale(SCALE,
         RoundingMode.HALF_EVEN);

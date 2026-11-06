@@ -30,7 +30,7 @@ transmis, `USER_CREATE` est donc aussi requis). Swagger UI : `/api/client/swagge
 ## 🏗️ Structure
 
 ```
-client-service/src/main/java/be/sgerard/demo/bank/client/
+bank-client-service/src/main/java/be/sgerard/demo/bank/client/
 ├── config/       SecurityConfiguration, OpenApiConfiguration, UserServiceConfiguration
 ├── controller/   ClientController
 ├── mapper/       ClientMapper

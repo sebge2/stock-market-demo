@@ -65,7 +65,7 @@ public class SecurityConfiguration {
    */
   @Bean
   public CorsConfigurationSource corsConfigurationSource(
-      @Value("${bank.client-service.cors.allowed-origins:}") List<String> allowedOrigins) {
+      @Value("${bank.bank-client-service.cors.allowed-origins:}") List<String> allowedOrigins) {
     final CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(allowedOrigins.stream().filter(origin -> !origin.isBlank()).toList());
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));

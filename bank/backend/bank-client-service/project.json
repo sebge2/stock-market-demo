@@ -1,7 +1,7 @@
 {
-  "name": "client-service",
+  "name": "bank-client-service",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "bank/backend/client-service/src",
+  "sourceRoot": "bank/backend/bank-client-service/src",
   "projectType": "library",
   "prefix": "app",
   "tags": [
@@ -24,7 +24,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn spring-boot:run",
-        "cwd": "bank/backend/client-service"
+        "cwd": "bank/backend/bank-client-service"
       }
     },
     "test": {

@@ -18,7 +18,7 @@ spring:
     show-sql: false
 
 bank:
-  client-service:
+  bank-client-service:
     cors:
       allowed-origins: http://localhost:3000,http://localhost:4200
   user-service:

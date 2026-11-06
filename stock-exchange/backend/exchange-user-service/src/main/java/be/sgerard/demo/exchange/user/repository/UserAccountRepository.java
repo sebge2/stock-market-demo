@@ -1,0 +1,33 @@
+package be.sgerard.demo.exchange.user.repository;
+
+import be.sgerard.demo.exchange.user.model.UserAccount;
+import java.util.Optional;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+/**
+ *
+ * Repository for authorization-server user accounts.
+ *
+ */
+public interface UserAccountRepository extends JpaRepository<UserAccount, UUID> {
+
+  /**
+   *
+   * Finds an account by login name.
+   *
+   * @param username login name
+   * @return matching account, if present
+   */
+  Optional<UserAccount> findByUsername(String username);
+
+  /**
+   *
+   * Finds an account by email address.
+   *
+   * @param email email address
+   * @return matching account, if present
+   *
+   */
+  Optional<UserAccount> findByEmail(String email);
+}

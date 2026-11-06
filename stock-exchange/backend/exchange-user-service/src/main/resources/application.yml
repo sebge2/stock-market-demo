@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: exchange-user-service
+  jpa:
+    open-in-view: false
+
+server:
+  port: 8091
+
+exchange:
+  base-domain: ${EXCHANGE_BASE_DOMAIN:gerardson.local}
+  user-service:
+    base-url: user-service.${exchange.base-domain}
+    cors:
+      allowed-origins: ${EXCHANGE_USER_SERVICE_CORS_ALLOWED_ORIGINS:}
+    jwt:
+      key-id: ${EXCHANGE_USER_SERVICE_JWT_KEY_ID}
+      private-key: ${EXCHANGE_USER_SERVICE_JWT_PRIVATE_KEY}
+      public-key: ${EXCHANGE_USER_SERVICE_JWT_PUBLIC_KEY}
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: exchange-swagger-ui
+      use-pkce-with-authorization-code-grant: true
+      scopes: user.read
+
+eureka:
+  client:
+    service-url:
+      defaultZone: eureka-service.${exchange.base-domain}
+
+logging:
+  level:
+    root: INFO
+    be.sgerard.demo: DEBUG
+
+management:
+  endpoint:
+    loggers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,loggers,threaddump

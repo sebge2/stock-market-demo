@@ -26,7 +26,7 @@ Backend Microservices
 │   └── bank-stock-service  (Port 8088)
 └── stock-exchange/backend/
     ├── exchange-staff-service (Port 8086)
-    └── company-service     (Port 8087)
+    └── exchange-company-service (Port 8087)
 ```
 
 ## 🚀 Stack Technologique
@@ -82,7 +82,7 @@ cd bank/backend/bank-client-service && mvn spring-boot:run          # Port 8084
 cd bank/backend/bank-portfolio-service && mvn spring-boot:run       # Port 8085
 cd bank/backend/bank-stock-service && mvn spring-boot:run      # Port 8088
 cd stock-exchange/backend/exchange-staff-service && mvn spring-boot:run  # Port 8086
-cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
+cd stock-exchange/backend/exchange-company-service && mvn spring-boot:run # Port 8087
 ```
 
 ## 🎮 IntelliJ Launchers

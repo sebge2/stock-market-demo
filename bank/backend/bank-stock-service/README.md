@@ -10,7 +10,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
 # Swagger UI: http://localhost:8088/api/valuation/swagger-ui.html
 ```
 
-Requires `bank-user-service` (JWT issuer) and the exchange `company-service`.
+Requires `bank-user-service` (JWT issuer) and the exchange `exchange-company-service`.
 
 ## Endpoints
 
@@ -29,5 +29,5 @@ Errors: 404 (quotation not found), 422 (quotation missing or older than
 - Amounts are `BigDecimal`, scale 4, half-even rounding, currency EUR. No caching, no database.
 - Remote calls: 3 attempts, exponential backoff from 100ms, retrying 5xx and I/O errors only.
 - The exchange is called on `GET {exchange-base-url}/listings/{symbol}/latest-price`. This endpoint does not
-  exist yet in `company-service` (it has no REST controller) and must be added separately (tracked in #24).
+  exist yet in `exchange-company-service` (it has no REST controller) and must be added separately (tracked in #24).
   Until then both endpoints fail against a real exchange; the service is only verified with mocked clients.

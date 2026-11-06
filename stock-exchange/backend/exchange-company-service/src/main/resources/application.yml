@@ -1,6 +1,6 @@
 spring:
   application:
-    name: company-service
+    name: exchange-company-service
   jpa:
     hibernate:
       ddl-auto: create-drop

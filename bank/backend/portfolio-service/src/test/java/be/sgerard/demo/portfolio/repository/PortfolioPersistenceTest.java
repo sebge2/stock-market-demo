@@ -44,7 +44,7 @@ class PortfolioPersistenceTest {
 
     private PurchaseReceipt newReceipt(String number) {
         return receiptRepository.saveAndFlush(new PurchaseReceipt(
-                number, UUID.randomUUID(), UUID.randomUUID(), LocalDateTime.now(), "notes"));
+                number, UUID.randomUUID(), LocalDateTime.now(), "notes"));
     }
 
     @Test

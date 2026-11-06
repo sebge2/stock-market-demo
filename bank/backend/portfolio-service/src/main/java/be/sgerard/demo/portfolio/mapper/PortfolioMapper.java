@@ -114,7 +114,6 @@ public class PortfolioMapper {
     final PurchaseReceiptDto dto = new PurchaseReceiptDto();
     dto.setId(receipt.getId());
     dto.setReceiptNumber(receipt.getReceiptNumber());
-    dto.setBankTransactionId(receipt.getBankTransactionId());
     dto.setExchangeOrderId(receipt.getExchangeOrderId());
     dto.setTransactionDate(receipt.getTransactionDate());
     dto.setNotes(receipt.getNotes());

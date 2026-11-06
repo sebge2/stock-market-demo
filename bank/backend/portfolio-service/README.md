@@ -20,7 +20,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
 # OpenAPI JSON: http://localhost:8085/api/portfolio/v3/api-docs
 ```
 
-Le profil `local` charge des données de test (`db/local/data.sql`) cohérentes avec celles du client-service.
+Le profil `local` charge des données de test (`db/local/data.sql`) cohérentes avec celles du bank-client-service.
 Le `bank-user-service` doit tourner sur `bank.user-service.base-url` (`http://localhost:9000` en local).
 
 ## 🔐 Sécurité

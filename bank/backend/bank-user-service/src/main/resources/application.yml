@@ -8,14 +8,15 @@ server:
   port: 9000
 
 bank:
+  base-domain: ${BANK_BASE_DOMAIN:gerardson.local}
   user-service:
-    base-url: ${BANK_USER_SERVICE_BASE_URL:http://localhost:9000}
+    base-url: user-service.${bank.base-domain}
     cors:
       allowed-origins: ${BANK_USER_SERVICE_CORS_ALLOWED_ORIGINS:}
     jwt:
-      key-id: ${BANK_USER_SERVICE_JWT_KEY_ID:}
-      private-key: ${BANK_USER_SERVICE_JWT_PRIVATE_KEY:}
-      public-key: ${BANK_USER_SERVICE_JWT_PUBLIC_KEY:}
+      key-id: ${BANK_USER_SERVICE_JWT_KEY_ID}
+      private-key: ${BANK_USER_SERVICE_JWT_PRIVATE_KEY}
+      public-key: ${BANK_USER_SERVICE_JWT_PUBLIC_KEY}
 
 springdoc:
   swagger-ui:
@@ -27,7 +28,7 @@ springdoc:
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      defaultZone: eureka-service.${bank.base-domain}
 
 logging:
   level:

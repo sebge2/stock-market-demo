@@ -1,0 +1,56 @@
+spring:
+  application:
+    name: bank-stock-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${bank.user-service.base-url}
+          jwk-set-uri: ${bank.user-service.base-url}/oauth2/jwks
+
+server:
+  port: 8088
+  servlet:
+    context-path: /api/valuation
+
+bank:
+  base-domain: ${BANK_BASE_DOMAIN:}
+  stock-service:
+    cors:
+      allowed-origins: ${BANK_STOCK_SERVICE_CORS_ALLOWED_ORIGINS:}
+    quotation-max-age: ${BANK_STOCK_SERVICE_QUOTATION_MAX_AGE:PT24H}
+  user-service:
+    base-url: ${BANK_USER_SERVICE_BASE_URL:}
+    port: ${BANK_USER_SERVICE_PORT:}
+  portfolio-service:
+    base-url: ${BANK_PORTFOLIO_SERVICE_BASE_URL:}
+    port: ${BANK_PORTFOLIO_SERVICE_PORT:}
+  exchange-company-service:
+    base-url: ${EXCHANGE_COMPANY_SERVICE_BASE_URL:}
+    port: ${EXCHANGE_COMPANY_SERVICE_PORT:}
+
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: valuation-swagger-ui
+      use-pkce-with-authorization-code-grant: true
+      scopes: valuation.read
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+
+logging:
+  level:
+    root: INFO
+    be.sgerard.demo: DEBUG
+
+management:
+  endpoint:
+    loggers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,loggers,threaddump

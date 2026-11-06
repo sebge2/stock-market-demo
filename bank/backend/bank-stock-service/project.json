@@ -1,0 +1,35 @@
+{
+  "name": "bank-stock-service",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "bank/backend/bank-stock-service/src",
+  "projectType": "library",
+  "prefix": "app",
+  "tags": [
+    "type:backend",
+    "scope:bank",
+    "type:microservice"
+  ],
+  "implicitDependencies": ["stocket-market-bom"],
+  "targets": {
+    "build": {
+      "executor": "@nx/maven:build",
+      "options": {},
+      "configurations": {
+        "production": {
+          "args": "-DskipTests"
+        }
+      }
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mvn spring-boot:run",
+        "cwd": "bank/backend/bank-stock-service"
+      }
+    },
+    "test": {
+      "executor": "@nx/maven:test",
+      "options": {}
+    }
+  }
+}

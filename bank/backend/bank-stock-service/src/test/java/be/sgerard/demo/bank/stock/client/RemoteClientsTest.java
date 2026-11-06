@@ -10,10 +10,8 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 import be.sgerard.demo.bank.stock.config.RemoteServicesConfiguration;
 import be.sgerard.demo.bank.stock.exception.DependencyUnavailableException;
-import be.sgerard.demo.bank.stock.exception.PortfolioNotFoundException;
 import be.sgerard.demo.bank.stock.exception.QuotationNotFoundException;
 import be.sgerard.demo.bank.stock.model.dto.QuotationDto;
-import be.sgerard.demo.bank.stock.model.dto.RemotePortfolioDto;
 import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -86,39 +84,6 @@ class RemoteClientsTest {
   @AfterEach
   void tearDown() {
     SecurityContextHolder.clearContext();
-  }
-
-  /**
-   *
-   * The portfolio is fetched with the caller's token.
-   *
-   */
-  @Test
-  void fetchesPortfolioWithCallerToken() {
-    final UUID id = UUID.randomUUID();
-    server.expect(requestTo(ROOT + "/portfolios/" + id))
-        .andExpect(header("Authorization", "Bearer caller-token"))
-        .andRespond(withSuccess("{\"id\":\"" + id + "\",\"positions\":[],\"clientId\":\"" + UUID.randomUUID()
-            + "\"}", MediaType.APPLICATION_JSON));
-
-    final RemotePortfolioDto portfolio = new PortfolioServiceClientImpl(restTemplate, retryTemplate)
-        .findPortfolio(id);
-
-    assertThat(portfolio.id()).isEqualTo(id);
-    server.verify();
-  }
-
-  /**
-   *
-   * A 404 from the portfolio service becomes a portfolio-not-found failure, without retry.
-   *
-   */
-  @Test
-  void mapsPortfolioNotFound() {
-    final UUID id = UUID.randomUUID();
-    server.expect(requestTo(ROOT + "/portfolios/" + id)).andRespond(withResourceNotFound());
-
-    assertThatThrownBy(() -> new PortfolioServiceClientImpl(restTemplate, retryTemplate).findPortfolio(id)).isInstanceOf(PortfolioNotFoundException.class);
   }
 
   /**

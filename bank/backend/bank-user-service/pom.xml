@@ -11,9 +11,7 @@
         <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
 
-    <groupId>be.sgerard.demo</groupId>
     <artifactId>bank-user-service</artifactId>
-    <version>0.1.0</version>
     <name>Bank User Service</name>
     <description>User profile management microservice for Bank.</description>
 

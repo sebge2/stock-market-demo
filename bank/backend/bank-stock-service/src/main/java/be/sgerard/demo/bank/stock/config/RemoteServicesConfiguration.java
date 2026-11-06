@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  *
- * Configuration of the integration with the portfolio service and the exchange company service: URL
+ * Configuration of the integration with the exchange company service: URL
  * resolution, HTTP timeouts and retry policy.
  *
  */
@@ -41,13 +41,6 @@ public class RemoteServicesConfiguration {
    *
    */
   public static final long MAX_BACKOFF_MS = 1_000;
-
-  /**
-   *
-   * Context path of the portfolio service, used when its URL is derived from the base domain.
-   *
-   */
-  public static final String PORTFOLIO_CONTEXT_PATH = "/api/portfolio";
 
   /**
    *
@@ -89,30 +82,6 @@ public class RemoteServicesConfiguration {
       throw new IllegalStateException("URL of " + serviceName + " not configured: set BANK_BASE_DOMAIN or its base URL");
     }
     return url.endsWith("/") ? url.substring(0, url.length() - 1) : url;
-  }
-
-  /**
-   *
-   * Creates the RestTemplate dedicated to the portfolio service.
-   *
-   * @param builder the RestTemplateBuilder
-   * @param baseDomain the base domain of the bank services (optional)
-   * @param port the port of the portfolio service (optional)
-   * @param baseUrl the explicit base URL of the portfolio service (fallback)
-   * @return the configured RestTemplate
-   *
-   */
-  @Bean
-  @Qualifier("portfolioServiceRestTemplate")
-  public RestTemplate portfolioServiceRestTemplate(RestTemplateBuilder builder,
-      @Value("${bank.base-domain:}") String baseDomain,
-      @Value("${bank.portfolio-service.port:}") String port,
-      @Value("${bank.portfolio-service.base-url:}") String baseUrl) {
-    return builder
-        .rootUri(resolveBaseUrl("bank-portfolio-service", PORTFOLIO_CONTEXT_PATH, baseDomain, port, baseUrl))
-        .setConnectTimeout(HTTP_TIMEOUT)
-        .setReadTimeout(HTTP_TIMEOUT)
-        .build();
   }
 
   /**

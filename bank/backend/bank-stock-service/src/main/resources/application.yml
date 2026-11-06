@@ -22,9 +22,6 @@ bank:
   user-service:
     base-url: ${BANK_USER_SERVICE_BASE_URL:}
     port: ${BANK_USER_SERVICE_PORT:}
-  portfolio-service:
-    base-url: ${BANK_PORTFOLIO_SERVICE_BASE_URL:}
-    port: ${BANK_PORTFOLIO_SERVICE_PORT:}
   exchange-company-service:
     base-url: ${EXCHANGE_COMPANY_SERVICE_BASE_URL:}
     port: ${EXCHANGE_COMPANY_SERVICE_PORT:}

@@ -12,9 +12,7 @@
         <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
 
-    <groupId>be.sgerard.demo</groupId>
     <artifactId>bank-stock-service</artifactId>
-    <version>0.1.0</version>
     <name>Bank Stock Service</name>
     <description>Portfolio valuation and stock quotation microservice for Bank</description>
 

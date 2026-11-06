@@ -1,7 +1,6 @@
 package be.sgerard.demo.bank.stock.controller;
 
 import be.sgerard.demo.bank.stock.exception.DependencyUnavailableException;
-import be.sgerard.demo.bank.stock.exception.PortfolioNotFoundException;
 import be.sgerard.demo.bank.stock.exception.QuotationNotFoundException;
 import be.sgerard.demo.bank.stock.exception.ValuationFailedException;
 import jakarta.validation.ConstraintViolationException;
@@ -30,14 +29,14 @@ public class RestExceptionHandler {
 
   /**
    *
-   * Answers 404 when the portfolio or the quotation does not exist.
+   * Answers 404 when the quotation does not exist.
    *
    * @param exception the failure
    * @return the problem detail
    *
    */
-  @ExceptionHandler({PortfolioNotFoundException.class, QuotationNotFoundException.class})
-  public ProblemDetail handleNotFound(RuntimeException exception) {
+  @ExceptionHandler(QuotationNotFoundException.class)
+  public ProblemDetail handleNotFound(QuotationNotFoundException exception) {
     return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
   }
 

@@ -12,9 +12,7 @@
         <relativePath>../../../common/stocket-market-bom/pom.xml</relativePath>
     </parent>
 
-    <groupId>be.sgerard.demo</groupId>
     <artifactId>bank-client-service</artifactId>
-    <version>0.1.0</version>
     <name>Client Service</name>
     <description>Client account management microservice for Bank</description>
 

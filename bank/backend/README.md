@@ -15,7 +15,7 @@ bank/backend/
 ├── bank-client-service/             Client account management microservice
 │   ├── src/
 │   └── pom.xml
-├── portfolio-service/          Portfolio management microservice
+├── bank-portfolio-service/     Portfolio management microservice
 │   ├── src/
 │   └── pom.xml
 ├── bank-stock-service/         Portfolio valuation and quotation microservice
@@ -40,8 +40,8 @@ cd bank-client-service && mvn spring-boot:run
 # Bank User Service
 cd bank-user-service && mvn spring-boot:run
 
-# Portfolio Service
-cd portfolio-service && mvn spring-boot:run
+# Bank Portfolio Service
+cd bank-portfolio-service && mvn spring-boot:run
 ```
 
 ### Tous ensemble (dans différents terminaux)
@@ -54,7 +54,7 @@ cd bank-employee-service && mvn spring-boot:run
 cd bank-client-service && mvn spring-boot:run
 
 # Terminal 3
-cd portfolio-service && mvn spring-boot:run
+cd bank-portfolio-service && mvn spring-boot:run
 ```
 
 ## 📊 Ports et Endpoints
@@ -64,7 +64,7 @@ cd portfolio-service && mvn spring-boot:run
 | Bank Employee Service | 8083 | /api/employee | /api/employee/h2-console |
 | Bank User Service | 9000 | / | /h2-console |
 | Client Service | 8084 | /api/client | /api/client/h2-console |
-| Portfolio Service | 8085 | /api/portfolio | /api/portfolio/h2-console |
+| Bank Portfolio Service | 8085 | /api/portfolio | /api/portfolio/h2-console |
 | Bank Stock Service | 8088 | /api/valuation | - |
 
 ## 🏗️ Microservices
@@ -83,7 +83,7 @@ cd portfolio-service && mvn spring-boot:run
 - Portfolio valuation from the latest quotations
 - Stock quotations
 
-### Portfolio Service (8085)
+### Bank Portfolio Service (8085)
 - Portfolio management
 - Holdings management
 - Value tracking
@@ -97,7 +97,7 @@ mvn clean package
 # Build individual microservices
 cd bank-employee-service && mvn clean package
 cd ../bank-client-service && mvn clean package
-cd ../portfolio-service && mvn clean package
+cd ../bank-portfolio-service && mvn clean package
 ```
 
 ## 🔗 Communication

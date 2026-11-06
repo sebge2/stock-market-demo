@@ -1,6 +1,6 @@
 spring:
   application:
-    name: portfolio-service
+    name: bank-portfolio-service
   security:
     oauth2:
       resourceserver:

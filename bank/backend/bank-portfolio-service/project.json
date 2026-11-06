@@ -1,7 +1,7 @@
 {
-  "name": "portfolio-service",
+  "name": "bank-portfolio-service",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "bank/backend/portfolio-service/src",
+  "sourceRoot": "bank/backend/bank-portfolio-service/src",
   "projectType": "library",
   "prefix": "app",
   "tags": [
@@ -24,7 +24,7 @@
       "executor": "nx:run-commands",
       "options": {
         "command": "mvn spring-boot:run",
-        "cwd": "bank/backend/portfolio-service"
+        "cwd": "bank/backend/bank-portfolio-service"
       }
     },
     "test": {

@@ -22,7 +22,7 @@ Backend Microservices
 ├── bank/backend/
 │   ├── bank-employee-service (Port 8083)
 │   ├── bank-client-service      (Port 8084)
-│   ├── portfolio-service   (Port 8085)
+│   ├── bank-portfolio-service   (Port 8085)
 │   └── bank-stock-service  (Port 8088)
 └── stock-exchange/backend/
     ├── exchange-staff-service (Port 8086)
@@ -49,7 +49,7 @@ Backend Microservices
 ### Microservices Bank (4)
 - **bank-employee-service** - Bank employee management (port 8083)
 - **bank-client-service** - Client accounts (port 8084)
-- **portfolio-service** - Portfolio management (port 8085)
+- **bank-portfolio-service** - Portfolio management (port 8085)
 - **bank-stock-service** - Portfolio valuation and stock quotations (port 8088)
 
 ### Microservices Exchange (2)
@@ -79,7 +79,7 @@ npm run dev:all                # Tous les services (7)
 ```bash
 cd bank/backend/bank-employee-service && mvn spring-boot:run            # Port 8083
 cd bank/backend/bank-client-service && mvn spring-boot:run          # Port 8084
-cd bank/backend/portfolio-service && mvn spring-boot:run       # Port 8085
+cd bank/backend/bank-portfolio-service && mvn spring-boot:run       # Port 8085
 cd bank/backend/bank-stock-service && mvn spring-boot:run      # Port 8088
 cd stock-exchange/backend/exchange-staff-service && mvn spring-boot:run  # Port 8086
 cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
@@ -95,7 +95,7 @@ cd stock-exchange/backend/company-service && mvn spring-boot:run # Port 8087
 ### Bank Microservices
 - **Bank Employee Service** → Port 8083
 - **Client Service** → Port 8084
-- **Portfolio Service** → Port 8085
+- **Bank Portfolio Service** → Port 8085
 - **Bank Stock Service** → Port 8088
 - **All Microservices** → Tous 3 en parallèle
 
@@ -135,7 +135,7 @@ nx serve frontend-bank
 nx serve bank-employee-service
 
 # Lancer plusieurs projets
-nx run-many --target=serve --projects=bank-employee-service,bank-client-service,portfolio-service
+nx run-many --target=serve --projects=bank-employee-service,bank-client-service,bank-portfolio-service
 
 # Build tous les projets
 nx run-many --target=build --all

@@ -71,6 +71,10 @@ IntelliJ a détecté automatiquement les launchers suivants dans `.idea/runConfi
 - **Description**: Spring Boot service via Nx
 - **Utilisation**: Cliquer sur `▶️ Backend Exchange` dans la toolbar
 
+#### Microservices Bank
+- **Launchers**: `Bank Employee Service`, `Client Service` (`bank-client-service`), `Portfolio Service`, `Bank Stock Service` (port 8088)
+- **Compound**: `All Microservices` les lance tous (repris par `All Backends` et `All Services`)
+
 ### Compound Launchers (Multiple Services)
 
 #### ▶️ Frontend + Bank Service

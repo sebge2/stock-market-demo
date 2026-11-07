@@ -39,6 +39,8 @@ VALUES ('00000000-0000-4000-8000-000000000001', 'ADMIN', 'Administrative access'
 
 INSERT INTO role (id, name, description, status, created_at, updated_at)
 VALUES ('00000000-0000-4000-9000-000000000001', 'ADMIN', 'Administrator role', 'ACTIVE', CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-9000-000000000002', 'CRM', 'Customer relationship management role', 'ACTIVE', CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP);
 
 INSERT INTO role_permission (role_id, permission_id)
@@ -72,7 +74,10 @@ VALUES ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-0000000
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000028'),
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000029'),
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000030'),
-  ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000031');
+       ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000031'),
+       ('00000000-0000-4000-9000-000000000002', '00000000-0000-4000-8000-000000000010'),
+       ('00000000-0000-4000-9000-000000000002', '00000000-0000-4000-8000-000000000012'),
+       ('00000000-0000-4000-9000-000000000002', '00000000-0000-4000-8000-000000000013');
 
 -- Password: changeit (BCrypt) for every account below
 -- Users referenced by the clients of the bank-client-service local data (same password, no role)
@@ -120,9 +125,14 @@ VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224202', 'alexander.muller', 'Alexander M
        ('72e91c48-68b6-4de7-9a40-21b9b6224233', 'eva.svensson', 'Eva Svensson', 'eva.svensson@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
        ('72e91c48-68b6-4de7-9a40-21b9b6224234', 'daniel.novak', 'Daniel Novak', 'daniel.novak@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse');
 
--- Alexander Müller (CEO) is the only administrator
+-- Alexander Müller (CEO) is the only administrator; all Client Services staff have CRM access.
 INSERT INTO user_account_role (user_id, role_id)
-VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224202', '00000000-0000-4000-9000-000000000001');
+VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224202', '00000000-0000-4000-9000-000000000001'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224203', '00000000-0000-4000-9000-000000000002'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224204', '00000000-0000-4000-9000-000000000002'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224205', '00000000-0000-4000-9000-000000000002'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224206', '00000000-0000-4000-9000-000000000002'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224207', '00000000-0000-4000-9000-000000000002');
 
 -- OAuth2 clients (public clients using the authorization code flow with PKCE)
 INSERT INTO oauth_client (id, client_id, client_secret, authentication_method, require_proof_key,

@@ -3,65 +3,75 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Connexion - Stock Exchange</title>
+<title>SGXchange – Connexion</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
 <style>
   *, *::before, *::after { box-sizing: border-box; }
-  body { margin: 0; background: #F5F7FA; color: #0A1B33; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+  body { margin: 0; background: #0B1220; color: #EAF0FA; font-family: 'Inter', system-ui, sans-serif; }
+  a { text-decoration: none; }
   .page { min-height: 100vh; display: flex; flex-wrap: wrap; align-items: stretch; }
-  .brand-panel { flex: 1 1 480px; min-width: 0; background: #0A1B33; color: #FFFFFF; padding: 64px; display: flex; flex-direction: column; justify-content: space-between; gap: 64px; }
-  .brand { display: flex; align-items: center; gap: 16px; }
-  .brand svg { flex: none; }
-  .brand-name { font-size: 32px; line-height: 32px; font-weight: 600; letter-spacing: -0.02em; }
-  .brand-sub { margin-top: 6px; font-size: 11px; line-height: 11px; font-weight: 500; letter-spacing: 0.36em; color: #B8C4D6; }
-  .pitch { display: flex; flex-direction: column; gap: 16px; max-width: 520px; }
-  .pitch h2 { margin: 0; font-size: 40px; line-height: 48px; font-weight: 700; letter-spacing: -0.02em; }
-  .pitch p { margin: 0; font-size: 16px; line-height: 24px; color: #B8C4D6; }
-  .legal { font-size: 14px; line-height: 20px; color: #B8C4D6; }
+  .brand-panel { flex: 1 1 480px; min-width: 0; background: #070B14; border-right: 1px solid #25324B; padding: 64px; display: flex; flex-direction: column; justify-content: space-between; gap: 48px; }
+  .brand { display: flex; align-items: center; gap: 20px; }
+  .brand svg { display: block; flex: none; }
+  .brand-name { font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 44px; line-height: 1; letter-spacing: -0.035em; white-space: nowrap; }
+  .brand-name b { font-weight: 700; }
+  .brand-name span { font-weight: 400; }
+  .pitch { display: flex; flex-direction: column; gap: 20px; max-width: 520px; }
+  .eyebrow { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #9AA9C4; }
+  .pitch h2 { margin: 0; font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 48px; line-height: 52px; font-weight: 700; letter-spacing: -0.03em; }
+  .pitch p { margin: 0; font-size: 16px; line-height: 1.6; color: #9AA9C4; }
+  .legal { margin: 0; font-size: 12px; color: #9AA9C4; }
   main { flex: 1 1 480px; min-width: 0; padding: 64px 32px; display: flex; align-items: center; justify-content: center; }
-  .box { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 32px; }
-  .box header { display: flex; flex-direction: column; gap: 8px; }
-  .box h1 { margin: 0; font-size: 32px; line-height: 40px; font-weight: 600; letter-spacing: -0.01em; }
-  .box header p { margin: 0; font-size: 16px; line-height: 24px; color: #3A4A63; }
+  .card { width: 100%; max-width: 420px; background: #111A2D; border: 1px solid #25324B; border-radius: 20px; padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+  .card header { display: flex; flex-direction: column; gap: 8px; }
+  .card h1 { margin: 0; font-family: 'Space Grotesk', system-ui, sans-serif; font-size: 32px; line-height: 38px; font-weight: 700; letter-spacing: -0.025em; }
+  .card header p { margin: 0; font-size: 14px; line-height: 1.5; color: #9AA9C4; }
   form { display: flex; flex-direction: column; gap: 24px; }
   .field { display: flex; flex-direction: column; gap: 8px; }
-  label { font-size: 14px; line-height: 20px; font-weight: 600; }
-  input { width: 100%; height: 44px; padding: 0 12px; border: 1px solid #7B8AA0; border-radius: 4px; font: inherit; font-size: 16px; color: #0A1B33; background: #FFFFFF; }
-  input:focus { outline: none; border: 2px solid #1A56B0; padding: 0 11px; box-shadow: 0 0 0 3px #E6EEFB; }
-  .password { position: relative; }
+  label { font-size: 13px; font-weight: 500; color: #9AA9C4; }
+  .control { position: relative; }
+  .icon { position: absolute; left: 14px; top: 12px; color: #9AA9C4; display: flex; pointer-events: none; }
+  input { width: 100%; height: 44px; padding: 0 14px 0 44px; border-radius: 12px; background: #182338; color: #EAF0FA; font-family: 'Inter', system-ui, sans-serif; font-size: 14px; border: 1px solid #25324B; }
+  input::placeholder { color: #6F7F9C; }
+  input:focus { outline: none; border-color: #5B8CFF; box-shadow: 0 0 0 3px rgba(91, 140, 255, 0.25); }
   .password input { padding-right: 52px; }
-  .password input:focus { padding-right: 51px; }
-  .toggle { position: absolute; right: 0; top: 0; width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 0; background: transparent; color: #3A4A63; cursor: pointer; }
-  .toggle:focus-visible, .submit:focus-visible { outline: 2px solid #1A56B0; outline-offset: 2px; }
-  .submit { height: 48px; border: 0; border-radius: 8px; background: #1A56B0; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
-  .submit:hover { background: #154790; }
-  .notice { padding: 12px 16px; border-radius: 8px; font-size: 14px; line-height: 20px; }
-  .notice-error { background: #FDE8E8; color: #9B1C1C; }
-  .notice-info { background: #E6EEFB; color: #0A1B33; }
-  .help { padding-top: 24px; border-top: 1px solid #D9DFE8; font-size: 14px; line-height: 20px; color: #5B6B82; }
-  @media (max-width: 720px) { .brand-panel { padding: 32px; gap: 32px; } .pitch h2 { font-size: 32px; line-height: 40px; } }
+  .toggle { position: absolute; right: 2px; top: 0; width: 44px; height: 44px; border: 0; background: transparent; color: #9AA9C4; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+  .toggle:hover { color: #EAF0FA; }
+  .toggle:focus-visible, .submit:focus-visible { outline: 2px solid #5B8CFF; outline-offset: 2px; }
+  .submit { min-height: 44px; border: 0; border-radius: 12px; background: #5B8CFF; color: #07101F; font-family: 'Inter', system-ui, sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .submit:hover { background: #7AA2FF; }
+  .notice { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 20px; }
+  .notice-error { background: rgba(255, 107, 107, 0.12); border: 1px solid rgba(255, 107, 107, 0.4); color: #FF9B9B; }
+  .notice-info { background: rgba(91, 140, 255, 0.12); border: 1px solid rgba(91, 140, 255, 0.4); color: #EAF0FA; }
+  .footnote { margin: 0; font-size: 12px; line-height: 1.5; color: #9AA9C4; text-align: center; }
+  @media (max-width: 720px) {
+    .brand-panel { padding: 32px; gap: 32px; }
+    .brand-name { font-size: 36px; }
+    .pitch h2 { font-size: 32px; line-height: 40px; }
+  }
 </style>
 </head>
 <body>
 <div class="page">
   <section class="brand-panel">
     <div class="brand">
-      <svg width="56" height="56" viewBox="0 0 64 64" fill="none" role="img" aria-label="Symbole Stock Exchange"><path d="M44.9 16.7A20 20 0 1 0 52 32H34" stroke="#FFFFFF" stroke-width="8"></path><circle cx="53" cy="14" r="4.5" fill="#C99A2E"></circle></svg>
-      <div><div class="brand-name">Stock</div><div class="brand-sub">EXCHANGE</div></div>
+      <svg width="56" height="56" viewBox="0 0 64 64" role="img" aria-label="Symbole SGXchange" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"><path d="M13 12 L51 50" stroke="#5B8CFF"></path><path d="M37 50 H51 V36" stroke="#5B8CFF"></path><path d="M13 52 L51 14" stroke="#070B14" stroke-width="13"></path><path d="M13 52 L51 14" stroke="#3DDC97"></path><path d="M37 14 H51 V28" stroke="#3DDC97"></path></svg>
+      <span class="brand-name"><b>SGX</b><span>change</span></span>
     </div>
     <div class="pitch">
-      <h2>Investir avec clarté.</h2>
-      <p>Connectez-vous pour accéder à votre espace.</p>
+      <p class="eyebrow">Back-office · Accès réservé</p>
+      <h2>Piloter la place d’échange</h2>
+      <p>Gérez les compagnies cotées, le personnel et suivez l’évolution des cotations depuis un seul espace.</p>
     </div>
-    <div class="legal">Stock Exchange</div>
+    <p class="legal">Place d’échange fictive · application de démonstration</p>
   </section>
 
   <main>
-    <div class="box">
+    <div class="card">
       <header>
         <h1>Connexion</h1>
-        <p>Saisissez votre identifiant et votre mot de passe.</p>
+        <p>Saisissez vos identifiants de personnel.</p>
       </header>
 
       {{notice}}
@@ -70,21 +80,25 @@
         <input type="hidden" name="{{csrfName}}" value="{{csrfToken}}">
         <div class="field">
           <label for="username">Identifiant</label>
-          <input id="username" name="username" type="text" autocomplete="username" autofocus required>
+          <div class="control">
+            <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c.8-4 4-6 8-6s7.2 2 8 6"></path></svg></span>
+            <input id="username" name="username" type="text" placeholder="prenom.nom" autocomplete="username" autofocus required>
+          </div>
         </div>
         <div class="field">
           <label for="password">Mot de passe</label>
-          <div class="password">
-            <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <div class="control password">
+            <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg></span>
+            <input id="password" name="password" type="password" placeholder="••••••••••" autocomplete="current-password" required>
             <button type="button" class="toggle" id="toggle" aria-label="Afficher le mot de passe" aria-pressed="false">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10s3-5.5 8-5.5S18 10 18 10s-3 5.5-8 5.5S2 10 2 10z"></path><circle cx="10" cy="10" r="2.25"></circle></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg>
             </button>
           </div>
         </div>
         <button type="submit" class="submit">Se connecter</button>
       </form>
 
-      <div class="help">Un problème de connexion ? Contactez le support.</div>
+      <p class="footnote">Accès réservé au personnel autorisé. Les connexions sont journalisées.</p>
     </div>
   </main>
 </div>

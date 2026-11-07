@@ -1,13 +1,56 @@
-INSERT INTO department (id, name, description, status, created_at, updated_at)
-VALUES ('00000000-0000-4000-b000-000000000001', 'IT', 'IT Support', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- EuroTrade Bank organization: a general management with six departments reporting to it.
+-- Every manager belongs to the department they manage; the CEO manages the root department.
+INSERT INTO department (id, name, description, status, parent_id, created_at, updated_at)
+VALUES ('00000000-0000-4000-b000-000000000007', 'Direction générale', 'Executive management of EuroTrade Bank.', 'ACTIVE', NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-b000-000000000001', 'IT & Systems', 'Maintains the IT systems, the trading APIs, the stock exchange connections and the infrastructure security.', 'ACTIVE', '00000000-0000-4000-b000-000000000007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-b000-000000000002', 'Client Services', 'Client onboarding, investment account management and assistance requests.', 'ACTIVE', '00000000-0000-4000-b000-000000000007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-b000-000000000003', 'Trading Operations', 'Reception, validation and transmission of buy and sell orders to the stock exchange.', 'ACTIVE', '00000000-0000-4000-b000-000000000007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-b000-000000000004', 'Compliance & Risk', 'Client identity checks, suspicious transaction monitoring and trading risk control.', 'ACTIVE', '00000000-0000-4000-b000-000000000007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-b000-000000000005', 'Portfolio Services', 'Portfolio follow-up, client positions, dividends and investment performance.', 'ACTIVE', '00000000-0000-4000-b000-000000000007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-b000-000000000006', 'Finance & Settlement', 'Cash accounts, financial movements, brokerage fees and transaction settlement.', 'ACTIVE', '00000000-0000-4000-b000-000000000007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- user_id matches the administrator of the bank-user-service local data
+-- user_id matches the accounts of the bank-user-service local data
 INSERT INTO employee (id, first_name, last_name, email, user_id, status, job_title, department_id, created_at,
                       updated_at)
-VALUES ('00000000-0000-4000-c000-000000000001', 'Sébastien', 'Gérard', 'sebastien.gerard@local.test',
-        '72e91c48-68b6-4de7-9a40-21b9b6224001', 'ACTIVE', 'IT Manager', '00000000-0000-4000-b000-000000000001',
-        CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+VALUES ('00000000-0000-4000-c000-000000000002', 'Alexander', 'Müller', 'alexander.muller@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224202', 'ACTIVE', 'Chief Executive Officer', '00000000-0000-4000-b000-000000000007', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000003', 'Sophie', 'Laurent', 'sophie.laurent@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224203', 'ACTIVE', 'Head of Client Services', '00000000-0000-4000-b000-000000000002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000004', 'Claire', 'Moreau', 'claire.moreau@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224204', 'ACTIVE', 'Client Advisor', '00000000-0000-4000-b000-000000000002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000005', 'Pieter', 'Janssen', 'pieter.janssen@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224205', 'ACTIVE', 'Account Manager', '00000000-0000-4000-b000-000000000002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000006', 'Elena', 'García', 'elena.garcia@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224206', 'ACTIVE', 'Onboarding Specialist', '00000000-0000-4000-b000-000000000002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000007', 'Marco', 'Bianchi', 'marco.bianchi@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224207', 'ACTIVE', 'Customer Support Officer', '00000000-0000-4000-b000-000000000002', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000008', 'Lukas', 'Schneider', 'lukas.schneider@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224208', 'ACTIVE', 'Head of Trading Operations', '00000000-0000-4000-b000-000000000003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000009', 'Oliver', 'Fischer', 'oliver.fischer@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224209', 'ACTIVE', 'Senior Trading Officer', '00000000-0000-4000-b000-000000000003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000010', 'Antoine', 'Lefebvre', 'antoine.lefebvre@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224210', 'ACTIVE', 'Order Execution Specialist', '00000000-0000-4000-b000-000000000003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000011', 'Sofia', 'Almeida', 'sofia.almeida@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224211', 'ACTIVE', 'Trading Operations Analyst', '00000000-0000-4000-b000-000000000003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000012', 'Henrik', 'Nielsen', 'henrik.nielsen@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224212', 'ACTIVE', 'Market Operations Officer', '00000000-0000-4000-b000-000000000003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000013', 'Anna', 'Nowak', 'anna.nowak@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224213', 'ACTIVE', 'Trade Monitoring Specialist', '00000000-0000-4000-b000-000000000003', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000014', 'Isabella', 'Rossi', 'isabella.rossi@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224214', 'ACTIVE', 'Head of Compliance & Risk', '00000000-0000-4000-b000-000000000004', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000015', 'François', 'Lambert', 'francois.lambert@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224215', 'ACTIVE', 'Compliance Officer', '00000000-0000-4000-b000-000000000004', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000016', 'Marta', 'Fernández', 'marta.fernandez@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224216', 'ACTIVE', 'KYC Analyst', '00000000-0000-4000-b000-000000000004', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000017', 'Erik', 'Johansson', 'erik.johansson@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224217', 'ACTIVE', 'Risk Analyst', '00000000-0000-4000-b000-000000000004', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000018', 'Julia', 'Weber', 'julia.weber@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224218', 'ACTIVE', 'AML Specialist', '00000000-0000-4000-b000-000000000004', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000019', 'Thomas', 'Dubois', 'thomas.dubois@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224219', 'ACTIVE', 'Head of Portfolio Services', '00000000-0000-4000-b000-000000000005', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000020', 'Camille', 'Bernard', 'camille.bernard@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224220', 'ACTIVE', 'Portfolio Analyst', '00000000-0000-4000-b000-000000000005', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000021', 'Matteo', 'Ricci', 'matteo.ricci@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224221', 'ACTIVE', 'Securities Specialist', '00000000-0000-4000-b000-000000000005', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000022', 'Laura', 'Hoffmann', 'laura.hoffmann@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224222', 'ACTIVE', 'Corporate Actions Officer', '00000000-0000-4000-b000-000000000005', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000023', 'Niels', 'de Vries', 'niels.de.vries@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224223', 'ACTIVE', 'Investment Reporting Analyst', '00000000-0000-4000-b000-000000000005', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000024', 'Emma', 'van Dijk', 'emma.van.dijk@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224224', 'ACTIVE', 'Head of Finance & Settlement', '00000000-0000-4000-b000-000000000006', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000025', 'Lucas', 'Martin', 'lucas.martin@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224225', 'ACTIVE', 'Settlement Officer', '00000000-0000-4000-b000-000000000006', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000026', 'Giulia', 'Conti', 'giulia.conti@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224226', 'ACTIVE', 'Financial Operations Analyst', '00000000-0000-4000-b000-000000000006', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000027', 'Andreas', 'Bauer', 'andreas.bauer@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224227', 'ACTIVE', 'Reconciliation Specialist', '00000000-0000-4000-b000-000000000006', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000028', 'Elise', 'Peeters', 'elise.peeters@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224228', 'ACTIVE', 'Billing Officer', '00000000-0000-4000-b000-000000000006', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000029', 'Mateusz', 'Kowalski', 'mateusz.kowalski@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224229', 'ACTIVE', 'Head of IT & Systems', '00000000-0000-4000-b000-000000000001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000030', 'Felix', 'Wagner', 'felix.wagner@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224230', 'ACTIVE', 'Backend Engineer', '00000000-0000-4000-b000-000000000001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000031', 'Hugo', 'Petit', 'hugo.petit@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224231', 'ACTIVE', 'Frontend Engineer', '00000000-0000-4000-b000-000000000001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000032', 'Lars', 'Andersen', 'lars.andersen@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224232', 'ACTIVE', 'DevOps Engineer', '00000000-0000-4000-b000-000000000001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000033', 'Eva', 'Svensson', 'eva.svensson@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224233', 'ACTIVE', 'Security Engineer', '00000000-0000-4000-b000-000000000001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('00000000-0000-4000-c000-000000000034', 'Daniel', 'Novak', 'daniel.novak@gerardson.biz', '72e91c48-68b6-4de7-9a40-21b9b6224234', 'ACTIVE', 'Integration Engineer', '00000000-0000-4000-b000-000000000001', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
--- Sébastien manages the IT department (the department is inserted first, hence the update)
-UPDATE department SET manager_id = '00000000-0000-4000-c000-000000000001'
-WHERE id = '00000000-0000-4000-b000-000000000001';
+-- Managers (the departments are inserted first, hence the updates)
+UPDATE department SET manager_id = '00000000-0000-4000-c000-000000000029' WHERE id = '00000000-0000-4000-b000-000000000001';
+UPDATE department SET manager_id = '00000000-0000-4000-c000-000000000003' WHERE id = '00000000-0000-4000-b000-000000000002';
+UPDATE department SET manager_id = '00000000-0000-4000-c000-000000000008' WHERE id = '00000000-0000-4000-b000-000000000003';
+UPDATE department SET manager_id = '00000000-0000-4000-c000-000000000014' WHERE id = '00000000-0000-4000-b000-000000000004';
+UPDATE department SET manager_id = '00000000-0000-4000-c000-000000000019' WHERE id = '00000000-0000-4000-b000-000000000005';
+UPDATE department SET manager_id = '00000000-0000-4000-c000-000000000024' WHERE id = '00000000-0000-4000-b000-000000000006';
+UPDATE department SET manager_id = '00000000-0000-4000-c000-000000000002' WHERE id = '00000000-0000-4000-b000-000000000007';

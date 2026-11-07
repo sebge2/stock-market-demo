@@ -17,4 +17,4 @@ mvn spring-boot:run -Dspring-boot.run.arguments="--spring.profiles.active=local"
 
 The service registers with Eureka at `http://localhost:8761/eureka/` and is automatically discovered by the Bank Service Console.
 
-With the `local` profile, the authorization server seeds `sebastien.gerard` with the temporary password `changeit` and the `ADMIN` role.
+With the `local` profile, the authorization server seeds the bank staff accounts with the temporary password `changeit`; only `alexander.muller` (the CEO) has the `ADMIN` role.

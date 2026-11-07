@@ -74,11 +74,7 @@ VALUES ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-0000000
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000030'),
   ('00000000-0000-4000-9000-000000000001', '00000000-0000-4000-8000-000000000031');
 
--- Password: changeit (BCrypt)
-INSERT INTO user_account (id, username, full_name, email, password_hash)
-VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224001', 'sebastien.gerard', 'Sébastien Gérard', 'sebastien.gerard@local.test',
-        '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse');
-
+-- Password: changeit (BCrypt) for every account below
 -- Users referenced by the clients of the bank-client-service local data (same password, no role)
 INSERT INTO user_account (id, username, full_name, email, password_hash)
 VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224101', 'alice.martin', 'Alice Martin', 'alice.martin@local.test',
@@ -88,8 +84,45 @@ VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224101', 'alice.martin', 'Alice Martin', 
        ('72e91c48-68b6-4de7-9a40-21b9b6224103', 'claire.lambert', 'Claire Lambert', 'claire.lambert@local.test',
         '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse');
 
+-- Users of the Bank employees (bank-employee-service local data, same password, no role)
+INSERT INTO user_account (id, username, full_name, email, password_hash)
+VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224202', 'alexander.muller', 'Alexander Müller', 'alexander.muller@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224203', 'sophie.laurent', 'Sophie Laurent', 'sophie.laurent@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224204', 'claire.moreau', 'Claire Moreau', 'claire.moreau@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224205', 'pieter.janssen', 'Pieter Janssen', 'pieter.janssen@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224206', 'elena.garcia', 'Elena García', 'elena.garcia@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224207', 'marco.bianchi', 'Marco Bianchi', 'marco.bianchi@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224208', 'lukas.schneider', 'Lukas Schneider', 'lukas.schneider@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224209', 'oliver.fischer', 'Oliver Fischer', 'oliver.fischer@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224210', 'antoine.lefebvre', 'Antoine Lefebvre', 'antoine.lefebvre@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224211', 'sofia.almeida', 'Sofia Almeida', 'sofia.almeida@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224212', 'henrik.nielsen', 'Henrik Nielsen', 'henrik.nielsen@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224213', 'anna.nowak', 'Anna Nowak', 'anna.nowak@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224214', 'isabella.rossi', 'Isabella Rossi', 'isabella.rossi@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224215', 'francois.lambert', 'François Lambert', 'francois.lambert@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224216', 'marta.fernandez', 'Marta Fernández', 'marta.fernandez@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224217', 'erik.johansson', 'Erik Johansson', 'erik.johansson@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224218', 'julia.weber', 'Julia Weber', 'julia.weber@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224219', 'thomas.dubois', 'Thomas Dubois', 'thomas.dubois@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224220', 'camille.bernard', 'Camille Bernard', 'camille.bernard@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224221', 'matteo.ricci', 'Matteo Ricci', 'matteo.ricci@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224222', 'laura.hoffmann', 'Laura Hoffmann', 'laura.hoffmann@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224223', 'niels.de.vries', 'Niels de Vries', 'niels.de.vries@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224224', 'emma.van.dijk', 'Emma van Dijk', 'emma.van.dijk@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224225', 'lucas.martin', 'Lucas Martin', 'lucas.martin@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224226', 'giulia.conti', 'Giulia Conti', 'giulia.conti@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224227', 'andreas.bauer', 'Andreas Bauer', 'andreas.bauer@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224228', 'elise.peeters', 'Elise Peeters', 'elise.peeters@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224229', 'mateusz.kowalski', 'Mateusz Kowalski', 'mateusz.kowalski@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224230', 'felix.wagner', 'Felix Wagner', 'felix.wagner@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224231', 'hugo.petit', 'Hugo Petit', 'hugo.petit@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224232', 'lars.andersen', 'Lars Andersen', 'lars.andersen@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224233', 'eva.svensson', 'Eva Svensson', 'eva.svensson@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse'),
+       ('72e91c48-68b6-4de7-9a40-21b9b6224234', 'daniel.novak', 'Daniel Novak', 'daniel.novak@gerardson.biz', '$2a$10$CclDGOA7HDXSN6jsyNvyiu.dWqkMEAUjF.jZKDvvlle8GxXjipfse');
+
+-- Alexander Müller (CEO) is the only administrator
 INSERT INTO user_account_role (user_id, role_id)
-VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224001', '00000000-0000-4000-9000-000000000001');
+VALUES ('72e91c48-68b6-4de7-9a40-21b9b6224202', '00000000-0000-4000-9000-000000000001');
 
 -- OAuth2 clients (public clients using the authorization code flow with PKCE)
 INSERT INTO oauth_client (id, client_id, client_secret, authentication_method, require_proof_key,

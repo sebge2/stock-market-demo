@@ -28,8 +28,8 @@ import org.springframework.web.server.ResponseStatusException;
 @Transactional
 class DepartmentHierarchyTest {
 
-  /** Manager of the IT department in the local data. */
-  private static final UUID MANAGER_ID = UUID.fromString("00000000-0000-4000-c000-000000000001");
+  /** Manager of the IT & Systems department in the local data. */
+  private static final UUID MANAGER_ID = UUID.fromString("00000000-0000-4000-c000-000000000029");
 
   /** Service under test. */
   @Autowired
@@ -133,7 +133,7 @@ class DepartmentHierarchyTest {
     final EmployeeRequestDto move = new EmployeeRequestDto();
     move.setFirstName("S");
     move.setLastName("G");
-    move.setEmail("sebastien.gerard@local.test");
+    move.setEmail("mateusz.kowalski@gerardson.biz");
     move.setStatus(EmployeeStatus.ACTIVE);
     move.setDepartmentId(IT_ID);
     assertThatThrownBy(() -> employeeService.update(MANAGER_ID, move)).isInstanceOf(ResponseStatusException.class);

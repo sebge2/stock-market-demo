@@ -1,3 +1,4 @@
+import { useCan } from '../auth/permissions';
 import { type FormEvent, useEffect, useMemo, useState } from 'react';
 import { ApiError } from '../employees/employees.api';
 import { formatDate } from '../employees/employees.data';
@@ -131,6 +132,7 @@ function PermissionForm({ onSubmit, onCancel }: { onSubmit: (c: PermissionChange
 
 /** Roles and permissions screen: roles list with the permissions of the selected role, and permissions list. */
 export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
+  const can = useCan();
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -140,7 +142,7 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
   const [toAdd, setToAdd] = useState('');
 
   useEffect(() => {
-    Promise.all([fetchRoles(), fetchPermissions()])
+    Promise.all([can('ROLE_LIST') ? fetchRoles() : Promise.resolve([]), can('PERMISSION_LIST') ? fetchPermissions() : Promise.resolve([])])
       .then(([loadedRoles, loadedPermissions]) => {
         setRoles(loadedRoles);
         setPermissions(loadedPermissions);
@@ -186,12 +188,14 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
           <h1>Rôles et permissions</h1>
         </div>
         {section === 'roles' ? (
-          <button type="button" className="btn-primary" disabled={form !== null} onClick={() => setForm('new-role')}>
-            <PlusIcon />
-            Nouveau rôle
-          </button>
+          can('ROLE_CREATE') && (
+            <button type="button" className="btn-primary" disabled={form !== null} onClick={() => setForm('new-role')}>
+              <PlusIcon />
+              Nouveau rôle
+            </button>
+          )
         ) : (
-          <button type="button" className="btn-primary" disabled={form !== null} onClick={() => setForm('new-permission')}>
+          can('PERMISSION_CREATE') && <button type="button" className="btn-primary" disabled={form !== null} onClick={() => setForm('new-permission')}>
             <PlusIcon />
             Nouvelle permission
           </button>
@@ -201,12 +205,16 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
       {error && <div role="alert" className="alert">{error}</div>}
 
       <div className="tabs tabs-flat">
-        <a href="#roles" aria-current={section === 'roles' ? 'page' : undefined} className={`tab${section === 'roles' ? ' tab-active' : ''}`}>
-          Rôles<span className="tab-count">{roles.length}</span>
-        </a>
-        <a href="#roles/permissions" aria-current={section === 'permissions' ? 'page' : undefined} className={`tab${section === 'permissions' ? ' tab-active' : ''}`}>
-          Permissions<span className="tab-count">{permissions.length}</span>
-        </a>
+        {can('ROLE_LIST') && (
+          <a href="#roles" aria-current={section === 'roles' ? 'page' : undefined} className={`tab${section === 'roles' ? ' tab-active' : ''}`}>
+            Rôles<span className="tab-count">{roles.length}</span>
+          </a>
+        )}
+        {can('PERMISSION_LIST') && (
+          <a href="#roles/permissions" aria-current={section === 'permissions' ? 'page' : undefined} className={`tab${section === 'permissions' ? ' tab-active' : ''}`}>
+            Permissions<span className="tab-count">{permissions.length}</span>
+          </a>
+        )}
       </div>
 
       {form === 'new-role' && (
@@ -294,8 +302,8 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
                       <span className={`badge ${selected.status === 'Actif' ? 'badge-active' : 'badge-inactive'}`}>{selected.status}</span>
                     </div>
                     <div className="form-actions">
-                      <button type="button" className="btn-outline" disabled={form !== null} onClick={() => setForm('edit-role')}>Modifier le rôle</button>
-                      <button
+                      {can('ROLE_UPDATE') && <button type="button" className="btn-outline" disabled={form !== null} onClick={() => setForm('edit-role')}>Modifier le rôle</button>}
+                      {can('ROLE_DELETE') && <button
                         type="button"
                         className="btn-secondary"
                         onClick={() => {
@@ -310,7 +318,7 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
                         }}
                       >
                         Supprimer
-                      </button>
+                      </button>}
                     </div>
                   </div>
                   <div className="field-grid">
@@ -324,7 +332,7 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
 
               <div className="page-header">
                 <h3 className="section-title">Permissions associées <span className="mono">({granted.length})</span></h3>
-                <div className="form-actions">
+                {can('ROLE_UPDATE') && <div className="form-actions">
                   <select aria-label="Permission à associer" value={toAdd} onChange={(e) => setToAdd(e.target.value)}>
                     <option value="">Choisir une permission…</option>
                     {available.map((p) => (
@@ -335,7 +343,7 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
                     <PlusIcon />
                     Associer une permission
                   </button>
-                </div>
+                </div>}
               </div>
 
               <div className="card">
@@ -355,9 +363,9 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
                         <div className="cell-right mono">{shortDate(p.createdAt)}</div>
                         <div className="cell-right mono">{shortDate(p.updatedAt)}</div>
                         <div className="cell-right">
-                          <button type="button" className="btn-secondary" aria-label={`Retirer ${p.code}`} onClick={() => setRolePermissions(selected.permissionIds.filter((id) => id !== p.id))}>
+                          {can('ROLE_UPDATE') && <button type="button" className="btn-secondary" aria-label={`Retirer ${p.code}`} onClick={() => setRolePermissions(selected.permissionIds.filter((id) => id !== p.id))}>
                             Retirer
-                          </button>
+                          </button>}
                         </div>
                       </div>
                     ))}
@@ -386,7 +394,7 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
                   <div className="cell-right mono">{shortDate(p.createdAt)}</div>
                   <div className="cell-right mono">{shortDate(p.updatedAt)}</div>
                   <div className="cell-right">
-                    <button
+                    {can('PERMISSION_DELETE') && <button
                       type="button"
                       className="btn-secondary"
                       aria-label={`Supprimer ${p.code}`}
@@ -401,7 +409,7 @@ export function RolesPage({ section, onUnauthorized }: RolesPageProps) {
                       }}
                     >
                       Supprimer
-                    </button>
+                    </button>}
                   </div>
                 </div>
               ))}

@@ -1,3 +1,4 @@
+import { useCan } from '../auth/permissions';
 import { useMemo, useState } from 'react';
 import type { Department, NewDepartment } from '../employees/employees.api';
 import { type Employee, STATUS_CLASS, formatDate, initials } from '../employees/employees.data';
@@ -19,6 +20,7 @@ interface DepartmentDetailPageProps {
 
 /** Department sheet: identity header, headcount and list of the department employees. */
 export function DepartmentDetailPage({ department, departments, employees, loading, onUpdate }: DepartmentDetailPageProps) {
+  const can = useCan();
   const [editing, setEditing] = useState(false);
   const members = useMemo(
     () => employees.filter((e) => e.departmentId === department?.id),
@@ -79,9 +81,11 @@ export function DepartmentDetailPage({ department, departments, employees, loadi
             </span>
           </div>
         </div>
-        <button type="button" className="btn-outline" disabled={editing} onClick={() => setEditing(true)}>
-          Modifier
-        </button>
+        {can('DEPARTMENT_UPDATE') && (
+          <button type="button" className="btn-outline" disabled={editing} onClick={() => setEditing(true)}>
+            Modifier
+          </button>
+        )}
       </section>
 
       {editing && (

@@ -3,6 +3,8 @@ package be.sgerard.demo.employee.config;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import be.sgerard.demo.employee.model.Employee;
+import be.sgerard.demo.employee.model.Department;
+import be.sgerard.demo.employee.repository.DepartmentRepository;
 import be.sgerard.demo.employee.repository.EmployeeRepository;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
@@ -27,20 +29,40 @@ class LocalDataSqlTest {
 
   /**
    *
-   * Verifies the local employee is linked to the authorization-server administrator.
+   * Verifies the CEO is linked to the authorization-server administrator account.
    *
    */
   @Test
-  void loadsSebastienGerardWithUserReference() {
-    Employee employee = employeeRepository.findByEmail("sebastien.gerard@local.test").orElseThrow();
+  void loadsTheCeoWithUserReference() {
+    Employee employee = employeeRepository.findByEmail("alexander.muller@gerardson.biz").orElseThrow();
 
-    assertThat(employee.getFirstName()).isEqualTo("Sébastien");
-    assertThat(employee.getLastName()).isEqualTo("Gérard");
-    assertThat(employee.getUserId())
-        .isEqualTo(UUID.fromString("72e91c48-68b6-4de7-9a40-21b9b6224001"));
-    assertThat(employee.getDepartment().getName()).isEqualTo("IT");
-    assertThat(employee.getDepartment().getDescription()).isEqualTo("IT Support");
-    assertThat(employee.getJobTitle()).isEqualTo("IT Manager");
+    assertThat(employee.getFirstName()).isEqualTo("Alexander");
+    assertThat(employee.getLastName()).isEqualTo("Müller");
+    assertThat(employee.getUserId()).isEqualTo(UUID.fromString("72e91c48-68b6-4de7-9a40-21b9b6224202"));
+    assertThat(employee.getDepartment().getName()).isEqualTo("Direction générale");
+    assertThat(employee.getJobTitle()).isEqualTo("Chief Executive Officer");
     assertThat(employee.getDepartment().getManager().getId()).isEqualTo(employee.getId());
+  }
+
+  /** Department repository. */
+  @Autowired
+  private DepartmentRepository departmentRepository;
+
+  /**
+   *
+   * Verifies the EuroTrade Bank organization: a root department with six sub-departments, 33 people in total,
+   * every manager belonging to the department they manage.
+   *
+   */
+  @Test
+  void loadsTheEuroTradeOrganization() {
+    final Department root = departmentRepository.findByName("Direction générale").orElseThrow();
+
+    assertThat(root.getParent()).isNull();
+    assertThat(root.getManager().getFirstName()).isEqualTo("Alexander");
+    assertThat(departmentRepository.findAll()).hasSize(7);
+    assertThat(departmentRepository.findAll()).filteredOn(d -> d != root).allSatisfy(d -> assertThat(d.getParent()).isSameAs(root));
+    assertThat(departmentRepository.findAll()).allSatisfy(d -> assertThat(d.getManager().getDepartment()).isSameAs(d));
+    assertThat(employeeRepository.count()).isEqualTo(33);
   }
 }

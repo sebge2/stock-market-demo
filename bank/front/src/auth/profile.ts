@@ -10,6 +10,8 @@ export interface Profile {
   email: string;
   /** Avatar (PNG encoded in base64), if any. */
   avatar: string | null;
+  /** Codes of the permissions granted to the user. */
+  permissions: string[];
 }
 
 /** Loads the profile of the connected user. */

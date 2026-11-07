@@ -170,7 +170,7 @@ class UserControllerTest {
     mockMvc.perform(post("/users").with(authority("USER_CREATE")).with(csrf()).contentType("application/json")
         .content("{\"username\":\"nopass\",\"fullName\":\"Full nopass\",\"email\":\"nopass@local.test\"}")).andExpect(status().isBadRequest());
     mockMvc.perform(post("/users").with(authority("USER_CREATE")).with(csrf()).contentType("application/json")
-        .content("{\"username\":\"sebastien.gerard\",\"fullName\":\"Full sebastien.gerard\",\"email\":\"other@local.test\",\"password\":\"password1\"}"))
+        .content("{\"username\":\"alexander.muller\",\"fullName\":\"Full alexander.muller\",\"email\":\"other@local.test\",\"password\":\"password1\"}"))
         .andExpect(status().isConflict());
   }
 

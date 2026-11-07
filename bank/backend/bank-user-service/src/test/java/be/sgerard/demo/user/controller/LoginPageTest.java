@@ -74,7 +74,7 @@ class LoginPageTest {
    */
   @Test
   void redirectsToLoginOnBadCredentials() throws Exception {
-    mockMvc.perform(post("/login").with(csrf()).param("username", "sebastien.gerard").param("password", "wrong"))
+    mockMvc.perform(post("/login").with(csrf()).param("username", "alexander.muller").param("password", "wrong"))
         .andExpect(status().is3xxRedirection()).andExpect(redirectedUrl("/login?error"));
   }
 }

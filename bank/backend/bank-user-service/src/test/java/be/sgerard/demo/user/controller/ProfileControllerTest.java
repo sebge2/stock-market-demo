@@ -34,11 +34,11 @@ class ProfileControllerTest {
    */
   @Test
   void returnsCurrentUser() throws Exception {
-    mockMvc.perform(get("/profile").with(jwt().jwt(token -> token.subject("sebastien.gerard"))))
+    mockMvc.perform(get("/profile").with(jwt().jwt(token -> token.subject("alexander.muller"))))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.username").value("sebastien.gerard"))
-        .andExpect(jsonPath("$.fullName").value("Sébastien Gérard"))
-        .andExpect(jsonPath("$.email").value("sebastien.gerard@local.test"))
+        .andExpect(jsonPath("$.username").value("alexander.muller"))
+        .andExpect(jsonPath("$.fullName").value("Alexander Müller"))
+        .andExpect(jsonPath("$.email").value("alexander.muller@gerardson.biz"))
         .andExpect(jsonPath("$.permissions", hasItems("ADMIN", "ROLE_LIST", "EMPLOYEE_LIST")))
         .andExpect(jsonPath("$.permissions[?(@ =~ /[0-9a-f]{8}-.*/)]").isEmpty())
         .andExpect(jsonPath("$.avatar").value(org.hamcrest.Matchers.nullValue()))

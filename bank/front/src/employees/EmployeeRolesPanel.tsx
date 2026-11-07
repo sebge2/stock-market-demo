@@ -1,3 +1,4 @@
+import { useCan } from '../auth/permissions';
 import { useEffect, useState } from 'react';
 import { type Role, describeError, fetchRoles } from '../roles/roles.api';
 import { fetchUserRoleIds, saveUserRoleIds } from '../users/users.api';
@@ -10,6 +11,7 @@ interface EmployeeRolesPanelProps {
 
 /** Panel listing the roles granted to an employee, with the possibility to grant or revoke roles. */
 export function EmployeeRolesPanel({ userId }: EmployeeRolesPanelProps) {
+  const can = useCan();
   const [roles, setRoles] = useState<Role[]>([]);
   const [roleIds, setRoleIds] = useState<string[]>([]);
   const [toAdd, setToAdd] = useState('');
@@ -49,6 +51,7 @@ export function EmployeeRolesPanel({ userId }: EmployeeRolesPanelProps) {
     <section aria-labelledby="t-roles" className="panel panel-stack" aria-busy={loading}>
       <div className="page-header">
         <h2 id="t-roles">Rôles <span className="mono">({granted.length})</span></h2>
+        {can('USER_UPDATE') && (
         <div className="form-actions">
           <select aria-label="Rôle à associer" value={toAdd} disabled={saving || loading} onChange={(e) => setToAdd(e.target.value)}>
             <option value="">Choisir un rôle…</option>
@@ -60,6 +63,7 @@ export function EmployeeRolesPanel({ userId }: EmployeeRolesPanelProps) {
             Associer un rôle
           </button>
         </div>
+        )}
       </div>
       {error && <div role="alert" className="alert">{error}</div>}
       <div className="table-scroll">
@@ -80,9 +84,9 @@ export function EmployeeRolesPanel({ userId }: EmployeeRolesPanelProps) {
                 <span className={`badge ${r.status === 'Actif' ? 'badge-active' : 'badge-inactive'}`}>{r.status}</span>
               </div>
               <div className="cell-right">
-                <button type="button" className="btn-secondary" disabled={saving} aria-label={`Retirer ${r.name}`} onClick={() => save(roleIds.filter((id) => id !== r.id))}>
+                {can('USER_UPDATE') && <button type="button" className="btn-secondary" disabled={saving} aria-label={`Retirer ${r.name}`} onClick={() => save(roleIds.filter((id) => id !== r.id))}>
                   Retirer
-                </button>
+                </button>}
               </div>
             </div>
           ))}

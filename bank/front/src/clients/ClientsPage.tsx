@@ -1,3 +1,4 @@
+import { useCan } from '../auth/permissions';
 import { useMemo, useState } from 'react';
 import { formatDate, initials } from '../employees/employees.data';
 import type { Client, ClientStatus, ClientType } from './clients.api';
@@ -37,6 +38,7 @@ function Chevron() {
 
 /** Clients screen: filterable and paginated list of clients. */
 export function ClientsPage({ clients, loading }: ClientsPageProps) {
+  const can = useCan();
   const [tab, setTab] = useState<ClientType | null>(null);
   const [query, setQuery] = useState('');
   const [status, setStatus] = useState<(typeof STATUSES)[number]>('Tous');
@@ -64,12 +66,14 @@ export function ClientsPage({ clients, loading }: ClientsPageProps) {
           <div className="eyebrow">Clientèle</div>
           <h1>Clients</h1>
         </div>
-        <a href="#client-new" className="btn-primary">
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
-            <path d="M10 4v12M4 10h12" />
-          </svg>
-          Nouveau client
-        </a>
+        {can('CLIENT_CREATE') && (
+          <a href="#client-new" className="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
+              <path d="M10 4v12M4 10h12" />
+            </svg>
+            Nouveau client
+          </a>
+        )}
       </header>
 
       <section aria-label="Liste des clients" className="card" aria-busy={loading}>

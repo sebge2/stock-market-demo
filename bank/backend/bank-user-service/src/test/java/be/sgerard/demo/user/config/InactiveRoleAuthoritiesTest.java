@@ -37,13 +37,13 @@ class InactiveRoleAuthoritiesTest {
    */
   @Test
   void ignoresInactiveRoles() {
-    assertThat(userDetailsService.loadUserByUsername("sebastien.gerard").getAuthorities()).extracting(GrantedAuthority::getAuthority)
+    assertThat(userDetailsService.loadUserByUsername("alexander.muller").getAuthorities()).extracting(GrantedAuthority::getAuthority)
         .contains("ROLE_ADMIN", "USER_LIST");
 
     roleRepository.findByName("ADMIN").orElseThrow().setStatus(RoleStatus.INACTIVE);
     roleRepository.flush();
 
-    assertThat(userDetailsService.loadUserByUsername("sebastien.gerard").getAuthorities()).extracting(GrantedAuthority::getAuthority)
+    assertThat(userDetailsService.loadUserByUsername("alexander.muller").getAuthorities()).extracting(GrantedAuthority::getAuthority)
         .doesNotContain("ROLE_ADMIN", "USER_LIST");
   }
 }

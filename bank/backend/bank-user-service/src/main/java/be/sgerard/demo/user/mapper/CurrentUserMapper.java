@@ -1,6 +1,7 @@
 package be.sgerard.demo.user.mapper;
 
 import be.sgerard.demo.user.model.Permission;
+import be.sgerard.demo.user.model.RoleStatus;
 import be.sgerard.demo.user.model.UserAccount;
 import be.sgerard.demo.user.model.dto.CurrentUserDto;
 import java.util.Comparator;
@@ -29,7 +30,7 @@ public class CurrentUserMapper {
     dto.setFullName(account.getFullName());
     dto.setEmail(account.getEmail());
     dto.setAvatar(account.getAvatar());
-    dto.setPermissions(account.getRoles().stream().flatMap(role -> role.getPermissions().stream())
+    dto.setPermissions(account.getRoles().stream().filter(role -> role.getStatus() == RoleStatus.ACTIVE).flatMap(role -> role.getPermissions().stream())
         .map(Permission::getCode).sorted(Comparator.naturalOrder())
         .collect(Collectors.toCollection(LinkedHashSet::new)));
     return dto;

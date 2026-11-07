@@ -1,3 +1,4 @@
+import { useCan } from '../auth/permissions';
 import { useEffect, useState } from 'react';
 import { formatDate, initials } from '../employees/employees.data';
 import { AvatarEditor } from '../users/AvatarEditor';
@@ -32,6 +33,7 @@ function Field({ label, children, mono }: { label: string; children: React.React
 
 /** Client sheet: identity header, information tab and (empty for now) portfolio tab. */
 export function ClientDetailPage({ client, tab, loading, onUpdate }: ClientDetailPageProps) {
+  const can = useCan();
   const [editing, setEditing] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [editingAvatar, setEditingAvatar] = useState(false);
@@ -75,7 +77,7 @@ export function ClientDetailPage({ client, tab, loading, onUpdate }: ClientDetai
           <div className={`profile-avatar${company ? ' profile-avatar-square' : ''}`}>
             {avatar ? <img className="avatar-img" src={`data:image/png;base64,${avatar}`} alt="" /> : initials(client.name)}
           </div>
-          {editing && userId && (
+          {editing && userId && can('USER_LIST') && can('USER_UPDATE') && (
             <button type="button" className="avatar-edit" aria-label="Modifier la photo" onClick={() => setEditingAvatar(true)}>
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M13.5 3.5l3 3L7 16H4v-3z" />
@@ -95,9 +97,11 @@ export function ClientDetailPage({ client, tab, loading, onUpdate }: ClientDetai
             </span>
           </div>
         </div>
-        <button type="button" className="btn-primary" disabled={editing} onClick={() => setEditing(true)}>
-          Modifier la fiche
-        </button>
+        {can('CLIENT_UPDATE') && (
+          <button type="button" className="btn-primary" disabled={editing} onClick={() => setEditing(true)}>
+            Modifier la fiche
+          </button>
+        )}
       </section>
 
       {editing && (
@@ -125,9 +129,11 @@ export function ClientDetailPage({ client, tab, loading, onUpdate }: ClientDetai
         <a href={base} aria-current={tab === 'info' ? 'page' : undefined} className={`tab tab-short${tab === 'info' ? ' tab-active' : ''}`}>
           Informations
         </a>
-        <a href={`${base}/portfolio`} aria-current={tab === 'portfolio' ? 'page' : undefined} className={`tab tab-short${tab === 'portfolio' ? ' tab-active' : ''}`}>
-          Portefeuille
-        </a>
+        {can('PORTFOLIO_LIST') && (
+          <a href={`${base}/portfolio`} aria-current={tab === 'portfolio' ? 'page' : undefined} className={`tab tab-short${tab === 'portfolio' ? ' tab-active' : ''}`}>
+            Portefeuille
+          </a>
+        )}
       </div>
 
       {tab === 'info' && (
@@ -147,7 +153,7 @@ export function ClientDetailPage({ client, tab, loading, onUpdate }: ClientDetai
         </div>
       )}
 
-      {tab === 'portfolio' && <section aria-label="Portefeuille" />}
+      {tab === 'portfolio' && can('PORTFOLIO_LIST') && <section aria-label="Portefeuille" />}
     </>
   );
 }

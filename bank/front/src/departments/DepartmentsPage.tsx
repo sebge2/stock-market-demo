@@ -1,3 +1,4 @@
+import { useCan } from '../auth/permissions';
 import { useMemo, useState } from 'react';
 import type { Department, NewDepartment } from '../employees/employees.api';
 import type { Employee } from '../employees/employees.data';
@@ -35,6 +36,7 @@ function Chevron() {
 
 /** Departments screen: summary figures and list of departments with manager and headcount. */
 export function DepartmentsPage({ departments, employees, loading, onCreate }: DepartmentsPageProps) {
+  const can = useCan();
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<(typeof SORTS)[number]>('Effectif');
   const [status, setStatus] = useState<(typeof STATUSES)[number]>('Tous');
@@ -69,12 +71,14 @@ export function DepartmentsPage({ departments, employees, loading, onCreate }: D
           <div className="eyebrow">Organisation</div>
           <h1>Départements</h1>
         </div>
-        <button type="button" className="btn-primary" disabled={creating} onClick={() => setCreating(true)}>
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
-            <path d="M10 4v12M4 10h12" />
-          </svg>
-          Nouveau département
-        </button>
+        {can('DEPARTMENT_CREATE') && (
+          <button type="button" className="btn-primary" disabled={creating} onClick={() => setCreating(true)}>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
+              <path d="M10 4v12M4 10h12" />
+            </svg>
+            Nouveau département
+          </button>
+        )}
       </header>
 
       {creating && (

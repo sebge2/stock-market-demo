@@ -1,3 +1,4 @@
+import { useCan } from '../auth/permissions';
 import { useEffect, useState } from 'react';
 import { AvatarEditor } from '../users/AvatarEditor';
 import { fetchAvatar } from '../users/users.api';
@@ -73,6 +74,7 @@ function hierarchicalManagerId(employeeId: string, department: Department | unde
 
 /** Employee sheet: identity header, professional information and history. */
 export function EmployeeDetailPage({ employee, departments, employees, loading, onUpdate }: EmployeeDetailPageProps) {
+  const can = useCan();
   const [editing, setEditing] = useState(false);
   const [avatar, setAvatar] = useState<string | null>(null);
   const [editingAvatar, setEditingAvatar] = useState(false);
@@ -115,7 +117,7 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
           <div className="profile-avatar">
             {avatar ? <img className="avatar-img" src={`data:image/png;base64,${avatar}`} alt="" /> : initials(employee.name)}
           </div>
-          {editing && userId && (
+          {editing && userId && can('USER_LIST') && can('USER_UPDATE') && (
             <button type="button" className="avatar-edit" aria-label="Modifier la photo" onClick={() => setEditingAvatar(true)}>
               <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M13.5 3.5l3 3L7 16H4v-3z" />
@@ -138,9 +140,11 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
             </span>
           </div>
         </div>
-        <button type="button" className="btn-primary" disabled={editing} onClick={() => setEditing(true)}>
-          Modifier la fiche
-        </button>
+        {can('EMPLOYEE_UPDATE') && (
+          <button type="button" className="btn-primary" disabled={editing} onClick={() => setEditing(true)}>
+            Modifier la fiche
+          </button>
+        )}
       </section>
 
       {editingAvatar && userId && (
@@ -180,7 +184,7 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
         </button>
       </div>
 
-      {userId && <EmployeeRolesPanel userId={userId} />}
+      {userId && can('USER_LIST') && can('ROLE_LIST') && <EmployeeRolesPanel userId={userId} />}
 
       <div className="detail-columns">
         <section aria-labelledby="t-info" className="panel panel-stack">

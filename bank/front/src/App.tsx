@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './auth/auth';
+import { PermissionsProvider } from './auth/permissions';
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { EmployeeDetailPage } from './employees/EmployeeDetailPage';
 import { EmployeeForm } from './employees/EmployeeForm';
@@ -99,16 +100,19 @@ export function App() {
     fetchProfile().then(setProfile).catch(() => setProfile(null));
   }, [authenticated]);
 
+  const permissions = useMemo(() => new Set(profile?.permissions ?? []), [profile]);
+  const can = (permission: string) => permissions.has(permission);
+
   useEffect(() => {
-    if (!authenticated) {
+    if (!authenticated || !profile) {
       return;
     }
     setLoading(true);
     setError(null);
-    fetchDepartments()
+    (can('DEPARTMENT_LIST') ? fetchDepartments() : Promise.resolve([] as Department[]))
       .then(async (loaded) => {
         setDepartmentList(loaded);
-        setEmployees(await fetchEmployees(loaded));
+        setEmployees(can('EMPLOYEE_LIST') ? await fetchEmployees(loaded) : []);
       })
       .catch((e: Error) => {
         if (e instanceof ApiError && e.status === 401) {
@@ -118,13 +122,13 @@ export function App() {
         setError(e instanceof ApiError && e.status === 403 ? "Vous n'avez pas la permission de consulter les employés." : e.message);
       })
       .finally(() => setLoading(false));
-  }, [authenticated]);
+  }, [authenticated, profile]);
 
   const onClients = route === '#clients' || route.startsWith('#client-');
   const [clientRoute, clientSection] = route.startsWith('#client-') ? route.slice('#client-'.length).split('/') : [null, null];
 
   useEffect(() => {
-    if (!authenticated || !onClients) {
+    if (!authenticated || !profile || !onClients || !permissions.has('CLIENT_LIST')) {
       return;
     }
     setClientsLoading(true);
@@ -139,7 +143,7 @@ export function App() {
         setClientsError(e instanceof ApiError && e.status === 403 ? "Vous n'avez pas la permission de consulter les clients." : e.message);
       })
       .finally(() => setClientsLoading(false));
-  }, [authenticated, onClients]);
+  }, [authenticated, profile, onClients, permissions]);
 
   const departments = useMemo(
     () => ['Tous', ...Array.from(new Set(employees.map((e) => e.department))).sort()],
@@ -178,6 +182,31 @@ export function App() {
   const departmentId = route.startsWith('#department-') ? route.slice('#department-'.length) : null;
   const detailId = route.startsWith('#employee-') ? route.slice('#employee-'.length) : null;
 
+  const sections = [
+    { allowed: can('EMPLOYEE_LIST') && can('DEPARTMENT_LIST'), hash: '#dashboard' },
+    { allowed: can('EMPLOYEE_LIST'), hash: '#employees' },
+    { allowed: can('DEPARTMENT_LIST'), hash: '#departments' },
+    { allowed: can('CLIENT_LIST'), hash: '#clients' },
+    { allowed: can('ROLE_LIST') || can('PERMISSION_LIST'), hash: '#roles' },
+  ];
+  const sectionAllowed = onRoles
+    ? can('ROLE_LIST') || can('PERMISSION_LIST')
+    : onClients
+      ? can('CLIENT_LIST') && (clientRoute !== 'new' || can('CLIENT_CREATE'))
+      : onDepartments
+        ? can('DEPARTMENT_LIST')
+        : onDashboard
+          ? can('EMPLOYEE_LIST') && can('DEPARTMENT_LIST')
+          : can('EMPLOYEE_LIST');
+  const blocked = profile !== null && !sectionAllowed;
+  const firstAllowed = sections.find((section) => section.allowed)?.hash;
+
+  useEffect(() => {
+    if (blocked && route === '' && firstAllowed) {
+      window.location.hash = firstAllowed;
+    }
+  }, [blocked, route, firstAllowed]);
+
   if (!authenticated) {
     return (
       <div className="login">
@@ -194,6 +223,7 @@ export function App() {
   }
 
   return (
+    <PermissionsProvider permissions={permissions}>
     <div className="layout">
       <aside className="sidebar">
         <div className="brand">
@@ -208,6 +238,7 @@ export function App() {
         </div>
 
         <nav aria-label="Navigation principale" className="nav">
+          {(can('EMPLOYEE_LIST') && can('DEPARTMENT_LIST')) && (
           <a href="#dashboard" aria-current={onDashboard ? 'page' : undefined} className={`nav-link${onDashboard ? ' nav-link-active' : ''}`}>
             <NavIcon>
               <rect x="3" y="3" width="6" height="6" rx="1.5" />
@@ -217,6 +248,8 @@ export function App() {
             </NavIcon>
             Tableau de bord
           </a>
+          )}
+          {(can('EMPLOYEE_LIST')) && (
           <a href="#employees" aria-current={onEmployees ? 'page' : undefined} className={`nav-link${onEmployees ? ' nav-link-active' : ''}`}>
             <NavIcon>
               <circle cx="8" cy="7" r="3" />
@@ -226,6 +259,8 @@ export function App() {
             </NavIcon>
             Employés
           </a>
+          )}
+          {(can('DEPARTMENT_LIST')) && (
           <a href="#departments" aria-current={onDepartments ? 'page' : undefined} className={`nav-link${onDepartments ? ' nav-link-active' : ''}`}>
             <NavIcon>
               <path d="M4 17V4.5A1.5 1.5 0 0 1 5.5 3h6A1.5 1.5 0 0 1 13 4.5V17" />
@@ -235,6 +270,8 @@ export function App() {
             </NavIcon>
             Départements
           </a>
+          )}
+          {(can('CLIENT_LIST')) && (
           <a href="#clients" aria-current={onClients ? 'page' : undefined} className={`nav-link${onClients ? ' nav-link-active' : ''}`}>
             <NavIcon>
               <rect x="2.5" y="4.5" width="15" height="11" rx="2" />
@@ -244,6 +281,8 @@ export function App() {
             </NavIcon>
             Clients
           </a>
+          )}
+          {(can('ROLE_LIST') || can('PERMISSION_LIST')) && (
           <a href="#roles" aria-current={onRoles ? 'page' : undefined} className={`nav-link${onRoles ? ' nav-link-active' : ''}`}>
             <NavIcon>
               <path d="M10 2.5l6 2.2v4.6c0 4-2.6 6.7-6 8.2-3.4-1.5-6-4.2-6-8.2V4.7z" />
@@ -251,6 +290,7 @@ export function App() {
             </NavIcon>
             Rôles et permissions
           </a>
+          )}
         </nav>
 
         <div className="user">
@@ -277,8 +317,12 @@ export function App() {
       </aside>
 
       <main className="main">
-        {onRoles ? (
-          <RolesPage section={route === '#roles/permissions' ? 'permissions' : 'roles'} onUnauthorized={onUnauthorized} />
+        {!profile ? (
+          <div className="panel">Chargement du profil…</div>
+        ) : blocked ? (
+          <div role="alert" className="alert">Vous n'avez pas la permission d'accéder à cet écran.</div>
+        ) : onRoles ? (
+          <RolesPage section={route === '#roles/permissions' || !can('ROLE_LIST') ? 'permissions' : 'roles'} onUnauthorized={onUnauthorized} />
         ) : onClients ? (
           <>
             {clientsError && <div role="alert" className="alert">{clientsError}</div>}
@@ -362,12 +406,14 @@ export function App() {
             <div className="eyebrow">Ressources humaines</div>
             <h1>Annuaire des employés</h1>
           </div>
+          {can('EMPLOYEE_CREATE') && (
           <button type="button" className="btn-primary" disabled={creatingEmployee} onClick={() => setCreatingEmployee(true)}>
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" aria-hidden="true">
               <path d="M10 4v12M4 10h12" />
             </svg>
             Nouvel employé
           </button>
+          )}
         </header>
 
         {error && <div role="alert" className="alert">{error}</div>}
@@ -531,6 +577,7 @@ export function App() {
         )}
       </main>
     </div>
+    </PermissionsProvider>
   );
 }
 

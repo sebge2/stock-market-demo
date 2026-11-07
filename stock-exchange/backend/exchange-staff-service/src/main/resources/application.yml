@@ -13,12 +13,39 @@ spring:
   h2:
     console:
       enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}
+          jwk-set-uri: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}/oauth2/jwks
+
 server:
   port: 8086
   servlet:
     context-path: /api/staff
   error:
     include-stacktrace: on_param
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    oauth:
+      client-id: exchange-swagger-ui
+      use-pkce-with-authorization-code-grant: true
+
+exchange:
+  user-service:
+    base-url: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
 logging:
   level:
     root: INFO

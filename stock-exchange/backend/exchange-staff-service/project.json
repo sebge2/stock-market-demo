@@ -6,7 +6,7 @@
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "mvn spring-boot:run",
+        "command": "mvn spring-boot:run -Dspring-boot.run.profiles=local -DEXCHANGE_USER_SERVICE_BASE_URL=${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}",
         "cwd": "stock-exchange/backend/exchange-staff-service"
       }
     },

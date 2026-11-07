@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
  */
 @SpringBootApplication
 @EnableEurekaServer
-public class EurekaServerApplication {
+public class BankEurekaServerApplication {
 
   /**
    *
@@ -20,6 +20,6 @@ public class EurekaServerApplication {
    * @param args startup arguments
    */
   public static void main(String[] args) {
-    SpringApplication.run(EurekaServerApplication.class, args);
+    SpringApplication.run(BankEurekaServerApplication.class, args);
   }
 }

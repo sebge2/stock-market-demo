@@ -5,16 +5,15 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
+        <option value="$PROJECT_DIR$/common/stocket-market-bom/pom.xml" />
         <option value="$PROJECT_DIR$/stock-exchange/backend/exchange-staff-service/pom.xml" />
         <option value="$PROJECT_DIR$/stock-exchange/backend/exchange-company-service/pom.xml" />
+        <option value="$PROJECT_DIR$/stock-exchange/backend/exchange-user-service/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-portfolio-service/pom.xml" />
-        <option value="$PROJECT_DIR$/bank/backend/client-service/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-employee-service/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/eureka-server/pom.xml" />
-        <option value="$PROJECT_DIR$/bank/backend/api-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-api-gateway/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-eureka-server/pom.xml" />
-        <option value="$PROJECT_DIR$/common/stocket-market-bom/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-service-console/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-user-service/pom.xml" />
         <option value="$PROJECT_DIR$/bank/backend/bank-client-service/pom.xml" />

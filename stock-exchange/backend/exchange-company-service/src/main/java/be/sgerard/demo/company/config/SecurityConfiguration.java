@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -15,6 +17,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Security configuration for OAuth2 resource server.
@@ -27,6 +30,11 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfiguration {
+
+	/**
+	 * Name of the access-token claim holding the user authorities.
+	 */
+	public static final String AUTHORITIES_CLAIM = "authorities";
 
 	/**
 	 * Configures the security filter chain for OAuth2 resource server.
@@ -50,9 +58,26 @@ public class SecurityConfiguration {
 				).permitAll()
 				.anyRequest().authenticated()
 			)
-			.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}));
+			.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 
 		return http.build();
+	}
+
+	/**
+	 * Converts a JWT into authorities made of its scopes and of the {@value #AUTHORITIES_CLAIM} claim.
+	 *
+	 * @return the JWT authentication converter
+	 */
+	@Bean
+	public JwtAuthenticationConverter jwtAuthenticationConverter() {
+		final JwtGrantedAuthoritiesConverter scopes = new JwtGrantedAuthoritiesConverter();
+		final JwtGrantedAuthoritiesConverter authorities = new JwtGrantedAuthoritiesConverter();
+		authorities.setAuthoritiesClaimName(AUTHORITIES_CLAIM);
+		authorities.setAuthorityPrefix("");
+		final JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+		converter.setJwtGrantedAuthoritiesConverter(
+			jwt -> Stream.concat(scopes.convert(jwt).stream(), authorities.convert(jwt).stream()).toList());
+		return converter;
 	}
 
 	/**

@@ -58,44 +58,44 @@ class CompanyControllerSecurityTest {
 	}
 
 	/**
-	 * Test that authenticated users with USER role can read companies.
+	 * Test that users with the COMPANY_LIST authority can read companies.
 	 */
 	@Test
-	@DisplayName("Authenticated user with USER role should access GET endpoints")
-	@WithMockUser(roles = "USER")
+	@DisplayName("User with COMPANY_LIST authority should access GET endpoints")
+	@WithMockUser(authorities = "COMPANY_LIST")
 	void testAuthenticatedUserCanReadCompanies() throws Exception {
 		final Company company = new Company("Test Company", "US", CompanyStatus.ACTIVE);
 		companyRepository.save(company);
 
 		mockMvc.perform(get("/companies")
-			.with(jwt().authorities(() -> "ROLE_USER")))
+			.with(jwt().authorities(() -> "COMPANY_LIST")))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$").isArray());
 	}
 
 	/**
-	 * Test that users without ADMIN role cannot create companies.
+	 * Test that users without the COMPANY_CREATE authority cannot create companies.
 	 */
 	@Test
-	@DisplayName("User without ADMIN role should not be able to create company")
-	@WithMockUser(roles = "USER")
+	@DisplayName("User without COMPANY_CREATE authority should not be able to create company")
+	@WithMockUser(authorities = "COMPANY_LIST")
 	void testUserCannotCreateCompany() throws Exception {
 		mockMvc.perform(post("/companies")
-			.with(jwt().authorities(() -> "ROLE_USER"))
+			.with(jwt().authorities(() -> "COMPANY_LIST"))
 			.contentType("application/json")
 			.content("{\"name\":\"Test\",\"countryCode\":\"US\",\"status\":\"ACTIVE\"}"))
 			.andExpect(status().isForbidden());
 	}
 
 	/**
-	 * Test that users with ADMIN role can create companies.
+	 * Test that users with the COMPANY_CREATE authority can create companies.
 	 */
 	@Test
-	@DisplayName("User with ADMIN role should be able to create company")
-	@WithMockUser(roles = "ADMIN")
+	@DisplayName("User with COMPANY_CREATE authority should be able to create company")
+	@WithMockUser(authorities = "COMPANY_CREATE")
 	void testAdminCanCreateCompany() throws Exception {
 		mockMvc.perform(post("/companies")
-			.with(jwt().authorities(() -> "ROLE_ADMIN"))
+			.with(jwt().authorities(() -> "COMPANY_CREATE"))
 			.contentType("application/json")
 			.content("{\"name\":\"Test Company\",\"countryCode\":\"US\",\"status\":\"ACTIVE\"}"))
 			.andExpect(status().isCreated());

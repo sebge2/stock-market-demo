@@ -61,7 +61,7 @@ public class CompanyController {
 	 * @return a list of all companies
 	 */
 	@GetMapping
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAuthority('COMPANY_LIST')")
 	@Operation(summary = "Get all companies", description = "Retrieve a list of all companies in the system")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Successfully retrieved list of companies"),
@@ -83,7 +83,7 @@ public class CompanyController {
 	 * @return the company if found
 	 */
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAuthority('COMPANY_LIST')")
 	@Operation(summary = "Get company by ID", description = "Retrieve a specific company by its unique identifier")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Successfully retrieved company"),
@@ -107,7 +107,7 @@ public class CompanyController {
 	 * @return the created company
 	 */
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('COMPANY_CREATE')")
 	@Operation(summary = "Create new company", description = "Create a new company in the system")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "Company successfully created"),
@@ -132,7 +132,7 @@ public class CompanyController {
 	 * @return the updated company
 	 */
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('COMPANY_UPDATE')")
 	@Operation(summary = "Update company", description = "Update an existing company")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Company successfully updated"),
@@ -169,7 +169,7 @@ public class CompanyController {
 	 * @return no content response
 	 */
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('COMPANY_DELETE')")
 	@Operation(summary = "Delete company", description = "Delete a company from the system")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "Company successfully deleted"),

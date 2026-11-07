@@ -36,7 +36,9 @@ class LocalDataSqlTest {
 
     assertThat(role.getPermissions()).extracting(Permission::getCode).containsExactlyInAnyOrder("ADMIN", "ROLE_LIST", "ROLE_CREATE",
         "ROLE_UPDATE", "ROLE_DELETE", "PERMISSION_LIST", "PERMISSION_CREATE", "PERMISSION_UPDATE",
-        "PERMISSION_DELETE", "USER_LIST", "USER_CREATE", "USER_UPDATE", "USER_DELETE");
+        "PERMISSION_DELETE", "USER_LIST", "USER_CREATE", "USER_UPDATE", "USER_DELETE", "STAFF_LIST", "STAFF_CREATE",
+        "STAFF_UPDATE", "STAFF_DELETE", "STAFF_ROLE_LIST", "STAFF_ROLE_CREATE", "STAFF_ROLE_UPDATE",
+        "STAFF_ROLE_DELETE", "COMPANY_LIST", "COMPANY_CREATE", "COMPANY_UPDATE", "COMPANY_DELETE");
   }
 
   /**
@@ -47,7 +49,7 @@ class LocalDataSqlTest {
   @Test
   void loadsStaffAndGuestAuthorization() {
     assertThat(roleRepository.findByName("STAFF").orElseThrow().getPermissions()).extracting(Permission::getCode)
-        .containsExactlyInAnyOrder("USER_LIST", "ROLE_LIST");
+        .containsExactlyInAnyOrder("USER_LIST", "ROLE_LIST", "STAFF_LIST", "STAFF_ROLE_LIST", "COMPANY_LIST");
     assertThat(roleRepository.findByName("GUEST").orElseThrow().getPermissions()).extracting(Permission::getCode)
         .containsExactly("USER_LIST");
   }

@@ -5,6 +5,7 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
+    open-in-view: false
   datasource:
     url: jdbc:h2:mem:staffdb
     driverClassName: org.h2.Driver
@@ -17,9 +18,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}
-          jwk-set-uri: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}/oauth2/jwks
-
+          issuer-uri: ${exchange.user-service.base-url}
+          jwk-set-uri: ${exchange.user-service.base-url}/oauth2/jwks
 server:
   port: 8086
   servlet:
@@ -35,6 +35,7 @@ springdoc:
     oauth:
       client-id: exchange-swagger-ui
       use-pkce-with-authorization-code-grant: true
+      scopes: user.read
 
 exchange:
   base-domain: ${EXCHANGE_BASE_DOMAIN:sgxchange.local}

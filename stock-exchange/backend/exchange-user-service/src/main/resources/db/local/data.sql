@@ -90,7 +90,7 @@ VALUES ('00000000-0000-4000-a000-000000000001', 'authorization_code'),
        ('00000000-0000-4000-a000-000000000004', 'authorization_code');
 
 INSERT INTO oauth_client_redirect_uri (oauth_client_id, redirect_uri)
-VALUES ('00000000-0000-4000-a000-000000000001', 'http://localhost:3001/auth/callback'),
+VALUES ('00000000-0000-4000-a000-000000000001', 'http://localhost:3009/auth/callback'),
        ('00000000-0000-4000-a000-000000000002', 'http://localhost:8091/swagger-ui/oauth2-redirect.html'),
        ('00000000-0000-4000-a000-000000000003', 'http://localhost:8087/api/company/swagger-ui/oauth2-redirect.html'),
        ('00000000-0000-4000-a000-000000000004', 'http://localhost:8086/api/staff/swagger-ui/oauth2-redirect.html');

@@ -4,10 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import be.sgerard.demo.employee.model.DepartmentStatus;
+import be.sgerard.demo.employee.model.EmployeeStatus;
 import be.sgerard.demo.employee.model.dto.DepartmentDto;
 import be.sgerard.demo.employee.model.dto.DepartmentRequestDto;
+import be.sgerard.demo.employee.model.dto.EmployeeRequestDto;
 import be.sgerard.demo.employee.repository.EmployeeRepository;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,6 +34,23 @@ class DepartmentHierarchyTest {
   /** Service under test. */
   @Autowired
   private DepartmentService departmentService;
+
+  /** IT department of the local data, managed by {@link #MANAGER_ID}. */
+  private static final UUID IT_ID = UUID.fromString("00000000-0000-4000-b000-000000000001");
+
+  /** Employee service. */
+  @Autowired
+  private EmployeeService employeeService;
+
+  /**
+   *
+   * Frees the manager of the IT department, so that the manager can be assigned to a new department.
+   *
+   */
+  @BeforeEach
+  void freeManager() {
+    departmentService.update(IT_ID, request("IT", null, null));
+  }
 
   /**
    *
@@ -96,10 +116,6 @@ class DepartmentHierarchyTest {
 
     assertThat(employeeRepository.findById(MANAGER_ID).orElseThrow().getDepartment().getId()).isEqualTo(created.getId());
 
-    final DepartmentDto other = departmentService.create(request("Other", null, null));
-    departmentService.update(other.getId(), request("Other", MANAGER_ID, null));
-
-    assertThat(employeeRepository.findById(MANAGER_ID).orElseThrow().getDepartment().getId()).isEqualTo(other.getId());
   }
 
   /**
@@ -109,9 +125,20 @@ class DepartmentHierarchyTest {
    */
   @Test
   void personBelongsToASingleDepartment() {
-    departmentService.create(request("Managed", MANAGER_ID, null));
+    final DepartmentDto managed = departmentService.create(request("Managed", MANAGER_ID, null));
 
     assertThatThrownBy(() -> departmentService.create(request("Second", MANAGER_ID, null)))
         .isInstanceOf(ResponseStatusException.class);
+
+    final EmployeeRequestDto move = new EmployeeRequestDto();
+    move.setFirstName("S");
+    move.setLastName("G");
+    move.setEmail("sebastien.gerard@local.test");
+    move.setStatus(EmployeeStatus.ACTIVE);
+    move.setDepartmentId(IT_ID);
+    assertThatThrownBy(() -> employeeService.update(MANAGER_ID, move)).isInstanceOf(ResponseStatusException.class);
+
+    move.setDepartmentId(managed.getId());
+    assertThat(employeeService.update(MANAGER_ID, move).getDepartmentId()).isEqualTo(managed.getId());
   }
 }

@@ -176,7 +176,13 @@ public class EmployeeService {
   public EmployeeDto update(UUID id, EmployeeRequestDto request) {
     final Employee employee = findEntity(id);
     ensureEmailAvailable(request.getEmail(), id);
-    employeeMapper.updateEntity(request, employee, findDepartment(request.getDepartmentId()));
+    final Department department = findDepartment(request.getDepartmentId());
+    final boolean leavesManagedDepartment = departmentRepository.findByManagerId(id).stream()
+        .anyMatch(managed -> department == null || !managed.getId().equals(department.getId()));
+    if (leavesManagedDepartment) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "A department manager cannot belong to another department: " + id);
+    }
+    employeeMapper.updateEntity(request, employee, department);
     return employeeMapper.toDto(employeeRepository.save(employee));
   }
 

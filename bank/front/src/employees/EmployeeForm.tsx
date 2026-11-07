@@ -48,7 +48,7 @@ export function EmployeeForm({ title, submitLabel, forbiddenMessage, initial, de
     }).catch((e: Error) => {
       setError(
         e instanceof ApiError && e.status === 409
-          ? 'Un employé ou un utilisateur avec ce courriel existe déjà.'
+          ? 'Ce courriel existe déjà, ou cet employé dirige un département et ne peut pas appartenir à un autre.'
           : e instanceof ApiError && e.status === 403
             ? forbiddenMessage
             : e instanceof ApiError && (e.status === 502 || e.status === 503)

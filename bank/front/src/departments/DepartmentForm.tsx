@@ -63,7 +63,7 @@ export function DepartmentForm({
       .catch((e: Error) => {
         setError(
           e instanceof ApiError && e.status === 409
-            ? 'Un département portant ce nom existe déjà.'
+            ? 'Ce nom existe déjà, ou ce responsable dirige déjà un autre département.'
             : e instanceof ApiError && e.status === 403
               ? forbiddenMessage
               : e instanceof ApiError && e.status === 400

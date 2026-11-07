@@ -13,7 +13,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-public class CompanyServiceApplication {
+public class ExchangeCompanyServiceApplication {
 
 	/**
 	 * Starts the application.
@@ -21,6 +21,6 @@ public class CompanyServiceApplication {
 	 * @param args command line arguments
 	 */
 	public static void main(final String[] args) {
-		SpringApplication.run(CompanyServiceApplication.class, args);
+		SpringApplication.run(ExchangeCompanyServiceApplication.class, args);
 	}
 }

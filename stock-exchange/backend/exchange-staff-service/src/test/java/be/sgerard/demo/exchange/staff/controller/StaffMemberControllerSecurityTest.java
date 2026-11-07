@@ -36,30 +36,30 @@ public class StaffMemberControllerSecurityTest {
 	}
 
 	/**
-	 * Test that authenticated USER role can read staff members.
+	 * Test that STAFF_LIST authority can read staff members.
 	 */
 	@Test
-	@WithMockUser(roles = "USER")
+	@WithMockUser(authorities = "STAFF_LIST")
 	public void testAuthorizedUserCanReadStaffMembers() throws Exception {
 		mockMvc.perform(get("/staff-members"))
 			.andExpect(status().isOk());
 	}
 
 	/**
-	 * Test that authenticated ADMIN role can read staff members.
+	 * Test that STAFF_LIST and STAFF_CREATE authorities can read staff members.
 	 */
 	@Test
-	@WithMockUser(roles = "ADMIN")
+	@WithMockUser(authorities = {"STAFF_LIST", "STAFF_CREATE"})
 	public void testAuthorizedAdminCanReadStaffMembers() throws Exception {
 		mockMvc.perform(get("/staff-members"))
 			.andExpect(status().isOk());
 	}
 
 	/**
-	 * Test that only ADMIN role can create staff members.
+	 * Test that STAFF_CREATE authority is required to create staff members.
 	 */
 	@Test
-	@WithMockUser(roles = "USER")
+	@WithMockUser(authorities = "STAFF_LIST")
 	public void testUserCannotCreateStaffMembers() throws Exception {
 		final String createPayload = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@example.com\",\"status\":\"ACTIVE\"}";
 		mockMvc.perform(post("/staff-members")
@@ -69,10 +69,10 @@ public class StaffMemberControllerSecurityTest {
 	}
 
 	/**
-	 * Test that ADMIN role can create staff members.
+	 * Test that STAFF_CREATE authority can create staff members.
 	 */
 	@Test
-	@WithMockUser(roles = "ADMIN")
+	@WithMockUser(authorities = "STAFF_CREATE")
 	public void testAdminCanCreateStaffMembers() throws Exception {
 		final String createPayload = "{\"firstName\":\"John\",\"lastName\":\"Doe\",\"email\":\"john@example.com\",\"status\":\"ACTIVE\"}";
 		mockMvc.perform(post("/staff-members")

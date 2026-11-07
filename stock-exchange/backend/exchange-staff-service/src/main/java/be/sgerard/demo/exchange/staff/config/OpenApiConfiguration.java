@@ -34,7 +34,7 @@ public class OpenApiConfiguration {
     final OAuthFlow flow = new OAuthFlow()
         .authorizationUrl(userServiceBaseUrl + "/oauth2/authorize")
         .tokenUrl(userServiceBaseUrl + "/oauth2/token")
-        .scopes(new Scopes().addString("user.read", "Read the current user profile"));
+        .scopes(new Scopes().addString("staff.read", "Access the staff API"));
     return new OpenAPI()
         .info(new Info().title("Exchange Staff Service").version("1.0.0"))
         .components(new Components().addSecuritySchemes(OAUTH2_SCHEME,

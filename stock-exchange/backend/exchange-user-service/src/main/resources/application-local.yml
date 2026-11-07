@@ -20,7 +20,7 @@ spring:
 # Development-only signing key pair, committed on purpose: never use it outside the local profile.
 exchange:
   user-service:
-    base-url: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}
+    base-url: http://localhost:8091
     cors:
       allowed-origins: http://localhost:8086,http://localhost:8087,http://localhost:3001
     jwt:

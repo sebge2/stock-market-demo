@@ -33,8 +33,9 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     oauth:
-      client-id: exchange-swagger-ui
+      client-id: company-swagger-ui
       use-pkce-with-authorization-code-grant: true
+      scopes: company.read
 
 exchange:
   base-domain: ${EXCHANGE_BASE_DOMAIN:sgxchange.local}

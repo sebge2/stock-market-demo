@@ -13,6 +13,7 @@ Microservice managing the stock exchange staff (persistence layer).
 mvn spring-boot:run
 # Port: 8086
 # API: http://localhost:8086/api/staff
+# Swagger: http://localhost:8086/api/staff/swagger-ui.html
 ```
 
 ## Structure

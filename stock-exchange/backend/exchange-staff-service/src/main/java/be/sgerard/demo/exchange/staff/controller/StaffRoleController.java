@@ -1,13 +1,12 @@
 package be.sgerard.demo.exchange.staff.controller;
 
+import be.sgerard.demo.exchange.staff.config.OpenApiConfiguration;
 import be.sgerard.demo.exchange.staff.mapper.StaffRoleMapper;
 import be.sgerard.demo.exchange.staff.model.StaffRole;
 import be.sgerard.demo.exchange.staff.model.dto.StaffRoleDto;
 import be.sgerard.demo.exchange.staff.repository.StaffRoleRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,7 +30,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/staff-roles")
 @Tag(name = "Staff Roles", description = "Manage staff roles and assignments")
-@SecurityRequirement(name = "OAuth2")
+@SecurityRequirement(name = OpenApiConfiguration.OAUTH2_SCHEME)
 public class StaffRoleController {
 
 	/**
@@ -61,7 +60,7 @@ public class StaffRoleController {
 	 * @return a list of all staff roles
 	 */
 	@GetMapping
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAuthority('STAFF_ROLE_LIST')")
 	@Operation(summary = "Get all staff roles", description = "Retrieve a list of all staff roles in the system")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Successfully retrieved list of staff roles"),
@@ -83,7 +82,7 @@ public class StaffRoleController {
 	 * @return the staff role if found
 	 */
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAuthority('STAFF_ROLE_LIST')")
 	@Operation(summary = "Get staff role by ID", description = "Retrieve a specific staff role by its unique identifier")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Successfully retrieved staff role"),
@@ -107,7 +106,7 @@ public class StaffRoleController {
 	 * @return the created staff role
 	 */
 	@PostMapping
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('STAFF_ROLE_CREATE')")
 	@Operation(summary = "Create new staff role", description = "Create a new staff role in the system")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "201", description = "Staff role successfully created"),
@@ -132,7 +131,7 @@ public class StaffRoleController {
 	 * @return the updated staff role
 	 */
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('STAFF_ROLE_UPDATE')")
 	@Operation(summary = "Update staff role", description = "Update an existing staff role")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "Staff role successfully updated"),
@@ -166,7 +165,7 @@ public class StaffRoleController {
 	 * @return no content response
 	 */
 	@DeleteMapping("/{id}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAuthority('STAFF_ROLE_DELETE')")
 	@Operation(summary = "Delete staff role", description = "Delete a staff role from the system")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "204", description = "Staff role successfully deleted"),

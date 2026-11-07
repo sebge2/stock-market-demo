@@ -62,11 +62,6 @@ import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 public class AuthorizationServerConfiguration {
 
     /**
-     * Client id of the public client used by Swagger UI.
-     */
-    public static final String SWAGGER_CLIENT_ID = "exchange-swagger-ui";
-
-    /**
      * Name of the access-token claim holding the user authorities.
      */
     public static final String AUTHORITIES_CLAIM = "authorities";

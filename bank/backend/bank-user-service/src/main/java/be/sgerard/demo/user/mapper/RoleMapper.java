@@ -1,5 +1,6 @@
 package be.sgerard.demo.user.mapper;
 
+import be.sgerard.demo.user.model.Permission;
 import be.sgerard.demo.user.model.Role;
 import be.sgerard.demo.user.model.dto.RoleDto;
 import be.sgerard.demo.user.model.dto.RoleRequestDto;
@@ -32,7 +33,7 @@ public class RoleMapper {
     dto.setName(role.getName());
     dto.setDescription(role.getDescription());
     dto.setStatus(role.getStatus());
-    dto.setPermissionIds(role.getPermissions().stream().map(permission -> permission.getId()).collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new)));
+    dto.setPermissionIds(role.getPermissions().stream().map(Permission::getId).collect(java.util.stream.Collectors.toCollection(java.util.LinkedHashSet::new)));
     dto.setCreatedAt(role.getCreatedAt());
     dto.setUpdatedAt(role.getUpdatedAt());
     return dto;

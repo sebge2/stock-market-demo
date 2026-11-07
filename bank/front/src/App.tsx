@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import './App.css';
 import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './auth/auth';
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
@@ -9,6 +9,7 @@ import { ClientCreatePage } from './clients/ClientCreatePage';
 import { ClientDetailPage } from './clients/ClientDetailPage';
 import { ClientsPage } from './clients/ClientsPage';
 import { DashboardPage } from './dashboard/DashboardPage';
+import { RolesPage } from './roles/RolesPage';
 import { DepartmentDetailPage } from './departments/DepartmentDetailPage';
 import { DepartmentsPage } from './departments/DepartmentsPage';
 import { ApiError, type Department, createDepartment, createEmployee, fetchDepartments, updateDepartment, updateEmployee, fetchEmployees } from './employees/employees.api';
@@ -166,9 +167,14 @@ export function App() {
   const rows = filtered.slice(start, start + PAGE_SIZE);
 
   const resetPage = () => setPage(1);
+  const onUnauthorized = useCallback(() => {
+    logout();
+    setAuthenticated(false);
+  }, []);
   const onDashboard = route === '' || route === '#dashboard';
   const onDepartments = route.startsWith('#department');
-  const onEmployees = !onDashboard && !onDepartments && !onClients;
+  const onRoles = route === '#roles' || route.startsWith('#roles/');
+  const onEmployees = !onDashboard && !onDepartments && !onClients && !onRoles;
   const departmentId = route.startsWith('#department-') ? route.slice('#department-'.length) : null;
   const detailId = route.startsWith('#employee-') ? route.slice('#employee-'.length) : null;
 
@@ -238,6 +244,13 @@ export function App() {
             </NavIcon>
             Clients
           </a>
+          <a href="#roles" aria-current={onRoles ? 'page' : undefined} className={`nav-link${onRoles ? ' nav-link-active' : ''}`}>
+            <NavIcon>
+              <path d="M10 2.5l6 2.2v4.6c0 4-2.6 6.7-6 8.2-3.4-1.5-6-4.2-6-8.2V4.7z" />
+              <path d="M7.25 10l2 2 3.5-3.75" />
+            </NavIcon>
+            Rôles et permissions
+          </a>
         </nav>
 
         <div className="user">
@@ -264,7 +277,9 @@ export function App() {
       </aside>
 
       <main className="main">
-        {onClients ? (
+        {onRoles ? (
+          <RolesPage section={route === '#roles/permissions' ? 'permissions' : 'roles'} onUnauthorized={onUnauthorized} />
+        ) : onClients ? (
           <>
             {clientsError && <div role="alert" className="alert">{clientsError}</div>}
             {clientRoute === 'new' ? (

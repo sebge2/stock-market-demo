@@ -1048,3 +1048,50 @@ a.btn-primary {
 a.btn-primary:hover {
   background: #154790;
 }
+
+.tabs-flat {
+  padding: 0;
+}
+
+.tabs-flat .tab {
+  text-decoration: none;
+}
+
+.row-roles {
+  grid-template-columns: 1.6fr 2.4fr 1fr 1fr 1.2fr 1fr;
+}
+
+.row-perms {
+  grid-template-columns: 1.6fr 2.6fr 1fr 1.2fr 110px;
+}
+
+.row-button {
+  width: 100%;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  border-radius: 0;
+}
+
+.row-selected {
+  background: #e6eefb;
+}
+
+.role-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.role-heading h2 {
+  margin: 0;
+}
+
+.section-title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+}

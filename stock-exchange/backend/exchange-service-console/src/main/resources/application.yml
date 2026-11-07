@@ -2,10 +2,13 @@ spring:
   application:
     name: exchange-service-console
 
+exchange:
+  base-domain: ${EXCHANGE_BASE_DOMAIN:sgxchange.local}
+
 eureka:
   client:
     service-url:
-      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8762/eureka/}
+      defaultZone: eureka-service.${exchange.base-domain}
     registry-fetch-interval-seconds: 5
 
 server:

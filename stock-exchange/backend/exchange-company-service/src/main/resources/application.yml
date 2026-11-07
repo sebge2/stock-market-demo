@@ -37,14 +37,20 @@ springdoc:
       use-pkce-with-authorization-code-grant: true
 
 exchange:
+  base-domain: ${EXCHANGE_BASE_DOMAIN:sgxchange.local}
   user-service:
-    base-url: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}
+    base-url: company-service.${exchange.base-domain}
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info
+
+eureka:
+  client:
+    service-url:
+      defaultZone: eureka-service.${exchange.base-domain}
 
 logging:
   level:

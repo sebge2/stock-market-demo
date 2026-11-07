@@ -5,6 +5,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: false
+    open-in-view: false
   datasource:
     url: jdbc:h2:mem:companydb
     driverClassName: org.h2.Driver
@@ -13,13 +14,38 @@ spring:
   h2:
     console:
       enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${exchange.user-service.base-url}
+          jwk-set-uri: ${exchange.user-service.base-url}/oauth2/jwks
 server:
   port: 8087
   servlet:
     context-path: /api/company
   error:
     include-stacktrace: on_param
+exchange:
+  base-domain: ${EXCHANGE_BASE_DOMAIN:gerardson.local}
+  user-service:
+    base-url: ${EXCHANGE_USER_SERVICE_BASE_URL}
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: exchange-swagger-ui
+      use-pkce-with-authorization-code-grant: true
+      scopes: user.read
+eureka:
+  client:
+    service-url:
+      defaultZone: eureka-service.${exchange.base-domain}
 logging:
   level:
     root: INFO
     be.sgerard.demo: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

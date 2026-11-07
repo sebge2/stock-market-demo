@@ -22,9 +22,10 @@ public class DepartmentMapper {
    * @param manager manager of the department, may be null
    * @return a new department entity
    */
-  public Department toEntity(DepartmentRequestDto request, Employee manager) {
+  public Department toEntity(DepartmentRequestDto request, Employee manager, Department parent) {
     final Department department = new Department(request.getName(), request.getDescription(), request.getStatus());
     department.setManager(manager);
+    department.setParent(parent);
     return department;
   }
 
@@ -36,11 +37,12 @@ public class DepartmentMapper {
    * @param department target department
    * @param manager manager of the department, may be null
    */
-  public void updateEntity(DepartmentRequestDto request, Department department, Employee manager) {
+  public void updateEntity(DepartmentRequestDto request, Department department, Employee manager, Department parent) {
     department.setName(request.getName());
     department.setDescription(request.getDescription());
     department.setStatus(request.getStatus());
     department.setManager(manager);
+    department.setParent(parent);
   }
 
   /**
@@ -57,6 +59,7 @@ public class DepartmentMapper {
     dto.setDescription(department.getDescription());
     dto.setStatus(department.getStatus());
     dto.setManagerId(department.getManager() == null ? null : department.getManager().getId());
+    dto.setParentId(department.getParent() == null ? null : department.getParent().getId());
     dto.setCreatedAt(department.getCreatedAt());
     dto.setUpdatedAt(department.getUpdatedAt());
     return dto;

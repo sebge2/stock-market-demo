@@ -1,5 +1,5 @@
 import { type FormEvent, useState } from 'react';
-import { ApiError, type NewDepartment } from '../employees/employees.api';
+import { ApiError, type Department, type NewDepartment } from '../employees/employees.api';
 import type { Employee } from '../employees/employees.data';
 
 /** Props of the department form. */
@@ -12,6 +12,10 @@ interface DepartmentFormProps {
   forbiddenMessage: string;
   /** Initial values of the fields. */
   initial: NewDepartment;
+  /** All departments, from which the parent department is chosen. */
+  departments: Department[];
+  /** Identifier of the edited department, excluded (with its sub-departments) from the possible parents. */
+  currentId?: string;
   /** Employees that can be chosen as manager. */
   employees: Employee[];
   /** Saves the department; rejects when the call fails. */
@@ -26,6 +30,8 @@ export function DepartmentForm({
   submitLabel,
   forbiddenMessage,
   initial,
+  departments,
+  currentId,
   employees,
   onSubmit,
   onCancel,
@@ -34,21 +40,35 @@ export function DepartmentForm({
   const [description, setDescription] = useState(initial.description);
   const [active, setActive] = useState(initial.active);
   const [managerId, setManagerId] = useState(initial.managerId ?? '');
+  const [parentId, setParentId] = useState(initial.parentId ?? '');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const descendants = new Set<string>();
+  for (let grew = currentId !== undefined; grew; ) {
+    grew = false;
+    for (const d of departments) {
+      if (d.parentId && (d.parentId === currentId || descendants.has(d.parentId)) && !descendants.has(d.id)) {
+        descendants.add(d.id);
+        grew = true;
+      }
+    }
+  }
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
     setSaving(true);
     setError(null);
-    onSubmit({ name: name.trim(), description: description.trim(), active, managerId: managerId || null })
+    onSubmit({ name: name.trim(), description: description.trim(), active, managerId: managerId || null, parentId: parentId || null })
       .catch((e: Error) => {
         setError(
           e instanceof ApiError && e.status === 409
             ? 'Un département portant ce nom existe déjà.'
             : e instanceof ApiError && e.status === 403
               ? forbiddenMessage
-              : e.message,
+              : e instanceof ApiError && e.status === 400
+                ? 'Un département ne peut pas dépendre de lui-même ni de l’un de ses sous-départements.'
+                : e.message,
         );
         setSaving(false);
       });
@@ -62,6 +82,18 @@ export function DepartmentForm({
         <label className="form-field">
           <span className="field-label">Nom</span>
           <input required maxLength={100} value={name} onChange={(e) => setName(e.target.value)} />
+        </label>
+        <label className="form-field">
+          <span className="field-label">Département parent</span>
+          <select value={parentId} onChange={(e) => setParentId(e.target.value)}>
+            <option value="">Aucun</option>
+            {departments
+              .filter((d) => d.id !== currentId && !descendants.has(d.id))
+              .sort((a, b) => a.name.localeCompare(b.name, 'fr'))
+              .map((d) => (
+                <option key={d.id} value={d.id}>{d.name}</option>
+              ))}
+          </select>
         </label>
         <label className="form-field">
           <span className="field-label">Responsable</span>

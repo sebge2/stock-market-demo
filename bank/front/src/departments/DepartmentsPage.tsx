@@ -82,7 +82,8 @@ export function DepartmentsPage({ departments, employees, loading, onCreate }: D
           title="Nouveau département"
           submitLabel="Créer"
           forbiddenMessage="Vous n'avez pas la permission de créer un département."
-          initial={{ name: '', description: '', active: true, managerId: null }}
+          initial={{ name: '', description: '', active: true, managerId: null, parentId: null }}
+          departments={departments}
           employees={employees}
           onSubmit={onCreate}
           onCancel={() => setCreating(false)}

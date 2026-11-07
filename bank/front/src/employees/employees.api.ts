@@ -34,6 +34,7 @@ interface DepartmentApi {
   description: string | null;
   status: 'ACTIVE' | 'INACTIVE';
   managerId: string | null;
+  parentId: string | null;
   updatedAt: string;
 }
 
@@ -49,6 +50,8 @@ export interface Department {
   active: boolean;
   /** Identifier of the managing employee, if any. */
   managerId: string | null;
+  /** Identifier of the parent department, if any. */
+  parentId: string | null;
   /** Last update date (ISO format). */
   updatedAt: string;
 }
@@ -98,6 +101,7 @@ function toDepartment(d: DepartmentApi): Department {
     description: d.description ?? '',
     active: d.status === 'ACTIVE',
     managerId: d.managerId,
+    parentId: d.parentId,
     updatedAt: d.updatedAt.slice(0, 10),
   };
 }
@@ -112,6 +116,8 @@ export interface NewDepartment {
   active: boolean;
   /** Identifier of the managing employee, if any. */
   managerId: string | null;
+  /** Identifier of the parent department, if any (its manager is the superior of this department's manager). */
+  parentId: string | null;
 }
 
 /** Converts the entered department data to the API payload. */
@@ -121,6 +127,7 @@ function toDepartmentRequest(department: NewDepartment) {
     description: department.description || null,
     status: department.active ? 'ACTIVE' : 'INACTIVE',
     managerId: department.managerId,
+    parentId: department.parentId,
   };
 }
 
@@ -140,19 +147,23 @@ export async function fetchDepartments(): Promise<Department[]> {
   return departments.map(toDepartment);
 }
 
-/** Maps an employee returned by the API to the displayed model. */
-function toEmployee(e: EmployeeApi, departmentNames: Map<string, string>): Employee {
+/**
+ * Maps an employee returned by the API to the displayed model. The manager of a department is a member of that
+ * department, even when their record still points to another one.
+ */
+function toEmployee(e: EmployeeApi, departments: Department[]): Employee {
+  const department = departments.find((d) => d.managerId === e.id) ?? departments.find((d) => d.id === e.departmentId);
   return {
     firstName: e.firstName,
     lastName: e.lastName,
     name: `${e.firstName} ${e.lastName}`,
     id: e.id,
     userId: e.userId,
-    departmentId: e.departmentId,
+    departmentId: department?.id ?? e.departmentId,
     email: e.email,
     position: e.jobTitle ?? '—',
     jobTitle: e.jobTitle ?? '',
-    department: (e.departmentId && departmentNames.get(e.departmentId)) || '—',
+    department: department?.name ?? '—',
     hireDate: e.createdAt.slice(0, 10),
     status: STATUS_LABELS[e.status],
   };
@@ -189,18 +200,17 @@ function toEmployeeRequest(changes: EmployeeChanges) {
 /** Creates an employee (and its user account in the user service) and returns it. */
 export async function createEmployee(changes: EmployeeChanges, departments: Department[]): Promise<Employee> {
   const created = await send<EmployeeApi>('POST', '/employees', toEmployeeRequest(changes));
-  return toEmployee(created, new Map(departments.map((d) => [d.id, d.name])));
+  return toEmployee(created, departments);
 }
 
 /** Updates an employee and returns it, with its department name resolved from the given departments. */
 export async function updateEmployee(id: string, changes: EmployeeChanges, departments: Department[]): Promise<Employee> {
   const updated = await send<EmployeeApi>('PUT', `/employees/${id}`, toEmployeeRequest(changes));
-  return toEmployee(updated, new Map(departments.map((d) => [d.id, d.name])));
+  return toEmployee(updated, departments);
 }
 
 /** Loads all employees, with their department name resolved from the given departments. */
 export async function fetchEmployees(departments: Department[]): Promise<Employee[]> {
-  const names = new Map(departments.map((d) => [d.id, d.name]));
   const employees: EmployeeApi[] = [];
   for (let page = 0; ; page++) {
     const result = await get<PageApi<EmployeeApi>>(`/employees?page=${page}&size=${PAGE_SIZE}`);
@@ -209,5 +219,5 @@ export async function fetchEmployees(departments: Department[]): Promise<Employe
       break;
     }
   }
-  return employees.map((e) => toEmployee(e, names));
+  return employees.map((e) => toEmployee(e, departments));
 }

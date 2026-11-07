@@ -15,6 +15,14 @@ public class DepartmentDto {
 
   /**
    *
+   * Identifier of the parent department; its manager is the hierarchical superior of the manager of this department.
+   *
+   */
+  @Schema(description = "The identifier of the parent department, if any. The manager of the parent department is the superior of this department's manager")
+  private UUID parentId;
+
+  /**
+   *
    * Identifier of the employee managing the department.
    *
    */
@@ -151,5 +159,23 @@ public class DepartmentDto {
    */
   public void setManagerId(UUID managerId) {
     this.managerId = managerId;
+  }
+
+  /**
+   *
+   * @return the identifier of the parent department, if any
+   *
+   */
+  public UUID getParentId() {
+    return parentId;
+  }
+
+  /**
+   *
+   * @param parentId the identifier of the parent department, if any
+   *
+   */
+  public void setParentId(UUID parentId) {
+    this.parentId = parentId;
   }
 }

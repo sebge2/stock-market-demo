@@ -37,6 +37,7 @@ export function DepartmentDetailPage({ department, departments, employees, loadi
   }
 
   const manager = employees.find((e) => e.id === department.managerId);
+  const parent = departments.find((d) => d.id === department.parentId);
 
   return (
     <>
@@ -68,6 +69,11 @@ export function DepartmentDetailPage({ department, departments, employees, loadi
             <span>
               Responsable <span className="dark strong">{manager?.name ?? '—'}</span>
             </span>
+            {parent && (
+              <span>
+                Département parent <a href={`#department-${parent.id}`} className="dark strong">{parent.name}</a>
+              </span>
+            )}
             <span>
               Mis à jour le <span className="mono dark">{formatDate(department.updatedAt)}</span>
             </span>
@@ -88,7 +94,10 @@ export function DepartmentDetailPage({ department, departments, employees, loadi
             description: department.description,
             active: department.active,
             managerId: department.managerId,
+            parentId: department.parentId,
           }}
+          departments={departments}
+          currentId={department.id}
           employees={employees}
           onSubmit={async (changes) => {
             await onUpdate(department.id, changes);

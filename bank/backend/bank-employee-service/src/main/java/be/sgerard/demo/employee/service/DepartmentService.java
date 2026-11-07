@@ -89,8 +89,11 @@ public class DepartmentService {
   @Transactional
   public DepartmentDto create(DepartmentRequestDto request) {
     ensureNameIsAvailable(request.getName(), null);
-    Department department = departmentMapper.toEntity(request, findManager(request.getManagerId()));
-    return departmentMapper.toDto(departmentRepository.save(department));
+    Department department = departmentMapper.toEntity(request, findManager(request.getManagerId(), null),
+        findParent(request.getParentId(), null));
+    final Department saved = departmentRepository.save(department);
+    attachManager(saved);
+    return departmentMapper.toDto(saved);
   }
 
   /**
@@ -105,8 +108,11 @@ public class DepartmentService {
   public DepartmentDto update(UUID id, DepartmentRequestDto request) {
     Department department = findEntity(id);
     ensureNameIsAvailable(request.getName(), id);
-    departmentMapper.updateEntity(request, department, findManager(request.getManagerId()));
-    return departmentMapper.toDto(departmentRepository.save(department));
+    departmentMapper.updateEntity(request, department, findManager(request.getManagerId(), id),
+        findParent(request.getParentId(), department));
+    final Department saved = departmentRepository.save(department);
+    attachManager(saved);
+    return departmentMapper.toDto(saved);
   }
 
   /**
@@ -117,7 +123,11 @@ public class DepartmentService {
    */
   @Transactional
   public void delete(UUID id) {
-    departmentRepository.delete(findEntity(id));
+    final Department department = findEntity(id);
+    if (departmentRepository.existsByParentId(id)) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Department has sub-departments: " + id);
+    }
+    departmentRepository.delete(department);
   }
 
   /**
@@ -127,9 +137,26 @@ public class DepartmentService {
    * @param managerId identifier of the manager, may be null
    * @return the manager, or null when no manager is given
    */
-  private Employee findManager(UUID managerId) {
+  /**
+   *
+   * Makes the manager of a department a member of that department.
+   *
+   * @param department the saved department
+   *
+   */
+  private void attachManager(Department department) {
+    final Employee manager = department.getManager();
+    if (manager != null) {
+      manager.setDepartment(department);
+    }
+  }
+
+  private Employee findManager(UUID managerId, UUID currentId) {
     if (managerId == null) {
       return null;
+    }
+    if (departmentRepository.findByManagerId(managerId).stream().anyMatch(d -> !d.getId().equals(currentId))) {
+      throw new ResponseStatusException(HttpStatus.CONFLICT, "Employee already manages another department: " + managerId);
     }
     return employeeRepository.findById(managerId).orElseThrow(
         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Manager not found: " + managerId));
@@ -142,6 +169,28 @@ public class DepartmentService {
    * @param id department identifier
    * @return the matching entity
    */
+  /**
+   *
+   * Finds the parent department, making sure the hierarchy stays a tree.
+   *
+   * @param parentId identifier of the parent, if any
+   * @param department the edited department, or {@code null} when it is being created
+   * @return the parent department, or {@code null}
+   *
+   */
+  private Department findParent(UUID parentId, Department department) {
+    if (parentId == null) {
+      return null;
+    }
+    final Department parent = findEntity(parentId);
+    for (Department ancestor = parent; department != null && ancestor != null; ancestor = ancestor.getParent()) {
+      if (ancestor.getId().equals(department.getId())) {
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A department cannot be its own ancestor: " + parentId);
+      }
+    }
+    return parent;
+  }
+
   private Department findEntity(UUID id) {
     return departmentRepository.findById(id).orElseThrow(
         () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Department not found: " + id));

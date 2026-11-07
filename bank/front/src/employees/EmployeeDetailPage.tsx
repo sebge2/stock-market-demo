@@ -39,6 +39,38 @@ function Field({ label, children, mono }: { label: string; children: React.React
   );
 }
 
+/** Identifier of the manager of a department: its own manager, otherwise the one of the nearest ancestor. */
+function departmentManagerId(department: Department | undefined, departments: Department[]): string | null {
+  const seen = new Set<string>();
+  for (let d = department; d && !seen.has(d.id); d = departments.find((p) => p.id === d?.parentId)) {
+    if (d.managerId) {
+      return d.managerId;
+    }
+    seen.add(d.id);
+  }
+  return null;
+}
+
+/**
+ * Identifier of the hierarchical manager of an employee: the manager of the department, or, for the manager
+ * of the department itself, the manager of the nearest parent department with another manager.
+ */
+function hierarchicalManagerId(employeeId: string, department: Department | undefined, departments: Department[]): string | null {
+  const head = departmentManagerId(department, departments);
+  if (head !== employeeId) {
+    return head;
+  }
+  const seen = new Set<string>();
+  for (let d = departments.find((p) => p.id === department?.parentId); d && !seen.has(d.id); d = departments.find((p) => p.id === d?.parentId)) {
+    seen.add(d.id);
+    const manager = departmentManagerId(d, departments);
+    if (manager !== employeeId) {
+      return manager;
+    }
+  }
+  return null;
+}
+
 /** Employee sheet: identity header, professional information and history. */
 export function EmployeeDetailPage({ employee, departments, employees, loading, onUpdate }: EmployeeDetailPageProps) {
   const [editing, setEditing] = useState(false);
@@ -64,10 +96,9 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
     );
   }
 
-  const department = departments.find((d) => d.id === employee.departmentId);
-  const manager = department?.managerId && department.managerId !== employee.id
-    ? employees.find((e) => e.id === department.managerId)
-    : undefined;
+  // A manager belongs to the department they manage, even if their record was saved before that rule existed.
+  const department = departments.find((d) => d.managerId === employee.id) ?? departments.find((d) => d.id === employee.departmentId);
+  const manager = employees.find((e) => e.id === hierarchicalManagerId(employee.id, department, departments));
 
   return (
     <>

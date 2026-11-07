@@ -13,6 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -91,6 +94,23 @@ public class Department {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "manager_id")
   private Employee manager;
+
+  /**
+   *
+   * Parent department, if any; the manager of the parent is the hierarchical superior of the manager of this department.
+   *
+   */
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "parent_id")
+  private Department parent;
+
+  /**
+   *
+   * Sub-departments of this department.
+   *
+   */
+  @OneToMany(mappedBy = "parent")
+  private List<Department> children = new ArrayList<>();
 
   /**
    *
@@ -192,6 +212,33 @@ public class Department {
    * Initializes the audit timestamps.
    *
    */
+  /**
+   *
+   * @return the parent department, if any
+   *
+   */
+  public Department getParent() {
+    return parent;
+  }
+
+  /**
+   *
+   * @param parent the parent department, if any
+   *
+   */
+  public void setParent(Department parent) {
+    this.parent = parent;
+  }
+
+  /**
+   *
+   * @return the sub-departments
+   *
+   */
+  public List<Department> getChildren() {
+    return children;
+  }
+
   @PrePersist
   void onCreate() {
     LocalDateTime now = LocalDateTime.now();

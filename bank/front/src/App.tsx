@@ -333,7 +333,9 @@ export function App() {
               loading={loading}
               onUpdate={async (id, changes) => {
                 const updated = await updateDepartment(id, changes);
-                setDepartmentList((current) => current.map((d) => (d.id === id ? updated : d)));
+                const next = departmentList.map((d) => (d.id === id ? updated : d));
+                setDepartmentList(next);
+                setEmployees(await fetchEmployees(next));
               }}
             />
           </>
@@ -346,7 +348,9 @@ export function App() {
               loading={loading}
               onCreate={async (input) => {
                 const created = await createDepartment(input);
-                setDepartmentList((current) => [...current, created]);
+                const next = [...departmentList, created];
+                setDepartmentList(next);
+                setEmployees(await fetchEmployees(next));
                 window.location.hash = `#department-${created.id}`;
               }}
             />

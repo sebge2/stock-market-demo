@@ -1,6 +1,7 @@
 package be.sgerard.demo.company.model.dto;
 
 import be.sgerard.demo.company.model.CompanyStatus;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import java.util.UUID;
  *
  * Used for transferring company data in REST API requests and responses.
  */
+@Schema(name = "Company", description = "Data Transfer Object representing a company that may issue securities traded on an exchange")
 public class CompanyDto {
 
 	/**

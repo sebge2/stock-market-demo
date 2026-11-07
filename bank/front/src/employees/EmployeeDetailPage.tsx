@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { AvatarEditor } from '../users/AvatarEditor';
 import { fetchAvatar } from '../users/users.api';
 import { EmployeeForm } from './EmployeeForm';
+import { EmployeeRolesPanel } from './EmployeeRolesPanel';
 import type { Department, EmployeeChanges } from './employees.api';
 import { type Employee, STATUS_CLASS, formatDate, initials } from './employees.data';
 
@@ -147,6 +148,8 @@ export function EmployeeDetailPage({ employee, departments, employees, loading, 
           Profil
         </button>
       </div>
+
+      {userId && <EmployeeRolesPanel userId={userId} />}
 
       <div className="detail-columns">
         <section aria-labelledby="t-info" className="panel panel-stack">

@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import be.sgerard.demo.user.model.Permission;
+import be.sgerard.demo.user.model.RoleStatus;
 
 import java.util.stream.Stream;
 
@@ -182,6 +183,7 @@ public class AuthorizationServerConfiguration {
         return username -> userAccountRepository.findByUsername(username).map(account -> User
                 .withUsername(account.getUsername()).password(account.getPasswordHash())
                 .authorities(account.getRoles().stream()
+                        .filter(role -> role.getStatus() == RoleStatus.ACTIVE)
                         .flatMap(role -> Stream.concat(
                                 Stream.of("ROLE_" + role.getName()),
                                 role.getPermissions().stream().map(Permission::getCode)))

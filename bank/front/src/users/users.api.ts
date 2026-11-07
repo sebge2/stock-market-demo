@@ -51,6 +51,23 @@ export async function saveAvatar(userId: string, avatar: string): Promise<string
   return saved.avatar;
 }
 
+/** Loads the identifiers of the roles granted to a user. */
+export async function fetchUserRoleIds(userId: string): Promise<string[]> {
+  return (await call('GET', `/users/${userId}`)).roleIds;
+}
+
+/** Replaces the roles granted to a user and returns the stored role identifiers. */
+export async function saveUserRoleIds(userId: string, roleIds: string[]): Promise<string[]> {
+  const user = await call('GET', `/users/${userId}`);
+  const saved = await call('PUT', `/users/${userId}`, {
+    username: user.username,
+    fullName: user.fullName,
+    email: user.email,
+    roleIds,
+  });
+  return saved.roleIds;
+}
+
 /** Reads a file as a base64 string (without the data URI prefix). */
 export function readAsBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {

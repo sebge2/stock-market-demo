@@ -1,0 +1,25 @@
+{
+  "name": "exchange-eureka-server",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "stock-exchange/backend/exchange-eureka-server/src",
+  "projectType": "library",
+  "tags": ["type:backend", "scope:exchange", "type:infrastructure"],
+  "implicitDependencies": ["stocket-market-bom"],
+  "targets": {
+    "build": {
+      "executor": "@nx/maven:build",
+      "options": {}
+    },
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "mvn spring-boot:run",
+        "cwd": "stock-exchange/backend/exchange-eureka-server"
+      }
+    },
+    "test": {
+      "executor": "@nx/maven:test",
+      "options": {}
+    }
+  }
+}

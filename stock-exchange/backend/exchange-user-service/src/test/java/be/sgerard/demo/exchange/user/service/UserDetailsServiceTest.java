@@ -50,7 +50,7 @@ class UserDetailsServiceTest {
     final UserDetails staff = userDetailsService.loadUserByUsername("staff");
 
     assertThat(staff.getAuthorities()).extracting(GrantedAuthority::getAuthority)
-        .containsExactlyInAnyOrder("ROLE_STAFF", "USER_LIST", "ROLE_LIST", "STAFF_LIST", "STAFF_ROLE_LIST", "COMPANY_LIST");
+        .containsExactlyInAnyOrder("ROLE_STAFF", "USER_LIST", "ROLE_LIST", "STAFF_LIST", "STAFF_ROLE_LIST", "COMPANY_LIST", "SECURITY_LIST");
   }
 
   /**

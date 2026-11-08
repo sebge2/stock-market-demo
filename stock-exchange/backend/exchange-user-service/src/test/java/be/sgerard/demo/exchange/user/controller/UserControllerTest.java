@@ -153,10 +153,10 @@ class UserControllerTest {
   void allowsFrontendUserUpdatesThroughCors() throws Exception {
     final String url = "/users/" + UUID.randomUUID();
 
-    mockMvc.perform(options(url).header("Origin", "http://localhost:3001")
+    mockMvc.perform(options(url).header("Origin", "http://localhost:3009")
             .header("Access-Control-Request-Method", "PUT").header("Access-Control-Request-Headers", "authorization,content-type"))
         .andExpect(status().isOk())
-        .andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:3001"));
+        .andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:3009"));
   }
 
   /**

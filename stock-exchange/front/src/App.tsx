@@ -4,6 +4,7 @@ import './theme.css';
 import { CALLBACK_PATH, completeLogin, getAccessToken, login, logout } from './auth/auth';
 import { PermissionsProvider } from './auth/permissions';
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
+import { CompaniesPage } from './companies/CompaniesPage';
 import { RolesPage } from './roles/RolesPage';
 
 /** Logo of SGXchange. */
@@ -104,7 +105,10 @@ export function App() {
 
   const permissions = useMemo(() => new Set(profile?.permissions ?? []), [profile]);
   const canRoles = permissions.has('ROLE_LIST') || permissions.has('PERMISSION_LIST');
+  const canCompanies = permissions.has('COMPANY_LIST');
   const onRoles = route === '#roles';
+  const onCompanies = route === '#companies';
+  const onHome = !onRoles && !onCompanies;
 
   if (!authenticated) {
     return (
@@ -136,13 +140,24 @@ export function App() {
 
           <nav aria-label="Navigation principale" className="sx-nav">
             <span className="sx-mono-label">Exploitation</span>
-            <a href="#home" aria-current={!onRoles ? 'page' : undefined} className={`sx-nav-link${!onRoles ? ' sx-nav-link-active' : ''}`}>
+            <a href="#home" aria-current={onHome ? 'page' : undefined} className={`sx-nav-link${onHome ? ' sx-nav-link-active' : ''}`}>
               <NavIcon>
                 <path d="M3 17 L9 11 l4 4 L21 7" />
                 <path d="M15 7 h6 v6" />
               </NavIcon>
               Accueil
             </a>
+            {canCompanies && (
+              <a href="#companies" aria-current={onCompanies ? 'page' : undefined} className={`sx-nav-link${onCompanies ? ' sx-nav-link-active' : ''}`}>
+                <NavIcon>
+                  <path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16" />
+                  <path d="M14 10h5a1 1 0 0 1 1 1v10" />
+                  <path d="M3 21h18" />
+                  <path d="M8 8h2 M8 12h2 M8 16h2" />
+                </NavIcon>
+                Compagnies cotées
+              </a>
+            )}
             {canRoles && (
               <a href="#roles" aria-current={onRoles ? 'page' : undefined} className={`sx-nav-link${onRoles ? ' sx-nav-link-active' : ''}`}>
                 <NavIcon>
@@ -178,6 +193,12 @@ export function App() {
         <main className="sx-main">
           {!profile ? (
             <div className="sx-empty">Chargement du profil…</div>
+          ) : onCompanies ? (
+            canCompanies ? (
+              <CompaniesPage onUnauthorized={onUnauthorized} />
+            ) : (
+              <div role="alert" className="sx-alert">Vous n'avez pas la permission d'accéder à cet écran.</div>
+            )
           ) : onRoles ? (
             canRoles ? (
               <RolesPage onUnauthorized={onUnauthorized} />

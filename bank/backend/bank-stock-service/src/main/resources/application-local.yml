@@ -1,7 +1,7 @@
 bank:
   stock-service:
     cors:
-      allowed-origins: http://localhost:3000,http://localhost:4200
+      allowed-origins: http://localhost:3000
   user-service:
     base-url: http://localhost:9000
   exchange-company-service:

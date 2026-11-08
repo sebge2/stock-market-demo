@@ -1,5 +1,7 @@
 package be.sgerard.demo.company.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -44,9 +46,10 @@ public class SecurityConfiguration {
 	 * @throws Exception if an error occurs during configuration
 	 */
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	public SecurityFilterChain securityFilterChain(HttpSecurity http,
+		@Qualifier("corsConfigurationSource") CorsConfigurationSource corsConfigurationSource) throws Exception {
 		http
-			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+			.cors(cors -> cors.configurationSource(corsConfigurationSource))
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(auth -> auth
 				.requestMatchers(
@@ -95,14 +98,17 @@ public class SecurityConfiguration {
 	/**
 	 * Configures CORS settings.
 	 *
+	 * @param allowedOrigins origins allowed by the configured environment, comma-separated when needed
 	 * @return the CORS configuration source
 	 */
 	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
+	public CorsConfigurationSource corsConfigurationSource(
+		@Value("${exchange.company-service.cors.allowed-origins:}") String allowedOrigins) {
 		final CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001"));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.setAllowedOrigins(Arrays.stream(allowedOrigins.split(","))
+			.map(String::trim).filter(origin -> !origin.isBlank()).toList());
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setAllowCredentials(true);
 		configuration.setMaxAge(3600L);
 

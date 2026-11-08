@@ -18,6 +18,9 @@ spring:
     show-sql: false
 
 exchange:
+  company-service:
+    cors:
+      allowed-origins: http://localhost:3009
   user-service:
     base-url: ${EXCHANGE_USER_SERVICE_BASE_URL:http://localhost:8091}
 

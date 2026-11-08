@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Verifies that endpoints are properly secured with OAuth2 authentication
  * and authorization checks.
  */
-@SpringBootTest
+@SpringBootTest(properties = "exchange.company-service.cors.allowed-origins=http://localhost:3000")
 @AutoConfigureMockMvc
 @DisplayName("CompanyController Security Tests")
 class CompanyControllerSecurityTest {
@@ -56,6 +56,21 @@ class CompanyControllerSecurityTest {
 	void testUnauthenticatedRequest() throws Exception {
 		mockMvc.perform(get("/companies"))
 			.andExpect(status().isUnauthorized());
+	}
+
+	/**
+	 * Configured browser origins can perform CORS preflight requests without authentication.
+	 *
+	 * @throws Exception when the request cannot be performed
+	 */
+	@Test
+	@DisplayName("Configured origin should be allowed by CORS")
+	void configuredOriginIsAllowedByCors() throws Exception {
+		mockMvc.perform(options("/companies")
+			.header("Origin", "http://localhost:3000")
+			.header("Access-Control-Request-Method", "GET"))
+			.andExpect(status().isOk())
+			.andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:3000"));
 	}
 
 	/**

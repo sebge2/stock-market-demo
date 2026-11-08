@@ -46,9 +46,6 @@ const KPI_COLOR: Record<CompanyStatus, string> = {
   DELISTED: '#9AA9C4',
 };
 
-/** Placeholder of the market figures that are not available yet. */
-const NO_VALUE = '-';
-
 /** Formats a timestamp as a French date. */
 const date = (timestamp: string) => new Date(timestamp).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 
@@ -256,9 +253,6 @@ export function CompaniesPage({ onUnauthorized }: CompaniesPageProps) {
                 <th scope="col">Compagnie</th>
                 <th scope="col">Secteur</th>
                 <th scope="col">Admission</th>
-                <th scope="col" className="sx-right">Capitalisation (EUR)</th>
-                <th scope="col" className="sx-right">Flottant</th>
-                <th scope="col" className="sx-right">Dernier cours</th>
                 <th scope="col">Statut</th>
                 <th scope="col" />
               </tr>
@@ -272,9 +266,6 @@ export function CompaniesPage({ onUnauthorized }: CompaniesPageProps) {
                   </th>
                   <td className="sx-muted">{SECTOR_LABELS[c.sectorType]}</td>
                   <td className="sx-muted">{date(c.createdAt)}</td>
-                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
-                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
-                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
                   <td>
                     <span className="sx-pill">
                       <span className={`sx-dot${DOT_CLASS[c.status]}`} />

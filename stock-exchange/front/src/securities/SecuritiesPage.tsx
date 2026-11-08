@@ -44,6 +44,9 @@ const KPI_COLOR: Record<SecurityStatus, string> = {
   DELISTED: '#9AA9C4',
 };
 
+/** Placeholder for market figures not yet exposed by the securities API. */
+const NO_VALUE = '—';
+
 /** Securities screen: indicators and filterable list of the securities of the exchange. */
 export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
   const can = useCan();
@@ -167,6 +170,9 @@ export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
                 <th scope="col">Type</th>
                 <th scope="col">ISIN</th>
                 <th scope="col">Devise réf. / négo.</th>
+                <th scope="col" className="sx-right">Capitalisation (EUR)</th>
+                <th scope="col" className="sx-right">Flottant</th>
+                <th scope="col" className="sx-right">Dernier cours</th>
                 <th scope="col">Admission</th>
                 <th scope="col">Radiation</th>
                 <th scope="col">Statut</th>
@@ -184,6 +190,9 @@ export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
                   <td><span className="sx-type-pill">{SECURITY_TYPE_LABELS[s.type]}</span></td>
                   <td><span className="sx-code">{s.isin}</span></td>
                   <td className="sx-muted">{s.currency} / {s.tradingCurrency}</td>
+                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
+                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
+                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
                   <td className="sx-muted">{date(s.listingDate)}</td>
                   <td className="sx-muted">{s.delistingDate ? date(s.delistingDate) : '—'}</td>
                   <td>

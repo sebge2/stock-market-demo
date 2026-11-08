@@ -2,6 +2,7 @@ spring:
   sql:
     init:
       mode: always
+      data-locations: classpath:db/local/data.sql
   datasource:
     url: jdbc:h2:mem:exchange-company-db
     driver-class-name: org.h2.Driver

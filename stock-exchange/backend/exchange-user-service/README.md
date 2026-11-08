@@ -29,8 +29,6 @@ With the `local` profile (H2 in memory, seeded from `db/local/data.sql`), the pa
 | `admin` | ADMIN | all                                           |
 | `staff` | STAFF | `USER_LIST`, `ROLE_LIST`                      |
 
-A `GUEST` role (`USER_LIST` only) is also seeded.
-
 OAuth2 public PKCE clients: `exchange-frontend`, `exchange-swagger-ui`, `company-swagger-ui`, `staff-swagger-ui`.
 
 The signing key of the `local` profile is a development-only key pair, committed on purpose. Outside of it, provide

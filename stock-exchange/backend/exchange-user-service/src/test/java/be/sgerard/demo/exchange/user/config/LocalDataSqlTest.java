@@ -43,14 +43,12 @@ class LocalDataSqlTest {
 
   /**
    *
-   * Verifies the STAFF and GUEST roles are seeded with read-only permissions.
+   * Verifies the STAFF role is seeded with its operational permissions.
    *
    */
   @Test
-  void loadsStaffAndGuestAuthorization() {
+  void loadsStaffAuthorization() {
     assertThat(roleRepository.findByName("STAFF").orElseThrow().getPermissions()).extracting(Permission::getCode)
         .containsExactlyInAnyOrder("USER_LIST", "ROLE_LIST", "STAFF_LIST", "STAFF_ROLE_LIST", "COMPANY_LIST");
-    assertThat(roleRepository.findByName("GUEST").orElseThrow().getPermissions()).extracting(Permission::getCode)
-        .containsExactly("USER_LIST");
   }
 }

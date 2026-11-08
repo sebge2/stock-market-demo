@@ -211,6 +211,7 @@ export function App() {
     return (
       <div className="login">
         <div className="login-card">
+          <img className="login-logo" src="/favicon.png" alt="Gerardson Capital" />
           <h1>Gerardson Capital</h1>
           <p>Connectez-vous pour accéder à l'annuaire des employés.</p>
           {error && <p role="alert" className="alert">{error}</p>}

@@ -526,6 +526,12 @@ select:focus-visible {
   font-size: 28px;
 }
 
+.login-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+}
+
 .login-card p {
   margin: 0;
   color: #3a4a63;

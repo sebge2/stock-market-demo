@@ -11,6 +11,7 @@ import be.sgerard.demo.company.model.PriceInterval;
 import be.sgerard.demo.company.model.Security;
 import be.sgerard.demo.company.model.SecurityStatus;
 import be.sgerard.demo.company.model.SecurityType;
+import be.sgerard.demo.company.model.SectorType;
 import be.sgerard.demo.company.model.StockPrice;
 import be.sgerard.demo.company.model.dto.ListingDto;
 import jakarta.validation.ConstraintViolationException;
@@ -90,7 +91,8 @@ class CompanyPersistenceTest {
    *
    */
   private Company newCompany() {
-    return companies.saveAndFlush(new Company("Apple", "US", CompanyStatus.ACTIVE));
+    return companies.saveAndFlush(new Company("Apple", "US", SectorType.INFORMATION_TECHNOLOGY,
+        CompanyStatus.LISTED));
   }
 
   /**
@@ -143,6 +145,8 @@ class CompanyPersistenceTest {
     Company saved = newCompany();
 
     assertThat(saved.getId()).isNotNull();
+    assertThat(saved.getSectorType()).isEqualTo(SectorType.INFORMATION_TECHNOLOGY);
+    assertThat(saved.getStatus()).isEqualTo(CompanyStatus.LISTED);
     assertThat(saved.getCreatedAt()).isNotNull();
     assertThat(saved.getUpdatedAt()).isNotNull();
   }
@@ -173,11 +177,15 @@ class CompanyPersistenceTest {
    */
   @Test
   void invalidCompanyIsRejected() {
-    assertThatThrownBy(() -> companies.saveAndFlush(new Company(" ", "US", CompanyStatus.ACTIVE)))
+    assertThatThrownBy(() -> companies.saveAndFlush(new Company(" ", "US", SectorType.INFORMATION_TECHNOLOGY,
+        CompanyStatus.LISTED)))
         .isInstanceOf(ConstraintViolationException.class);
-    assertThatThrownBy(() -> companies.saveAndFlush(new Company("Apple", "USA", CompanyStatus.ACTIVE)))
+    assertThatThrownBy(() -> companies.saveAndFlush(new Company("Apple", "USA", SectorType.INFORMATION_TECHNOLOGY,
+        CompanyStatus.LISTED)))
         .isInstanceOf(ConstraintViolationException.class);
-    assertThatThrownBy(() -> companies.saveAndFlush(new Company("Apple", "US", null)))
+    assertThatThrownBy(() -> companies.saveAndFlush(new Company("Apple", "US", SectorType.INFORMATION_TECHNOLOGY, null)))
+        .isInstanceOf(ConstraintViolationException.class);
+    assertThatThrownBy(() -> companies.saveAndFlush(new Company("Apple", "US", null, CompanyStatus.LISTED)))
         .isInstanceOf(ConstraintViolationException.class);
   }
 

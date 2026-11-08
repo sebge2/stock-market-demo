@@ -30,7 +30,7 @@ public class CompanyMapper {
 		dto.setCountryCode(company.getCountryCode());
 		dto.setWebsite(company.getWebsite());
 		dto.setLogoUrl(company.getLogoUrl());
-		dto.setIndustryId(company.getIndustryId());
+		dto.setSectorType(company.getSectorType());
 		dto.setStatus(company.getStatus());
 		dto.setCreatedAt(company.getCreatedAt());
 		dto.setUpdatedAt(company.getUpdatedAt());
@@ -49,10 +49,10 @@ public class CompanyMapper {
 			return null;
 		}
 
-		final Company company = new Company(dto.getName(), dto.getCountryCode(), dto.getStatus());
+		final Company company = new Company(dto.getName(), dto.getCountryCode(), dto.getSectorType(), dto.getStatus());
 		company.setWebsite(dto.getWebsite());
 		company.setLogoUrl(dto.getLogoUrl());
-		company.setIndustryId(dto.getIndustryId());
+		company.setSectorType(dto.getSectorType());
 
 		return company;
 	}

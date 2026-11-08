@@ -2,6 +2,7 @@ package be.sgerard.demo.company.controller;
 
 import be.sgerard.demo.company.model.Company;
 import be.sgerard.demo.company.model.CompanyStatus;
+import be.sgerard.demo.company.model.SectorType;
 import be.sgerard.demo.company.repository.CompanyRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +65,7 @@ class CompanyControllerSecurityTest {
 	@DisplayName("User with COMPANY_LIST authority should access GET endpoints")
 	@WithMockUser(authorities = "COMPANY_LIST")
 	void testAuthenticatedUserCanReadCompanies() throws Exception {
-		final Company company = new Company("Test Company", "US", CompanyStatus.ACTIVE);
+		final Company company = new Company("Test Company", "US", SectorType.INFORMATION_TECHNOLOGY, CompanyStatus.LISTED);
 		companyRepository.save(company);
 
 		mockMvc.perform(get("/companies")
@@ -83,7 +84,7 @@ class CompanyControllerSecurityTest {
 		mockMvc.perform(post("/companies")
 			.with(jwt().authorities(() -> "COMPANY_LIST"))
 			.contentType("application/json")
-			.content("{\"name\":\"Test\",\"countryCode\":\"US\",\"status\":\"ACTIVE\"}"))
+			.content("{\"name\":\"Test\",\"countryCode\":\"US\",\"sectorType\":\"INFORMATION_TECHNOLOGY\",\"status\":\"LISTED\"}"))
 			.andExpect(status().isForbidden());
 	}
 
@@ -97,7 +98,7 @@ class CompanyControllerSecurityTest {
 		mockMvc.perform(post("/companies")
 			.with(jwt().authorities(() -> "COMPANY_CREATE"))
 			.contentType("application/json")
-			.content("{\"name\":\"Test Company\",\"countryCode\":\"US\",\"status\":\"ACTIVE\"}"))
+			.content("{\"name\":\"Test Company\",\"countryCode\":\"US\",\"sectorType\":\"INFORMATION_TECHNOLOGY\",\"status\":\"LISTED\"}"))
 			.andExpect(status().isCreated());
 	}
 

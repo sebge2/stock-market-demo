@@ -16,7 +16,6 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -78,11 +77,13 @@ public class Company {
 
     /**
      *
-     * Reference to the industry.
+     * Market sector of the company.
      *
      */
-    @Column(name = "industry_id")
-    private UUID industryId;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sector_type", nullable = false, length = 40)
+    private SectorType sectorType;
 
     /**
      *
@@ -124,11 +125,13 @@ public class Company {
      *
      * @param name        commercial name
      * @param countryCode ISO 3166-1 alpha-2 country code of the head office
-     * @param status      status of the company
+     * @param sectorType  market sector of the company
+     * @param status      listing status of the company
      */
-    public Company(String name, String countryCode, CompanyStatus status) {
+    public Company(String name, String countryCode, SectorType sectorType, CompanyStatus status) {
         this.name = name;
         this.countryCode = countryCode;
+        this.sectorType = sectorType;
         this.status = status;
     }
 
@@ -228,18 +231,18 @@ public class Company {
 
     /**
      *
-     * @return the industry identifier
+     * @return the market sector
      */
-    public UUID getIndustryId() {
-        return industryId;
+    public SectorType getSectorType() {
+        return sectorType;
     }
 
     /**
      *
-     * @param industryId the industry identifier
+     * @param sectorType the market sector
      */
-    public void setIndustryId(UUID industryId) {
-        this.industryId = industryId;
+    public void setSectorType(SectorType sectorType) {
+        this.sectorType = sectorType;
     }
 
     /**
@@ -276,30 +279,6 @@ public class Company {
 
     /**
      *
-     * Entities are equal when they share the same non-null identifier.
-     *
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Company other)) {
-            return false;
-        }
-        return id != null && Objects.equals(id, other.id);
-    }
-
-    /**
-     *
-     * Constant hash code, stable across the entity lifecycle.
-     *
-     */
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
-
     /**
      *
      * Textual representation without lazy associations.
@@ -307,6 +286,7 @@ public class Company {
      */
     @Override
     public String toString() {
-        return "Company{id=" + id + ", name='" + name + "', countryCode='" + countryCode + "', status=" + status + "}";
+        return "Company{id=" + id + ", name='" + name + "', countryCode='" + countryCode
+            + "', sectorType=" + sectorType + ", status=" + status + "}";
     }
 }

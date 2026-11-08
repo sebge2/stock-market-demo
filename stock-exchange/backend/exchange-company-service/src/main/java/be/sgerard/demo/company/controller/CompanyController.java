@@ -153,7 +153,7 @@ public class CompanyController {
 				existing.setCountryCode(companyDto.getCountryCode());
 				existing.setWebsite(companyDto.getWebsite());
 				existing.setLogoUrl(companyDto.getLogoUrl());
-				existing.setIndustryId(companyDto.getIndustryId());
+				existing.setSectorType(companyDto.getSectorType());
 				existing.setStatus(companyDto.getStatus());
 
 				final Company updated = companyRepository.save(existing);

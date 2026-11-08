@@ -1,6 +1,7 @@
 package be.sgerard.demo.company.model.dto;
 
 import be.sgerard.demo.company.model.CompanyStatus;
+import be.sgerard.demo.company.model.SectorType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -39,9 +40,9 @@ public class CompanyDto {
 	private String logoUrl;
 
 	/**
-	 * Reference to the industry.
+     * Market sector of the company.
 	 */
-	private UUID industryId;
+    private SectorType sectorType;
 
 	/**
 	 * Status of the company.
@@ -70,12 +71,15 @@ public class CompanyDto {
 	 * @param id the identifier
 	 * @param name the commercial name
 	 * @param countryCode the country code
-	 * @param status the company status
+     * @param sectorType the company market sector
+     * @param status the company listing status
 	 */
-	public CompanyDto(final UUID id, final String name, final String countryCode, final CompanyStatus status) {
+	public CompanyDto(final UUID id, final String name, final String countryCode, final SectorType sectorType,
+		final CompanyStatus status) {
 		this.id = id;
 		this.name = name;
 		this.countryCode = countryCode;
+		this.sectorType = sectorType;
 		this.status = status;
 	}
 
@@ -170,21 +174,21 @@ public class CompanyDto {
 	}
 
 	/**
-	 * Gets the industry identifier.
+     * Gets the market sector.
 	 *
-	 * @return the industry identifier
+     * @return the market sector
 	 */
-	public UUID getIndustryId() {
-		return industryId;
+    public SectorType getSectorType() {
+        return sectorType;
 	}
 
 	/**
-	 * Sets the industry identifier.
+     * Sets the market sector.
 	 *
-	 * @param industryId the industry identifier to set
+     * @param sectorType the market sector to set
 	 */
-	public void setIndustryId(final UUID industryId) {
-		this.industryId = industryId;
+    public void setSectorType(final SectorType sectorType) {
+        this.sectorType = sectorType;
 	}
 
 	/**

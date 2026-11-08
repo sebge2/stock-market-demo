@@ -9,15 +9,29 @@ public enum CompanyStatus {
 
   /**
    *
-   * Value ACTIVE.
+   * Company is listed and can be traded.
    *
    */
-  ACTIVE,
+  LISTED,
 
   /**
    *
-   * Value INACTIVE.
+   * Trading in the company is temporarily suspended.
    *
    */
-  INACTIVE;
+  SUSPENDED,
+
+  /**
+   *
+   * Company is undergoing admission to listing.
+   *
+   */
+  ADMISSION,
+
+  /**
+   *
+   * Company has been delisted.
+   *
+   */
+  DELISTED;
 }

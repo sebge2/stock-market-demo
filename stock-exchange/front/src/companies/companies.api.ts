@@ -2,7 +2,7 @@ import { getAccessToken } from '../auth/auth';
 import { ApiError } from '../roles/roles.api';
 
 /** Base URL of the company service. */
-const COMPANY_API_URL = import.meta.env.VITE_COMPANY_API_URL ?? 'http://localhost:8087/api/company';
+export const COMPANY_API_URL = import.meta.env.VITE_COMPANY_API_URL ?? 'http://localhost:8087/api/company';
 
 /** Status of a company on the exchange. */
 export type CompanyStatus = 'LISTED' | 'SUSPENDED' | 'ADMISSION' | 'DELISTED';

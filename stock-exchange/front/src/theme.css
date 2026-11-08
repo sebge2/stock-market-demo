@@ -852,3 +852,113 @@
   font-size: 12px;
   color: #9aa9c4;
 }
+
+/* Securities */
+.sx-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px 24px;
+}
+
+.sx-span-3 {
+  grid-column: span 3;
+}
+
+.sx-field-hint {
+  font-size: 12px;
+  color: #9aa9c4;
+}
+
+.sx-type-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  background: #182338;
+  border: 1px solid #25324b;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.sx-input-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.sx-toggle-wrap {
+  flex-wrap: wrap;
+}
+
+.sx-toggle-wrap button {
+  flex: 1 1 auto;
+  padding: 0 16px;
+}
+
+.sx-row-muted .sx-company-name,
+.sx-row-muted .sx-type-pill,
+.sx-row-muted .sx-code {
+  color: #9aa9c4;
+}
+
+.sx-row-selected {
+  background: rgba(91, 140, 255, 0.12);
+}
+
+.sx-click-row {
+  cursor: pointer;
+}
+
+.sx-crumb a {
+  color: #9aa9c4;
+  text-decoration: none;
+}
+
+.sx-crumb a:hover {
+  color: #eaf0fa;
+}
+
+.sx-crumb-current {
+  color: #eaf0fa;
+}
+
+@media (max-width: 1000px) {
+  .sx-grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sx-span-3 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .sx-grid-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sx-span-3 {
+    grid-column: auto;
+  }
+}
+a.sx-btn { text-decoration: none; }
+
+.sx-link {
+  color: #eaf0fa;
+  text-decoration: none;
+}
+
+.sx-link:hover {
+  color: #5b8cff;
+}
+
+a.sx-icon-btn {
+  text-decoration: none;
+}
+
+/* In a form field (a column), the select must keep its own height instead of using its row flex-basis. */
+.sx-field .sx-select {
+  flex: none;
+  width: 100%;
+  box-sizing: border-box;
+}

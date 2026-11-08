@@ -6,6 +6,8 @@ import { PermissionsProvider } from './auth/permissions';
 import { fetchProfile, initialsOf, type Profile } from './auth/profile';
 import { CompaniesPage } from './companies/CompaniesPage';
 import { RolesPage } from './roles/RolesPage';
+import { SecuritiesPage } from './securities/SecuritiesPage';
+import { SecurityEditPage } from './securities/SecurityEditPage';
 
 /** Logo of SGXchange. */
 function Logo({ size }: { size: number }) {
@@ -106,9 +108,12 @@ export function App() {
   const permissions = useMemo(() => new Set(profile?.permissions ?? []), [profile]);
   const canRoles = permissions.has('ROLE_LIST') || permissions.has('PERMISSION_LIST');
   const canCompanies = permissions.has('COMPANY_LIST');
+  const canSecurities = permissions.has('SECURITY_LIST');
+  const onSecurities = route === '#securities' || route.startsWith('#securities/');
+  const securityId = route.startsWith('#securities/') ? route.slice('#securities/'.length) : null;
   const onRoles = route === '#roles';
   const onCompanies = route === '#companies';
-  const onHome = !onRoles && !onCompanies;
+  const onHome = !onRoles && !onCompanies && !onSecurities;
 
   if (!authenticated) {
     return (
@@ -158,6 +163,16 @@ export function App() {
                 Compagnies cotées
               </a>
             )}
+            {canSecurities && (
+              <a href="#securities" aria-current={onSecurities ? 'page' : undefined} className={`sx-nav-link${onSecurities ? ' sx-nav-link-active' : ''}`}>
+                <NavIcon>
+                  <path d="M3 17 L9 11 l4 4 L21 7" />
+                  <path d="M15 7 h6 v6" />
+                  <path d="M3 21h18" />
+                </NavIcon>
+                Titres
+              </a>
+            )}
             {canRoles && (
               <a href="#roles" aria-current={onRoles ? 'page' : undefined} className={`sx-nav-link${onRoles ? ' sx-nav-link-active' : ''}`}>
                 <NavIcon>
@@ -196,6 +211,16 @@ export function App() {
           ) : onCompanies ? (
             canCompanies ? (
               <CompaniesPage onUnauthorized={onUnauthorized} />
+            ) : (
+              <div role="alert" className="sx-alert">Vous n'avez pas la permission d'accéder à cet écran.</div>
+            )
+          ) : onSecurities ? (
+            canSecurities ? (
+              securityId === null ? (
+                <SecuritiesPage onUnauthorized={onUnauthorized} />
+              ) : (
+                <SecurityEditPage key={securityId} id={securityId === 'new' ? null : securityId} onUnauthorized={onUnauthorized} />
+              )
             ) : (
               <div role="alert" className="sx-alert">Vous n'avez pas la permission d'accéder à cet écran.</div>
             )

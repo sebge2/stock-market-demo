@@ -144,12 +144,16 @@ public class SecurityService {
 
   /**
    *
-   * Makes sure the ISIN and the ticker are not used by another security.
+   * Checks the share counts, and makes sure the ISIN and the ticker are not used by another security.
    *
    * @param request the security data
    * @param currentId identifier of the edited security, or {@code null} when creating
    */
   private void ensureUnique(final SecurityRequestDto request, final UUID currentId) {
+    if (request.issuedShares() != null && request.outstandingShares() != null
+        && request.outstandingShares() > request.issuedShares()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Outstanding shares exceed the issued shares");
+    }
     securityRepository.findByIsin(request.isin()).filter(s -> !s.getId().equals(currentId)).ifPresent(s -> {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "ISIN already used: " + request.isin());
     });

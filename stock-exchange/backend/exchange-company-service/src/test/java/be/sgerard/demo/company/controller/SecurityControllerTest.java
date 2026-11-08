@@ -146,6 +146,9 @@ class SecurityControllerTest {
   void rejectsInvalidAndDuplicatedSecurities() throws Exception {
     mockMvc.perform(post("/securities").with(authorities("SECURITY_CREATE")).contentType("application/json")
         .content(body("AIR", "not-an-isin"))).andExpect(status().isBadRequest());
+    mockMvc.perform(post("/securities").with(authorities("SECURITY_CREATE")).contentType("application/json")
+        .content(body("AIR", "NL0000235190").replace("\"status\"", "\"issuedShares\":10,\"outstandingShares\":20,\"status\"")))
+        .andExpect(status().isBadRequest());
 
     mockMvc.perform(post("/securities").with(authorities("SECURITY_CREATE")).contentType("application/json")
         .content(body("AIR", "NL0000235190"))).andExpect(status().isCreated());

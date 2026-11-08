@@ -22,11 +22,11 @@ import java.util.UUID;
 
 /**
  *
- * The listing of a security on an exchange; a security may be listed on several markets.
+ * The listing of a security on the stock exchange; the ticker identifies the listing.
  *
  */
 @Entity
-@Table(name = "listing", uniqueConstraints = @UniqueConstraint(name = "uk_listing_exchange_ticker", columnNames = {"exchange_id", "ticker"}))
+@Table(name = "listing", uniqueConstraints = @UniqueConstraint(name = "uk_listing_ticker", columnNames = "ticker"))
 public class Listing {
 
   /**
@@ -48,16 +48,6 @@ public class Listing {
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(name = "security_id", nullable = false, updatable = false)
   private Security security;
-
-  /**
-   *
-   * Exchange on which the security is listed
-   *
-   */
-  @NotNull
-  @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "exchange_id", nullable = false, updatable = false)
-  private Exchange exchange;
 
   /**
    *
@@ -108,14 +98,6 @@ public class Listing {
 
   /**
    *
-   * Whether this is the primary listing of the security
-   *
-   */
-  @Column(name = "is_primary", nullable = false)
-  private boolean primary;
-
-  /**
-   *
    * Constructor required by JPA.
    *
    */
@@ -127,22 +109,18 @@ public class Listing {
    * Creates a new instance.
    *
    * @param security Listed security
-   * @param exchange Exchange on which the security is listed
    * @param ticker Ticker symbol used on this market
    * @param tradingCurrency Trading currency (ISO 4217)
    * @param listingDate Date of first listing
    * @param status Status of the listing
-   * @param primary Whether this is the primary listing of the security
    *
    */
-  public Listing(Security security, Exchange exchange, String ticker, String tradingCurrency, LocalDate listingDate, ListingStatus status, boolean primary) {
+  public Listing(Security security, String ticker, String tradingCurrency, LocalDate listingDate, ListingStatus status) {
     this.security = security;
-    this.exchange = exchange;
     this.ticker = ticker;
     this.tradingCurrency = tradingCurrency;
     this.listingDate = listingDate;
     this.status = status;
-    this.primary = primary;
   }
 
   /**
@@ -161,15 +139,6 @@ public class Listing {
    */
   public Security getSecurity() {
     return security;
-  }
-
-  /**
-   *
-   * @return the exchange on which the security is listed
-   *
-   */
-  public Exchange getExchange() {
-    return exchange;
   }
 
   /**
@@ -264,24 +233,6 @@ public class Listing {
 
   /**
    *
-   * @return whether this is the primary listing of the security
-   *
-   */
-  public boolean isPrimary() {
-    return primary;
-  }
-
-  /**
-   *
-   * @param primary whether this is the primary listing of the security
-   *
-   */
-  public void setPrimary(boolean primary) {
-    this.primary = primary;
-  }
-
-  /**
-   *
    * Entities are equal when they share the same non-null identifier.
    *
    */
@@ -313,6 +264,6 @@ public class Listing {
    */
   @Override
   public String toString() {
-    return "Listing{id=" + id + ", ticker=" + ticker + ", tradingCurrency=" + tradingCurrency + ", listingDate=" + listingDate + ", status=" + status + ", primary=" + primary + "}";
+    return "Listing{id=" + id + ", ticker=" + ticker + ", tradingCurrency=" + tradingCurrency + ", listingDate=" + listingDate + ", status=" + status + "}";
   }
 }

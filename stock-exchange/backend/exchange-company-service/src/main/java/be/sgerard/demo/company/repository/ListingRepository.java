@@ -15,13 +15,12 @@ public interface ListingRepository extends JpaRepository<Listing, UUID> {
 
   /**
    *
-   * Finds a listing by exchange and ticker.
+   * Finds a listing by ticker.
    *
-   * @param exchangeId the exchange identifier
    * @param ticker the ticker symbol
    * @return the matching listing, if any
    */
-  Optional<Listing> findByExchangeIdAndTicker(UUID exchangeId, String ticker);
+  Optional<Listing> findByTicker(String ticker);
 
   /**
    *

@@ -20,8 +20,8 @@ public class ListingMapper {
    * @return the DTO
    */
   public ListingDto toDto(Listing listing) {
-    return new ListingDto(listing.getId(), listing.getSecurity().getId(), listing.getExchange().getId(),
+    return new ListingDto(listing.getId(), listing.getSecurity().getId(),
         listing.getTicker(), listing.getTradingCurrency(), listing.getListingDate(), listing.getDelistingDate(),
-        listing.getStatus(), listing.isPrimary());
+        listing.getStatus());
   }
 }

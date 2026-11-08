@@ -9,15 +9,29 @@ public enum SecurityStatus {
 
   /**
    *
-   * Value ACTIVE.
+   * Security is listed and can be traded.
    *
    */
-  ACTIVE,
+  LISTED,
 
   /**
    *
-   * Value INACTIVE.
+   * Trading in the security is temporarily suspended.
    *
    */
-  INACTIVE;
+  SUSPENDED,
+
+  /**
+   *
+   * Security is undergoing admission to trading.
+   *
+   */
+  ADMISSION,
+
+  /**
+   *
+   * Security has been delisted.
+   *
+   */
+  DELISTED;
 }

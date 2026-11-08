@@ -18,8 +18,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -93,6 +93,43 @@ public class Security {
 
   /**
    *
+   * Ticker symbol used on the single exchange.
+   *
+   */
+  @NotBlank
+  @Size(max = 20)
+  @Column(name = "ticker", nullable = false, unique = true, length = 20)
+  private String ticker;
+
+  /**
+   *
+   * Currency used to trade the security on the exchange.
+   *
+   */
+  @NotBlank
+  @Pattern(regexp = "[A-Z]{3}")
+  @Column(name = "trading_currency", nullable = false, length = 3)
+  private String tradingCurrency;
+
+  /**
+   *
+   * Date on which the security was admitted to trading.
+   *
+   */
+  @NotNull
+  @Column(name = "listing_date", nullable = false)
+  private LocalDate listingDate;
+
+  /**
+   *
+   * Date on which the security was delisted, when applicable.
+   *
+   */
+  @Column(name = "delisting_date")
+  private LocalDate delistingDate;
+
+  /**
+   *
    * Number of issued shares, if applicable
    *
    */
@@ -111,7 +148,7 @@ public class Security {
 
   /**
    *
-   * Status of the instrument
+   * Trading status of the instrument on the single exchange.
    *
    */
   @NotNull
@@ -151,16 +188,23 @@ public class Security {
    * @param name Name of the instrument
    * @param isin International securities identification number (ISIN)
    * @param type Type of financial instrument
-   * @param currency Reference currency (ISO 4217)
-   * @param status Status of the instrument
+   * @param currency reference currency (ISO 4217)
+   * @param ticker ticker symbol used on the exchange
+   * @param tradingCurrency trading currency (ISO 4217)
+   * @param listingDate date of admission to trading
+   * @param status trading status of the instrument
    *
    */
-  public Security(Company company, String name, String isin, SecurityType type, String currency, SecurityStatus status) {
+  public Security(Company company, String name, String isin, SecurityType type, String currency, String ticker,
+      String tradingCurrency, LocalDate listingDate, SecurityStatus status) {
     this.company = company;
     this.name = name;
     this.isin = isin;
     this.type = type;
     this.currency = currency;
+    this.ticker = ticker;
+    this.tradingCurrency = tradingCurrency;
+    this.listingDate = listingDate;
     this.status = status;
   }
 
@@ -278,6 +322,78 @@ public class Security {
 
   /**
    *
+   * @return the ticker symbol used on the exchange
+   *
+   */
+  public String getTicker() {
+    return ticker;
+  }
+
+  /**
+   *
+   * @param ticker the ticker symbol used on the exchange
+   *
+   */
+  public void setTicker(String ticker) {
+    this.ticker = ticker;
+  }
+
+  /**
+   *
+   * @return the trading currency (ISO 4217)
+   *
+   */
+  public String getTradingCurrency() {
+    return tradingCurrency;
+  }
+
+  /**
+   *
+   * @param tradingCurrency the trading currency (ISO 4217)
+   *
+   */
+  public void setTradingCurrency(String tradingCurrency) {
+    this.tradingCurrency = tradingCurrency;
+  }
+
+  /**
+   *
+   * @return the date of admission to trading
+   *
+   */
+  public LocalDate getListingDate() {
+    return listingDate;
+  }
+
+  /**
+   *
+   * @param listingDate the date of admission to trading
+   *
+   */
+  public void setListingDate(LocalDate listingDate) {
+    this.listingDate = listingDate;
+  }
+
+  /**
+   *
+   * @return the delisting date, or {@code null} while the security is listed
+   *
+   */
+  public LocalDate getDelistingDate() {
+    return delistingDate;
+  }
+
+  /**
+   *
+   * @param delistingDate the delisting date, or {@code null} when listed
+   *
+   */
+  public void setDelistingDate(LocalDate delistingDate) {
+    this.delistingDate = delistingDate;
+  }
+
+  /**
+   *
    * @return the number of issued shares, if applicable
    *
    */
@@ -350,30 +466,6 @@ public class Security {
 
   /**
    *
-   * Entities are equal when they share the same non-null identifier.
-   *
-   */
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Security other)) {
-      return false;
-    }
-    return id != null && Objects.equals(id, other.id);
-  }
-
-  /**
-   *
-   * Constant hash code, stable across the entity lifecycle.
-   *
-   */
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
-
   /**
    *
    * Textual representation without lazy associations.
@@ -381,6 +473,7 @@ public class Security {
    */
   @Override
   public String toString() {
-    return "Security{id=" + id + ", name=" + name + ", isin=" + isin + ", type=" + type + ", currency=" + currency + ", status=" + status + "}";
+    return "Security{id=" + id + ", name=" + name + ", isin=" + isin + ", ticker=" + ticker
+        + ", type=" + type + ", currency=" + currency + ", status=" + status + "}";
   }
 }

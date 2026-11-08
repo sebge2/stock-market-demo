@@ -24,6 +24,15 @@ public interface SecurityRepository extends JpaRepository<Security, UUID> {
 
   /**
    *
+   * Finds a security by its ticker on the single exchange.
+   *
+   * @param ticker the ticker symbol
+   * @return the matching security, if any
+   */
+  Optional<Security> findByTicker(String ticker);
+
+  /**
+   *
    * Finds the securities issued by a company.
    *
    * @param companyId the company identifier

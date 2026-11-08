@@ -31,7 +31,7 @@ public class OpenApiConfiguration {
         return new OpenAPI()
                 .info(new Info()
                         .title("Exchange Company Service")
-                        .description("Company and listing management microservice for Stock Exchange")
+                        .description("Company and security management microservice for Stock Exchange")
                         .version("1.0.0")
                 )
                 .components(new Components()

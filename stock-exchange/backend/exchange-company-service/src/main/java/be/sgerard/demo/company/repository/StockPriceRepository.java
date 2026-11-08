@@ -16,14 +16,14 @@ public interface StockPriceRepository extends JpaRepository<StockPrice, UUID> {
 
   /**
    *
-   * Finds the prices of a listing for an interval within a period, oldest first.
+   * Finds the prices of a security for an interval within a period, oldest first.
    *
-   * @param listingId the listing identifier
+   * @param securityId the security identifier
    * @param interval the time interval
    * @param from start of the period (inclusive)
    * @param to end of the period (inclusive)
    * @return the prices
    */
-  List<StockPrice> findByListingIdAndIntervalAndTimestampBetweenOrderByTimestampAsc(
-      UUID listingId, PriceInterval interval, LocalDateTime from, LocalDateTime to);
+  List<StockPrice> findBySecurityIdAndIntervalAndTimestampBetweenOrderByTimestampAsc(
+      UUID securityId, PriceInterval interval, LocalDateTime from, LocalDateTime to);
 }

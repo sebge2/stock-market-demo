@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/companies")
-@Tag(name = "Companies", description = "Manage companies and their listings")
+@Tag(name = "Companies", description = "Manage companies")
 @SecurityRequirement(name = "OAuth2")
 public class CompanyController {
 

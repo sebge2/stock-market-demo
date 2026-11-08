@@ -16,16 +16,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
  *
- * Price measure (OHLC) of a listing over a time interval.
+ * Price measure (OHLC) of a security over a time interval.
  *
  */
 @Entity
-@Table(name = "stock_price", uniqueConstraints = @UniqueConstraint(name = "uk_stock_price_listing_ts_interval", columnNames = {"listing_id", "measured_at", "price_interval"}))
+@Table(name = "stock_price", uniqueConstraints = @UniqueConstraint(name = "uk_stock_price_security_ts_interval", columnNames = {"security_id", "measured_at", "price_interval"}))
 public class StockPrice {
 
   /**
@@ -40,13 +39,13 @@ public class StockPrice {
 
   /**
    *
-   * Concerned listing
+   * Concerned security.
    *
    */
   @NotNull
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
-  @JoinColumn(name = "listing_id", nullable = false, updatable = false)
-  private Listing listing;
+  @JoinColumn(name = "security_id", nullable = false, updatable = false)
+  private Security security;
 
   /**
    *
@@ -128,7 +127,7 @@ public class StockPrice {
    *
    * Creates a new instance.
    *
-   * @param listing Concerned listing
+   * @param security concerned security
    * @param timestamp Date and time of the measure (start of the interval)
    * @param open Opening price
    * @param high Highest price
@@ -138,8 +137,9 @@ public class StockPrice {
    * @param interval Time interval of the measure
    *
    */
-  public StockPrice(Listing listing, LocalDateTime timestamp, BigDecimal open, BigDecimal high, BigDecimal low, BigDecimal close, long volume, PriceInterval interval) {
-    this.listing = listing;
+  public StockPrice(Security security, LocalDateTime timestamp, BigDecimal open, BigDecimal high, BigDecimal low,
+      BigDecimal close, long volume, PriceInterval interval) {
+    this.security = security;
     this.timestamp = timestamp;
     this.open = open;
     this.high = high;
@@ -160,11 +160,11 @@ public class StockPrice {
 
   /**
    *
-   * @return the concerned listing
+   * @return the concerned security
    *
    */
-  public Listing getListing() {
-    return listing;
+  public Security getSecurity() {
+    return security;
   }
 
   /**
@@ -293,31 +293,6 @@ public class StockPrice {
     this.interval = interval;
   }
 
-  /**
-   *
-   * Entities are equal when they share the same non-null identifier.
-   *
-   */
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof StockPrice other)) {
-      return false;
-    }
-    return id != null && Objects.equals(id, other.id);
-  }
-
-  /**
-   *
-   * Constant hash code, stable across the entity lifecycle.
-   *
-   */
-  @Override
-  public int hashCode() {
-    return getClass().hashCode();
-  }
 
   /**
    *

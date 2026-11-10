@@ -25,8 +25,8 @@ public class SecurityMapper {
     return new SecurityDto(security.getId(), security.getCompany().getId(), security.getCompany().getName(),
         security.getName(), security.getIsin(), security.getType(), security.getCurrency(), security.getTicker(),
         security.getTradingCurrency(), security.getListingDate(), security.getDelistingDate(),
-        security.getIssuedShares(), security.getOutstandingShares(), security.getStatus(), security.getCreatedAt(),
-        security.getUpdatedAt());
+        security.getIssuedShares(), security.getOutstandingShares(), security.getStatus(), security.getCurrentPrice(),
+        security.getCurrentPriceUpdatedAt(), security.getCreatedAt(), security.getUpdatedAt());
   }
 
   /**

@@ -18,6 +18,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -155,6 +156,23 @@ public class Security {
   @Enumerated(EnumType.STRING)
   @Column(name = "status", nullable = false, length = 20)
   private SecurityStatus status;
+
+  /**
+   *
+   * Most recently executed price on the exchange, in the trading currency.
+   *
+   */
+  @PositiveOrZero
+  @Column(name = "current_price", precision = 19, scale = 4)
+  private BigDecimal currentPrice;
+
+  /**
+   *
+   * Date and time at which the current price was last updated.
+   *
+   */
+  @Column(name = "current_price_updated_at")
+  private LocalDateTime currentPriceUpdatedAt;
 
   /**
    *
@@ -444,6 +462,37 @@ public class Security {
    */
   public void setStatus(SecurityStatus status) {
     this.status = status;
+  }
+
+  /**
+   *
+   * @return the most recently executed price, in the trading currency
+   *
+   */
+  public BigDecimal getCurrentPrice() {
+    return currentPrice;
+  }
+
+  /**
+   *
+   * @return the date and time at which the current price was last updated
+   *
+   */
+  public LocalDateTime getCurrentPriceUpdatedAt() {
+    return currentPriceUpdatedAt;
+  }
+
+  /**
+   *
+   * Updates the most recently executed price on the exchange.
+   *
+   * @param currentPrice the price, in the trading currency
+   * @param updatedAt the date and time of the price update
+   *
+   */
+  public void updateCurrentPrice(BigDecimal currentPrice, LocalDateTime updatedAt) {
+    this.currentPrice = currentPrice;
+    this.currentPriceUpdatedAt = updatedAt;
   }
 
   /**

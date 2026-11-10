@@ -3,6 +3,7 @@ package be.sgerard.demo.company.model.dto;
 import be.sgerard.demo.company.model.SecurityStatus;
 import be.sgerard.demo.company.model.SecurityType;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -25,6 +26,8 @@ import java.util.UUID;
  * @param issuedShares number of issued shares, if applicable
  * @param outstandingShares number of outstanding shares, if applicable
  * @param status trading status
+ * @param currentPrice most recently executed price, in the trading currency
+ * @param currentPriceUpdatedAt date and time at which the current price was last updated
  * @param createdAt creation timestamp
  * @param updatedAt last update timestamp
  */
@@ -32,5 +35,6 @@ import java.util.UUID;
 public record SecurityDto(UUID id, UUID companyId, String companyName, String name, String isin, SecurityType type,
                           String currency, String ticker, String tradingCurrency, LocalDate listingDate,
                           LocalDate delistingDate, Long issuedShares, Long outstandingShares, SecurityStatus status,
-                          LocalDateTime createdAt, LocalDateTime updatedAt) {
+                          BigDecimal currentPrice, LocalDateTime currentPriceUpdatedAt, LocalDateTime createdAt,
+                          LocalDateTime updatedAt) {
 }

@@ -16,7 +16,7 @@ Frontend dédié au service de bourse permettant:
 
 ```bash
 npm run dev:exchange
-# Serveur sur http://localhost:3001 (ou 3000 si indisponible)
+# Serveur sur http://localhost:3009
 ```
 
 ### Build

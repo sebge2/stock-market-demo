@@ -6,7 +6,7 @@ export default defineConfig({
   root: '.',
   plugins: [nxViteTsPaths(), react()],
   server: {
-    port: 3001,
+    port: 3009,
     host: '0.0.0.0',
     strictPort: false,
     fs: {

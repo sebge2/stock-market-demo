@@ -137,7 +137,7 @@ class CompanyPersistenceTest {
     security.setIssuedShares(1_000_000L);
     security.setOutstandingShares(900_000L);
     security.setFreeFloatShares(400_000L);
-    security.updateCurrentPrice(new BigDecimal("187.25"), LocalDateTime.of(2025, 1, 1, 10, 0));
+    security.recordLastTrade(new BigDecimal("187.25"), LocalDateTime.of(2025, 1, 1, 10, 0));
     securities.saveAndFlush(security);
 
     assertThat(securities.findByTicker("AAPL")).get().satisfies(saved -> {
@@ -148,8 +148,8 @@ class CompanyPersistenceTest {
       assertThat(saved.getIssuedShares()).isEqualTo(1_000_000L);
       assertThat(saved.getOutstandingShares()).isEqualTo(900_000L);
       assertThat(saved.getFreeFloatShares()).isEqualTo(400_000L);
-      assertThat(saved.getCurrentPrice()).isEqualByComparingTo("187.25");
-      assertThat(saved.getCurrentPriceUpdatedAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 10, 0));
+      assertThat(saved.getLastPrice()).isEqualByComparingTo("187.25");
+      assertThat(saved.getLastTradeAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 10, 0));
     });
   }
 

@@ -36,6 +36,12 @@ export interface Security {
   issuedShares: number | null;
   /** Number of outstanding shares, if applicable. */
   outstandingShares: number | null;
+  /** Number of outstanding shares freely available for trading, if applicable. */
+  freeFloatShares: number | null;
+  /** Price of the most recent trade, in the trading currency. */
+  lastPrice: number | null;
+  /** Date and time of the most recent trade (ISO format). */
+  lastTradeAt: string | null;
   /** Trading status. */
   status: SecurityStatus;
   /** Creation timestamp (ISO format). */
@@ -45,7 +51,7 @@ export interface Security {
 }
 
 /** Data entered to create or edit a security. */
-export type SecurityChanges = Omit<Security, 'id' | 'companyName' | 'createdAt' | 'updatedAt'>;
+export type SecurityChanges = Omit<Security, 'id' | 'companyName' | 'lastPrice' | 'lastTradeAt' | 'createdAt' | 'updatedAt'>;
 
 /** French labels of the statuses. */
 export const SECURITY_STATUS_LABELS: Record<SecurityStatus, string> = {

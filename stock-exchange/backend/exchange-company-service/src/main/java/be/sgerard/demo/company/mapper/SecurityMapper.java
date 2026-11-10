@@ -26,7 +26,7 @@ public class SecurityMapper {
         security.getName(), security.getIsin(), security.getType(), security.getCurrency(), security.getTicker(),
         security.getTradingCurrency(), security.getListingDate(), security.getDelistingDate(),
         security.getIssuedShares(), security.getOutstandingShares(), security.getFreeFloatShares(), security.getStatus(),
-        security.getCurrentPrice(), security.getCurrentPriceUpdatedAt(), security.getCreatedAt(), security.getUpdatedAt());
+        security.getLastPrice(), security.getLastTradeAt(), security.getCreatedAt(), security.getUpdatedAt());
   }
 
   /**

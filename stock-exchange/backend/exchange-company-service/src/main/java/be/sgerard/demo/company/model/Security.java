@@ -171,20 +171,20 @@ public class Security {
 
   /**
    *
-   * Most recently executed price on the exchange, in the trading currency.
+   * Price of the most recent trade on the exchange, in the trading currency.
    *
    */
   @PositiveOrZero
-  @Column(name = "current_price", precision = 19, scale = 4)
-  private BigDecimal currentPrice;
+  @Column(name = "last_price", precision = 19, scale = 4)
+  private BigDecimal lastPrice;
 
   /**
    *
-   * Date and time at which the current price was last updated.
+   * Date and time of the most recent trade on the exchange.
    *
    */
-  @Column(name = "current_price_updated_at")
-  private LocalDateTime currentPriceUpdatedAt;
+  @Column(name = "last_trade_at")
+  private LocalDateTime lastTradeAt;
 
   /**
    *
@@ -496,33 +496,33 @@ public class Security {
 
   /**
    *
-   * @return the most recently executed price, in the trading currency
+   * @return the price of the most recent trade, in the trading currency
    *
    */
-  public BigDecimal getCurrentPrice() {
-    return currentPrice;
+  public BigDecimal getLastPrice() {
+    return lastPrice;
   }
 
   /**
    *
-   * @return the date and time at which the current price was last updated
+   * @return the date and time of the most recent trade
    *
    */
-  public LocalDateTime getCurrentPriceUpdatedAt() {
-    return currentPriceUpdatedAt;
+  public LocalDateTime getLastTradeAt() {
+    return lastTradeAt;
   }
 
   /**
    *
-   * Updates the most recently executed price on the exchange.
+   * Records the price and time of the most recent trade on the exchange.
    *
-   * @param currentPrice the price, in the trading currency
-   * @param updatedAt the date and time of the price update
+   * @param lastPrice the price, in the trading currency
+   * @param lastTradeAt the date and time of the trade
    *
    */
-  public void updateCurrentPrice(BigDecimal currentPrice, LocalDateTime updatedAt) {
-    this.currentPrice = currentPrice;
-    this.currentPriceUpdatedAt = updatedAt;
+  public void recordLastTrade(BigDecimal lastPrice, LocalDateTime lastTradeAt) {
+    this.lastPrice = lastPrice;
+    this.lastTradeAt = lastTradeAt;
   }
 
   /**

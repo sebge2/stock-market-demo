@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useCan } from '../auth/permissions';
 import { ApiError } from '../roles/roles.api';
-import { DOT_CLASS, Icon, date } from './common';
+import { DOT_CLASS, Icon, date, dateTime } from './common';
 import {
   type Security,
   type SecurityStatus,
@@ -46,6 +46,11 @@ const KPI_COLOR: Record<SecurityStatus, string> = {
 
 /** Placeholder for market figures not yet exposed by the securities API. */
 const NO_VALUE = '—';
+
+/** Formats a trade price in the security trading currency. */
+function price(value: number, currency: string): string {
+  return new Intl.NumberFormat('fr-FR', { style: 'currency', currency, maximumFractionDigits: 4 }).format(value);
+}
 
 /** Securities screen: indicators and filterable list of the securities of the exchange. */
 export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
@@ -172,7 +177,7 @@ export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
                 <th scope="col">Devise réf. / négo.</th>
                 <th scope="col" className="sx-right">Capitalisation (EUR)</th>
                 <th scope="col" className="sx-right">Flottant</th>
-                <th scope="col" className="sx-right">Dernier cours</th>
+                <th scope="col" className="sx-right">Dernier cours / échange</th>
                 <th scope="col">Admission</th>
                 <th scope="col">Radiation</th>
                 <th scope="col">Statut</th>
@@ -191,7 +196,11 @@ export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
                   <td><span className="sx-code">{s.isin}</span></td>
                   <td className="sx-muted">{s.currency} / {s.tradingCurrency}</td>
                   <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
-                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
+                  <td className="sx-right"><span className="sx-num">{s.freeFloatShares?.toLocaleString('fr-FR') ?? NO_VALUE}</span></td>
+                  <td className="sx-right">
+                    <span className="sx-num">{s.lastPrice === null ? NO_VALUE : price(s.lastPrice, s.tradingCurrency)}</span>
+                    {s.lastTradeAt && <div className="sx-company-sub">{dateTime(s.lastTradeAt)}</div>}
+                  </td>
                   <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
                   <td className="sx-muted">{date(s.listingDate)}</td>
                   <td className="sx-muted">{s.delistingDate ? date(s.delistingDate) : '—'}</td>

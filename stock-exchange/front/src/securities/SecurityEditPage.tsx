@@ -77,7 +77,9 @@ export function SecurityEditPage({ id, onUnauthorized }: SecurityEditPageProps) 
 
   const issued = draft.issuedShares.trim() === '' ? null : Number(draft.issuedShares);
   const outstanding = draft.outstandingShares.trim() === '' ? null : Number(draft.outstandingShares);
-  const sharesInvalid = issued !== null && outstanding !== null && outstanding > issued;
+  const freeFloat = draft.freeFloatShares.trim() === '' ? null : Number(draft.freeFloatShares);
+  const sharesInvalid = (issued !== null && outstanding !== null && outstanding > issued)
+    || (freeFloat !== null && outstanding !== null && freeFloat > outstanding);
   const valid =
     draft.companyId !== '' && draft.name.trim() !== '' && draft.ticker.trim() !== '' && draft.isin.trim() !== '' &&
     draft.currency.trim().length === 3 && draft.tradingCurrency.trim().length === 3 && draft.listingDate !== '' && !sharesInvalid;
@@ -258,6 +260,11 @@ export function SecurityEditPage({ id, onUnauthorized }: SecurityEditPageProps) 
                 <label htmlFor="e-out">Titres en circulation</label>
                 <input id="e-out" className="sx-input" type="number" min={0} aria-invalid={sharesInvalid} {...field('outstandingShares')} />
                 <span className="sx-field-hint" style={sharesInvalid ? { color: '#FF9B9B' } : undefined}>Inférieur ou égal aux titres émis.</span>
+              </div>
+              <div className="sx-field">
+                <label htmlFor="e-float">Flottant</label>
+                <input id="e-float" className="sx-input" type="number" min={0} aria-invalid={sharesInvalid} {...field('freeFloatShares')} />
+                <span className="sx-field-hint" style={sharesInvalid ? { color: '#FF9B9B' } : undefined}>Inférieur ou égal aux titres en circulation.</span>
               </div>
             </div>
           </section>

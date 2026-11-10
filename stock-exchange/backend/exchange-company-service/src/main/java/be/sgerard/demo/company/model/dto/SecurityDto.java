@@ -27,8 +27,8 @@ import java.util.UUID;
  * @param outstandingShares number of shares held by third parties, excluding treasury shares, if applicable
  * @param freeFloatShares number of outstanding shares freely available for trading, if applicable
  * @param status trading status
- * @param currentPrice most recently executed price, in the trading currency
- * @param currentPriceUpdatedAt date and time at which the current price was last updated
+ * @param lastPrice price of the most recent trade, in the trading currency
+ * @param lastTradeAt date and time of the most recent trade
  * @param createdAt creation timestamp
  * @param updatedAt last update timestamp
  */
@@ -36,6 +36,6 @@ import java.util.UUID;
 public record SecurityDto(UUID id, UUID companyId, String companyName, String name, String isin, SecurityType type,
                           String currency, String ticker, String tradingCurrency, LocalDate listingDate,
                           LocalDate delistingDate, Long issuedShares, Long outstandingShares, Long freeFloatShares,
-                          SecurityStatus status, BigDecimal currentPrice, LocalDateTime currentPriceUpdatedAt,
-                          LocalDateTime createdAt, LocalDateTime updatedAt) {
+                          SecurityStatus status, BigDecimal lastPrice, LocalDateTime lastTradeAt, LocalDateTime createdAt,
+                          LocalDateTime updatedAt) {
 }

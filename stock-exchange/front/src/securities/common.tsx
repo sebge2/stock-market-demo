@@ -14,6 +14,11 @@ export const STATUS_HINT = 'Une valeur suspendue n’accepte plus de nouveaux or
 /** Formats an ISO date as a French date. */
 export const date = (isoDate: string) => new Date(isoDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
 
+/** Formats an ISO date and time as a French date and time. */
+export const dateTime = (isoDate: string) => new Date(isoDate).toLocaleString('fr-FR', {
+  day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit',
+});
+
 /** Icon wrapper shared by the screen buttons. */
 export function Icon({ size = 18, children }: { size?: number; children: React.ReactNode }) {
   return (
@@ -36,6 +41,7 @@ export interface Draft {
   delistingDate: string;
   issuedShares: string;
   outstandingShares: string;
+  freeFloatShares: string;
   status: SecurityStatus;
 }
 
@@ -53,6 +59,7 @@ export function draftOf(security: Security | undefined, companyId: string): Draf
     delistingDate: security?.delistingDate ?? '',
     issuedShares: security?.issuedShares?.toString() ?? '',
     outstandingShares: security?.outstandingShares?.toString() ?? '',
+    freeFloatShares: security?.freeFloatShares?.toString() ?? '',
     status: security?.status ?? 'ADMISSION',
   };
 }
@@ -72,6 +79,7 @@ export function changesOf(draft: Draft): SecurityChanges {
     delistingDate: draft.delistingDate === '' ? null : draft.delistingDate,
     issuedShares: shares(draft.issuedShares),
     outstandingShares: shares(draft.outstandingShares),
+    freeFloatShares: shares(draft.freeFloatShares),
     status: draft.status,
   };
 }

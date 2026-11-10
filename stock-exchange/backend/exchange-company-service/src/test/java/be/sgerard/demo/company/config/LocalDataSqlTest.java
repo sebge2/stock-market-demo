@@ -6,6 +6,7 @@ import be.sgerard.demo.company.model.CompanyStatus;
 import be.sgerard.demo.company.model.SectorType;
 import be.sgerard.demo.company.repository.CompanyRepository;
 import be.sgerard.demo.company.repository.SecurityRepository;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,6 +52,12 @@ class LocalDataSqlTest {
     assertThat(companyRepository.findByName("TotalEnergies").orElseThrow().getStatus())
         .isEqualTo(CompanyStatus.LISTED);
     assertThat(securityRepository.count()).isEqualTo(40);
-    assertThat(securityRepository.findByTicker("TTE")).isPresent();
+    assertThat(securityRepository.findByTicker("TTE")).get().satisfies(security -> {
+      assertThat(security.getIssuedShares()).isEqualTo(2_350_000_000L);
+      assertThat(security.getOutstandingShares()).isEqualTo(2_300_000_000L);
+      assertThat(security.getFreeFloatShares()).isEqualTo(2_070_000_000L);
+      assertThat(security.getLastPrice()).isEqualByComparingTo("79.7300");
+      assertThat(security.getLastTradeAt()).isEqualTo(LocalDateTime.of(2026, 11, 7, 17, 35));
+    });
   }
 }

@@ -52,6 +52,14 @@ function price(value: number, currency: string): string {
   return new Intl.NumberFormat('fr-FR', { style: 'currency', currency, maximumFractionDigits: 4 }).format(value);
 }
 
+/** Calculates and formats market capitalization from the last price and shares outstanding. */
+function marketCapitalization(security: Security): string {
+  if (security.lastPrice === null || security.outstandingShares === null) {
+    return NO_VALUE;
+  }
+  return price(security.lastPrice * security.outstandingShares, security.tradingCurrency);
+}
+
 /** Securities screen: indicators and filterable list of the securities of the exchange. */
 export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
   const can = useCan();
@@ -175,7 +183,7 @@ export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
                 <th scope="col">Type</th>
                 <th scope="col">ISIN</th>
                 <th scope="col">Devise réf. / négo.</th>
-                <th scope="col" className="sx-right">Capitalisation (EUR)</th>
+                <th scope="col" className="sx-right">Capitalisation</th>
                 <th scope="col" className="sx-right">Flottant</th>
                 <th scope="col" className="sx-right">Dernier cours / échange</th>
                 <th scope="col">Admission</th>
@@ -195,13 +203,12 @@ export function SecuritiesPage({ onUnauthorized }: SecuritiesPageProps) {
                   <td><span className="sx-type-pill">{SECURITY_TYPE_LABELS[s.type]}</span></td>
                   <td><span className="sx-code">{s.isin}</span></td>
                   <td className="sx-muted">{s.currency} / {s.tradingCurrency}</td>
-                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
+                  <td className="sx-right"><span className="sx-num">{marketCapitalization(s)}</span></td>
                   <td className="sx-right"><span className="sx-num">{s.freeFloatShares?.toLocaleString('fr-FR') ?? NO_VALUE}</span></td>
                   <td className="sx-right">
                     <span className="sx-num">{s.lastPrice === null ? NO_VALUE : price(s.lastPrice, s.tradingCurrency)}</span>
                     {s.lastTradeAt && <div className="sx-company-sub">{dateTime(s.lastTradeAt)}</div>}
                   </td>
-                  <td className="sx-right"><span className="sx-num">{NO_VALUE}</span></td>
                   <td className="sx-muted">{date(s.listingDate)}</td>
                   <td className="sx-muted">{s.delistingDate ? date(s.delistingDate) : '—'}</td>
                   <td>

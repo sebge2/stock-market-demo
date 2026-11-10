@@ -134,6 +134,9 @@ class CompanyPersistenceTest {
     final Security security = newSecurity("US0378331005", "AAPL");
     security.setStatus(SecurityStatus.DELISTED);
     security.setDelistingDate(LocalDate.of(2030, 1, 1));
+    security.setIssuedShares(1_000_000L);
+    security.setOutstandingShares(900_000L);
+    security.setFreeFloatShares(400_000L);
     security.updateCurrentPrice(new BigDecimal("187.25"), LocalDateTime.of(2025, 1, 1, 10, 0));
     securities.saveAndFlush(security);
 
@@ -142,6 +145,9 @@ class CompanyPersistenceTest {
       assertThat(saved.getListingDate()).isEqualTo(LocalDate.of(1980, 12, 12));
       assertThat(saved.getStatus()).isEqualTo(SecurityStatus.DELISTED);
       assertThat(saved.getDelistingDate()).isEqualTo(LocalDate.of(2030, 1, 1));
+      assertThat(saved.getIssuedShares()).isEqualTo(1_000_000L);
+      assertThat(saved.getOutstandingShares()).isEqualTo(900_000L);
+      assertThat(saved.getFreeFloatShares()).isEqualTo(400_000L);
       assertThat(saved.getCurrentPrice()).isEqualByComparingTo("187.25");
       assertThat(saved.getCurrentPriceUpdatedAt()).isEqualTo(LocalDateTime.of(2025, 1, 1, 10, 0));
     });

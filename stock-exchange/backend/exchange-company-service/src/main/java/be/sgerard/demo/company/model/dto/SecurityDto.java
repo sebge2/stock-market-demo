@@ -23,8 +23,9 @@ import java.util.UUID;
  * @param tradingCurrency trading currency (ISO 4217)
  * @param listingDate date of first listing
  * @param delistingDate date of delisting, if any
- * @param issuedShares number of issued shares, if applicable
- * @param outstandingShares number of outstanding shares, if applicable
+ * @param issuedShares number of shares created by the company, including treasury shares, if applicable
+ * @param outstandingShares number of shares held by third parties, excluding treasury shares, if applicable
+ * @param freeFloatShares number of outstanding shares freely available for trading, if applicable
  * @param status trading status
  * @param currentPrice most recently executed price, in the trading currency
  * @param currentPriceUpdatedAt date and time at which the current price was last updated
@@ -34,7 +35,7 @@ import java.util.UUID;
 @Schema(name = "Security", description = "A financial instrument issued by a company and traded on the stock exchange")
 public record SecurityDto(UUID id, UUID companyId, String companyName, String name, String isin, SecurityType type,
                           String currency, String ticker, String tradingCurrency, LocalDate listingDate,
-                          LocalDate delistingDate, Long issuedShares, Long outstandingShares, SecurityStatus status,
-                          BigDecimal currentPrice, LocalDateTime currentPriceUpdatedAt, LocalDateTime createdAt,
-                          LocalDateTime updatedAt) {
+                          LocalDate delistingDate, Long issuedShares, Long outstandingShares, Long freeFloatShares,
+                          SecurityStatus status, BigDecimal currentPrice, LocalDateTime currentPriceUpdatedAt,
+                          LocalDateTime createdAt, LocalDateTime updatedAt) {
 }

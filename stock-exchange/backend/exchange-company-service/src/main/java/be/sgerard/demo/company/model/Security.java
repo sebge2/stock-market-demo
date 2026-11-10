@@ -131,7 +131,8 @@ public class Security {
 
   /**
    *
-   * Number of issued shares, if applicable
+   * Number of shares created by the company, including treasury shares, if applicable.
+   * For example, a company that has created 1,000,000 shares has 1,000,000 issued shares.
    *
    */
   @PositiveOrZero
@@ -140,12 +141,23 @@ public class Security {
 
   /**
    *
-   * Number of outstanding shares, if applicable
+   * Number of issued shares held by third parties, excluding treasury shares, if applicable.
+   * For example, 1,000,000 issued shares less 100,000 treasury shares leaves 900,000 outstanding shares.
    *
    */
   @PositiveOrZero
   @Column(name = "outstanding_shares")
   private Long outstandingShares;
+
+  /**
+   *
+   * Number of outstanding shares freely available for trading, excluding strategic or restricted holdings.
+   * For example, if 500,000 of 900,000 outstanding shares are held by a founder, the free float is 400,000.
+   *
+   */
+  @PositiveOrZero
+  @Column(name = "free_float_shares")
+  private Long freeFloatShares;
 
   /**
    *
@@ -412,7 +424,7 @@ public class Security {
 
   /**
    *
-   * @return the number of issued shares, if applicable
+   * @return the number of shares created by the company, including treasury shares, if applicable
    *
    */
   public Long getIssuedShares() {
@@ -421,7 +433,7 @@ public class Security {
 
   /**
    *
-   * @param issuedShares the number of issued shares, if applicable
+   * @param issuedShares the number of shares created by the company, including treasury shares, if applicable
    *
    */
   public void setIssuedShares(Long issuedShares) {
@@ -430,7 +442,7 @@ public class Security {
 
   /**
    *
-   * @return the number of outstanding shares, if applicable
+   * @return the number of shares held by third parties, excluding treasury shares, if applicable
    *
    */
   public Long getOutstandingShares() {
@@ -439,11 +451,29 @@ public class Security {
 
   /**
    *
-   * @param outstandingShares the number of outstanding shares, if applicable
+   * @param outstandingShares the number of shares held by third parties, excluding treasury shares, if applicable
    *
    */
   public void setOutstandingShares(Long outstandingShares) {
     this.outstandingShares = outstandingShares;
+  }
+
+  /**
+   *
+   * @return the number of outstanding shares freely available for trading, if applicable
+   *
+   */
+  public Long getFreeFloatShares() {
+    return freeFloatShares;
+  }
+
+  /**
+   *
+   * @param freeFloatShares the number of outstanding shares freely available for trading, if applicable
+   *
+   */
+  public void setFreeFloatShares(Long freeFloatShares) {
+    this.freeFloatShares = freeFloatShares;
   }
 
   /**

@@ -24,8 +24,9 @@ import java.util.UUID;
  * @param tradingCurrency trading currency (ISO 4217)
  * @param listingDate date of first listing
  * @param delistingDate date of delisting, if any
- * @param issuedShares number of issued shares, if applicable
- * @param outstandingShares number of outstanding shares, if applicable
+ * @param issuedShares number of shares created by the company, including treasury shares, if applicable
+ * @param outstandingShares number of shares held by third parties, excluding treasury shares, if applicable
+ * @param freeFloatShares number of outstanding shares freely available for trading, if applicable
  * @param status trading status
  */
 @Schema(name = "SecurityRequest", description = "Data used to create or update a security")
@@ -41,5 +42,6 @@ public record SecurityRequestDto(
     LocalDate delistingDate,
     @PositiveOrZero Long issuedShares,
     @PositiveOrZero Long outstandingShares,
+    @PositiveOrZero Long freeFloatShares,
     @NotNull SecurityStatus status) {
 }

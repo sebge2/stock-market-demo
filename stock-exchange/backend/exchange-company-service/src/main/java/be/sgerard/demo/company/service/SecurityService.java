@@ -154,6 +154,10 @@ public class SecurityService {
         && request.outstandingShares() > request.issuedShares()) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Outstanding shares exceed the issued shares");
     }
+    if (request.freeFloatShares() != null && request.outstandingShares() != null
+        && request.freeFloatShares() > request.outstandingShares()) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Free-float shares exceed the outstanding shares");
+    }
     securityRepository.findByIsin(request.isin()).filter(s -> !s.getId().equals(currentId)).ifPresent(s -> {
       throw new ResponseStatusException(HttpStatus.CONFLICT, "ISIN already used: " + request.isin());
     });
